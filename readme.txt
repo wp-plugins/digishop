@@ -15,7 +15,7 @@ DigiShop is a WordPress plugin which allows you to setup your e-store and start 
 = Benefits / Features =
 
 * Easy to use
-* Downloads links are served from the main domain e.g. http://yourdomain/wp?digishop_dl=f47c137alaskfjlasflajsfkasjfklaklfaksfajsflkasf
+* Downloads links are served from the main domain e.g. yourdomain.com/?digishop_dl=f47c137alaskfjlasflajsfkasjfklaklfaksfajsflkasf
 * When download link is clicked the download dialog is shown i.e. the file does not show within the browser (forced download)
 * Handles PayPal Live and Sanbox
 * Functionality to enable/disable products (when a product is disabled the buy now link will not be shown and the file can't be downloaded even with the download link)
