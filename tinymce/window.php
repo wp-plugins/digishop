@@ -41,7 +41,7 @@ foreach ($products as $rec) {
                 var content;
                 var template = '<p>[digishop id="%%PRODUCT_ID%%"]</p><br />';
 		
-				var product_id = document.getElementById('product_id').value;
+				var product_id = document.getElementById('product_id') ? document.getElementById('product_id').value : 0;
 		
                 var wwwpdigishop = document.getElementById('wwwpdigishop_panel');
 				
@@ -51,7 +51,9 @@ foreach ($products as $rec) {
                 }
             
                 if (window.tinyMCE) {
-                    window.tinyMCE.execInstanceCommand('content', 'mceInsertContent', false, content);
+					if (product_id > 0) {
+						window.tinyMCE.execInstanceCommand('content', 'mceInsertContent', false, content);
+					}
                     //Peforms a clean up of the current editor HTML.
                     //tinyMCEPopup.editor.execCommand('mceCleanup');
                     //Repaints the editor. Sometimes the browser has graphic glitches.
@@ -77,6 +79,14 @@ foreach ($products as $rec) {
                 <!-- panel -->
                 <div id="wwwpdigishop_panel" class="panel current">
                     <table border="0" cellpadding="4" cellspacing="0">
+						<?php if (empty($dropdown_products)) : ?>
+						<tr>
+                            <td nowrap="nowrap" colspan="2">
+                               No products found. Please go to DigiShop and add some. <br/>
+							   Then come back to this page.
+                            </td>
+                        </tr>
+						<?php else : ?>
 						<tr>
                             <td nowrap="nowrap" colspan="2">
                                 Please choose the digital product to insert in the current post.<br/>
@@ -88,13 +98,13 @@ foreach ($products as $rec) {
                                 <label for="wwwpdigishop_product_name"><?php _e("Product Name", 'WWWPDIGISHOP'); ?></label>
                             </td>
                             <td>
-                                <?php 
+                                <?php
 										//echo "<pre>".var_export($products, 1) . "</pre>";										
-										echo WebWeb_WP_DigiShopUtil::html_select('product_id', null, $dropdown_products);
-									?>
+									echo WebWeb_WP_DigiShopUtil::html_select('product_id', null, $dropdown_products);
+								?>
                             </td>                            
                         </tr>
-                       
+                        <?php endif; ?>
                     </table>
                 </div>
                 <!-- end panel -->
