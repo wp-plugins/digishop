@@ -5,9 +5,8 @@
         <h3>How to use the plugin</h3>
         <p>
             First, add enter product name, price and upload a file (can be anything)<br/>
-            Second, go to Products to copy the short code <br/>
-            Third, paste the short code in the article/page where you'd like the buy button to appear. <br/>
-            
+            Second, go to Products to copy the short code OR click on the <img src="" alt=""/> icon when editing a post.<br/>
+            Third, paste the short code in the article/page where you'd like the buy button to appear. <br/>            
             Enter your paypal details in the Settings page and enable the plugin. <br/>
         </p>
 
@@ -71,19 +70,6 @@
 
         <?php endif; ?>
         
-        <h3>Still unclear ?</h3>
-        <p>Please send questions, bug reports, feature requests either using to 
-            <a href="mailto:<?php echo $webweb_wp_digishop_obj->get('plugin_support_email');?>?subject=<?php echo urlencode($webweb_wp_digishop_obj->get('plugin_name'));?>">
-            <?php echo $webweb_wp_digishop_obj->get('plugin_support_email');?></a>
-            or using the form below.
-        </p>
-        <p>Plugin's home page: <a href="<?php echo $webweb_wp_digishop_obj->get('plugin_home_page');?>"
-                                  target="_blank"><?php echo $webweb_wp_digishop_obj->get('plugin_home_page');?></a></p>
-
-        <h2>Suggest a feature or report a bug</h2>
-
-        <p>
-            <iframe src="<?php echo $webweb_wp_digishop_obj->get('plugin_support_link');?>" style="overflow: hidden; width: 100%; height: 910px;border: none;" marginheight="0" align="top" scrolling="No" frameborder="0" hspace="0" vspace="0">Cannot load frame. Please send us an email instead. The email is: info@use-the-same-domain</iframe>
-        </p>
+        <?php include_once(WEBWEB_WP_DIGISHOP_BASE_DIR . '/zzz_contact_form.php'); ?>
     </div>
 </div>
