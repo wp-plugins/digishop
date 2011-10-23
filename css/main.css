@@ -1,0 +1,42 @@
+
+.app_table { 
+	width: 30%;
+}
+
+.app_table_half {
+	width:50%;
+}
+
+.app_table_medium {
+	width:75%;
+}
+
+.app_table_full{
+	width:100%;
+}
+
+.app_table td {
+	padding:10px;
+}
+
+.webweb_wp_plugin input[type="text"] {
+	min-width:220px;
+    width:550px;
+}
+
+.form-table textarea {
+	width:550px;
+    height: 150px;
+}
+
+.success, .app_success {
+    color: green;
+}
+
+.app_error, .app_delete_button {
+    color: red;
+}
+
+.app_hide {
+    display: none;
+}

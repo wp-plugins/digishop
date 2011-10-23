@@ -1,0 +1,1 @@
+<?php include_once(WEBWEB_WP_DIGISHOP_BASE_DIR . '/zzz_contact_form.php'); ?>
