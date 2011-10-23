@@ -105,6 +105,10 @@ class WebWeb_WP_DigiShop {
             $inst->plugin_support_link .= '&css_file=' . urlencode(get_bloginfo('stylesheet_url'));
             $inst->plugin_admin_url_prefix = $site_url . '/wp-admin/admin.php?page=' . $inst->plugin_dir_name;
 		
+            $inst->delete_product_url = $inst->plugin_admin_url_prefix . '/menu.products.php&do=delete';
+			$inst->add_product_url = $inst->plugin_admin_url_prefix . '/menu.product.add.php';
+			$inst->edit_product_url = $inst->plugin_admin_url_prefix . '/menu.product.add.php';		
+		
             // where digital products will be saved.
             $inst->plugin_uploads_path = '/wp-content/uploads/' . $inst->plugin_id_str . '/';
             $inst->plugin_uploads_url = $site_url . $inst->plugin_uploads_path;
