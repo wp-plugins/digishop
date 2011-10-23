@@ -1,9 +1,9 @@
 <h2>Contact Us</h2>
 
-<?php if (0&&(preg_match('#win#si', PHP_OS) || $_SERVER['HTTP_HOST'] == 'localhost')) : ?>
+<?php if (1&&(preg_match('#win#si', PHP_OS) || $_SERVER['HTTP_HOST'] == 'localhost')) : ?>
     <p>
         <iframe src="<?php echo $webweb_wp_digishop_obj->get('plugin_support_link');?>"
-                style="overflow: hidden; width: 100%; height: 910px;border: none;"
+                style="overflow: hidden; width: 100%; height: 810px;border: none;"
                 marginheight="0" align="top" scrolling="No" frameborder="0" hspace="0"
                 vspace="0">Cannot load frame. Please send us an email instead. The email is: info@use-the-same-domain</iframe>
     </p>
