@@ -58,7 +58,7 @@ class WebWeb_WP_DigiShop {
     private $plugin_support_link = 'http://miniads.ca/widgets/contact/profile/digishop?height=200&width=500&description=Please enter your enquiry below.'; //
     private $plugin_admin_url_prefix = null; // filled in later
     private $plugin_home_page = 'http://webweb.ca/site/products/digishop/';
-    private $plugin_tinymce_name = 'wwwplikegate'; // if you change it update the tinymce/editor_plugin.js and reminify the .min.js file.
+    private $plugin_tinymce_name = 'wwwpdigishop'; // if you change it update the tinymce/editor_plugin.js and reminify the .min.js file.
     private $plugin_cron_hook = __CLASS__;
     private $db_version = '1.0';
     private $plugin_cron_freq = 'daily';

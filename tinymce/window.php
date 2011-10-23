@@ -36,17 +36,17 @@ foreach ($products as $rec) {
                 tinyMCEPopup.resizeToInnerSize();
             }
 
-            function insert_wwwplikegate_content() {
+            function insert_wwwpdigishop_content() {
                 var extra = '';
                 var content;
-                var template = '<br/><p>[digishop id="%%PRODUCT_ID%%"]</p><br/>';
+                var template = '<p>[digishop id="%%PRODUCT_ID%%"]</p><br />';
 		
 				var product_id = document.getElementById('product_id').value;
 		
-                var wplikegate = document.getElementById('wplikegate_panel');
+                var wwwpdigishop = document.getElementById('wwwpdigishop_panel');
 				
                 // who is active ?
-                if (wplikegate.className.indexOf('current') != -1) {
+                if (wwwpdigishop.className.indexOf('current') != -1) {
                     content = template.replace('%%PRODUCT_ID%%', product_id);
                 }
             
@@ -64,18 +64,18 @@ foreach ($products as $rec) {
         </script>
         <base target="_self" />
     </head>
-    <body id="advimage" onload="tinyMCEPopup.executeOnLoad('init();');document.body.style.display='';document.getElementById('wplikegate_product_name').focus();" style="display: none">
-        <form name="wplikegate_form" action="#">
+    <body id="advimage" onload="tinyMCEPopup.executeOnLoad('init();');document.body.style.display='';document.getElementById('wwwpdigishop_product_name').focus();" style="display: none">
+        <form name="wwwpdigishop_form" action="#">
             <div class="tabs">
                 <ul>
-                    <li id="wplikegate_tab" class="current"><span><a href="javascript:mcTabs.displayTab('wplikegate_tab','wplikegate_panel');" onmousedown="return false;">
+                    <li id="wwwpdigishop_tab" class="current"><span><a href="javascript:mcTabs.displayTab('wwwpdigishop_tab','wwwpdigishop_panel');" onmousedown="return false;">
                         <?php _e("DigiShop", 'WWWPDIGISHOP'); ?></a></span></li>
                 </ul>
             </div>
 
             <div class="panel_wrapper">
                 <!-- panel -->
-                <div id="wplikegate_panel" class="panel current">
+                <div id="wwwpdigishop_panel" class="panel current">
                     <table border="0" cellpadding="4" cellspacing="0">
 						<tr>
                             <td nowrap="nowrap" colspan="2">
@@ -85,7 +85,7 @@ foreach ($products as $rec) {
                         </tr>
                         <tr>
                             <td nowrap="nowrap">
-                                <label for="wplikegate_product_name"><?php _e("Product Name", 'WWWPDIGISHOP'); ?></label>
+                                <label for="wwwpdigishop_product_name"><?php _e("Product Name", 'WWWPDIGISHOP'); ?></label>
                             </td>
                             <td>
                                 <?php 
@@ -102,7 +102,7 @@ foreach ($products as $rec) {
 
             <div class="mceActionPanel">
                 <div style="float: left">
-                    <input type="submit" id="insert" name="insert" value="<?php _e("Insert", 'WWWPDIGISHOP'); ?>" onclick="insert_wwwplikegate_content();return false;" />
+                    <input type="submit" id="insert" name="insert" value="<?php _e("Insert", 'WWWPDIGISHOP'); ?>" onclick="insert_wwwpdigishop_content();return false;" />
                 </div>
 
                 <div style="float: right">
