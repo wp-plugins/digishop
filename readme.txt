@@ -26,7 +26,7 @@ DigiShop is a WordPress plugin which allows you to setup your e-store and start 
 
 = Author =
 
-Svetoslav Marinov (Slavi) | <a title="Free Local Classified Ads (Canada). Buy, sell, trade and/or post ads in multiple cities for FREE. Also ads can include images, documents, videos etc. Ads can even be post via email." href="http://www.MiniAds.ca" target="_blank">Free Local Classified Ads - MiniAds.ca</a>
+Svetoslav Marinov (Slavi) | <a title="Free Local Classified Ads (Canada). Buy, sell, trade and/or post ads in multiple cities for FREE. Also ads can include images, documents, videos etc. Ads can even be post via email." href="http://MiniAds.ca" target="_blank">Free Local Classified Ads - MiniAds.ca</a>
 
 == Installation ==
 
