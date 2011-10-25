@@ -64,7 +64,8 @@ if (!empty($id)) {
             </table>
                         <p>
                             <br/>Notes:<br/> One file per product. If you need more please add them to a ZIP file.
-                            <br/>Uploading a new file will override the previous one.
+                            <br/>Uploading a new file will override the previous one with the same name. Therefore please make sure
+                            the files are unique for each product.
                         </p>
             <p class="submit">
                 <input type="submit" class="button-primary" value="<?php _e('Save') ?>" />
