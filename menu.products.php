@@ -13,7 +13,8 @@ $delete_url = $webweb_wp_digishop_obj->get('delete_product_url');
 $edit_url   = $webweb_wp_digishop_obj->get('edit_product_url');
 
 $adm_prefix = $webweb_wp_digishop_obj->get('plugin_url');
-
+$plugin_uploads_dir = $webweb_wp_digishop_obj->get('plugin_uploads_dir');
+        
 ?>
 
 <div class="webweb_wp_plugin">
@@ -44,7 +45,11 @@ $adm_prefix = $webweb_wp_digishop_obj->get('plugin_url');
                             <td><?php echo $rec['label'];
 
                             if (!empty($rec['file'])) {
-                                echo " <img src='$adm_prefix/images/attach.png' title='The product has a file linked to it.' alt='' />";
+                                if (file_exists($plugin_uploads_dir . $rec['file'])) {
+                                    echo " <img src='$adm_prefix/images/attach.png' title='The product has a file linked to it.' alt='' />";
+                                } else {
+                                    echo " <img src='$adm_prefix/images/error.png' title='The product has a file linked to it but the file cannot be found.' alt='' />";
+                                }
                             }
                             
                             ?></td>
