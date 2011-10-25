@@ -73,7 +73,7 @@ class WebWeb_WP_DigiShop {
         'test_mode' => 0,
         'business_email' => '',
         'purchase_subject' => 'Download Link',
-        'purchase_content' => "Dear %%FIRST_NAME%%,\n\nThank you for your order.\nTransaction: %%TXN_ID%%\nHere is the download link: %%DOWNLOAD_LINK%%\n\nRegards,\n%%SITE%% team",
+        'purchase_content' => "Dear %%FIRST_NAME%%,\n\nThank you for your order.\nTransaction: %%TXN_ID%%\nHere is the download link: %%DOWNLOAD_LINK%% for %%PRODUCT_NAME%%.\n\nRegards,\n%%SITE%% team",
         'currency' => 'USD',
         'purchase_thanks' => 'Thanks. The payment is being processing now. You should receive an email very soon.',
         'purchase_error' => 'There was a problem with the payment.',
