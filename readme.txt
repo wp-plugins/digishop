@@ -21,8 +21,8 @@ DigiShop is a WordPress plugin which allows you to setup your e-store and start 
 * Functionality to enable/disable products (when a product is disabled the buy now link will not be shown and the file can't be downloaded even with the download link)
 * Customize the text for the successful and unsuccessful transaction
 * In case of a failed transaction the email is sent to the admin so he can handle the failed transaction manually
-* There is a button in edit page/post that allows you to choose a product to insert
 * Short codes are just ready to copied and pasted into your pages
+* Update:There is a button in edit page/post that allows you to choose a product to insert
 
 = Author =
 
