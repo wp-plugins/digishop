@@ -12,6 +12,8 @@ $data = $webweb_wp_digishop_obj->get_products();
 $delete_url = $webweb_wp_digishop_obj->get('delete_product_url');
 $edit_url   = $webweb_wp_digishop_obj->get('edit_product_url');
 
+$adm_prefix = $webweb_wp_digishop_obj->get('plugin_url');
+
 ?>
 
 <div class="webweb_wp_plugin">
@@ -39,7 +41,13 @@ $edit_url   = $webweb_wp_digishop_obj->get('edit_product_url');
                         <?php foreach ($data as $idx => $rec) : ?>
                         <tr>
                             <td><?php echo "[" . $webweb_wp_digishop_obj->get('plugin_id_str') . " id=\"{$rec['id']}\"]"?></td>
-                            <td><?php echo $rec['label']?></td>
+                            <td><?php echo $rec['label'];
+
+                            if (!empty($rec['file'])) {
+                                echo " <img src='$adm_prefix/images/attach.png' title='The product has a file linked to it.' alt='' />";
+                            }
+                            
+                            ?></td>
                             <td><?php echo $rec['price']?></td>
                             <td>
                                 <a class="app_edit_button" href="<?php echo WebWeb_WP_DigiShopUtil::add_url_params($edit_url, array('id' => $rec['id']));?>">Edit</a>
