@@ -26,7 +26,7 @@ $edit_url   = $webweb_wp_digishop_obj->get('edit_product_url');
                     <tr>
                         <th scope="col">Short Code</th>
                         <th scope="col">Name</th>
-                        <th scope="col">Price</th>
+                        <th scope="col">Price (<?php echo $options['currency']; ?>)</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
@@ -40,7 +40,7 @@ $edit_url   = $webweb_wp_digishop_obj->get('edit_product_url');
                         <tr>
                             <td><?php echo "[" . $webweb_wp_digishop_obj->get('plugin_id_str') . " id=\"{$rec['id']}\"]"?></td>
                             <td><?php echo $rec['label']?></td>
-                            <td><?php echo $rec['price'] . ' ' . $options['currency'];?></td>
+                            <td><?php echo $rec['price']?></td>
                             <td>
                                 <a class="app_edit_button" href="<?php echo WebWeb_WP_DigiShopUtil::add_url_params($edit_url, array('id' => $rec['id']));?>">Edit</a>
         |
