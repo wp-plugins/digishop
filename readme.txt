@@ -33,7 +33,7 @@ Svetoslav Marinov (Slavi) | <a title="Free Local Classified Ads (Canada). Buy, s
 Please go to Wordpress Admin &gt; Plugins &gt; Add New Plugin &gt; Search for: DigiShop and then press install
 
 = Manual Installation =
-1. Upload like-gate.zip into to the `/wp-content/plugins/` directory
+1. Upload digishop.zip into to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
 
 == Frequently Asked Questions ==

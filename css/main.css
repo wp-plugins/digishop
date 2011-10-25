@@ -19,7 +19,7 @@
 	padding:10px;
 }
 
-.webweb_wp_plugin input[type="text"] {
+.webweb_wp_plugin .input_field {
 	min-width:220px;
     width:550px;
 }
@@ -39,4 +39,16 @@
 
 .app_hide {
     display: none;
+}
+
+.app_message_box {
+    _margin: 5px 5px 15px;
+    margin: 0;
+    padding:5px;
+    background-color: #ffffcc;
+}
+
+/* .asterisk is for the *naked* newsletter signup form (mailchimp) */
+.asterisk, .app_asterisk {
+    color: red;
 }

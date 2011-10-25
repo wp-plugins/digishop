@@ -26,11 +26,11 @@ $opts = $webweb_wp_digishop_obj->get_options();
                 </tr>
                 <tr valign="top">
                     <th scope="row">PayPal Email</th>
-                    <td><input type="text" name="<?php echo $settings_key; ?>[business_email]" value="<?php echo $opts['business_email']; ?>" /></td>
+                    <td><input type="text" name="<?php echo $settings_key; ?>[business_email]" value="<?php echo $opts['business_email']; ?>" class="input_field" /></td>
                 </tr>
                 <tr valign="top">
                     <th scope="row">Subject (download email)</th>
-                    <td><input type="text" name="<?php echo $settings_key; ?>[purchase_subject]" value="<?php echo $opts['purchase_subject']; ?>" /></td>
+                    <td><input type="text" name="<?php echo $settings_key; ?>[purchase_subject]" value="<?php echo $opts['purchase_subject']; ?>" class="input_field"/></td>
                 </tr>
                 <tr valign="top">
                     <th scope="row">Content (download email)</th>
@@ -51,12 +51,12 @@ $opts = $webweb_wp_digishop_obj->get_options();
                 <tr valign="top">
                     <th scope="row">Thank You message (after a successful payment)</th>
                     <!--<td><textarea name="<?php echo $settings_key; ?>[purchase_thanks]"><?php echo $opts['purchase_thanks']; ?></textarea></td>-->
-                    <td><input type="text" name="<?php echo $settings_key; ?>[purchase_thanks]" value="<?php echo $opts['purchase_thanks']; ?>" /></td>
+                    <td><input type="text" name="<?php echo $settings_key; ?>[purchase_thanks]" value="<?php echo $opts['purchase_thanks']; ?>" class="input_field"/></td>
                 </tr>
                 <tr valign="top">
                     <th scope="row">Error message (after a failed payment)</th>
                     <!--<td><textarea name="<?php echo $settings_key; ?>[purchase_error]"><?php echo $opts['purchase_error']; ?></textarea></td>-->
-                    <td><input type="text" name="<?php echo $settings_key; ?>[purchase_error]" value="<?php echo $opts['purchase_error']; ?>" /></td>
+                    <td><input type="text" name="<?php echo $settings_key; ?>[purchase_error]" value="<?php echo $opts['purchase_error']; ?>" class="input_field"/></td>
                 </tr>
                 <tr valign="top">
                     <th scope="row">Currency</th>

@@ -468,6 +468,80 @@ SHORT_CODE_EOF;
         // when plugins are show add a settings link near my plugin for a quick access to the settings page.
         add_filter('plugin_action_links', array($this, 'add_plugin_settings_link'), 10, 2);
     }
+	
+ /**
+     * Allows access to some private vars
+     * @param str $var
+     */
+    public function generate_newsletter_box() {
+        $file = WEBWEB_WP_DIGISHOP_BASE_DIR . '/zzz_newsletter_box.html';
+
+        $buffer = WebWeb_WP_DigiShopUtil::read($file);
+
+        wp_get_current_user();
+        global $current_user;
+        $user_email = $current_user->user_email;
+
+        $replace_vars = array(
+            '%%PLUGIN_URL%%' => $this->get('plugin_url'),
+            '%%USER_EMAIL%%' => $user_email,
+        );
+        
+        $buffer = str_replace(array_keys($replace_vars), array_values($replace_vars), $buffer);
+
+        return $buffer;
+    }
+
+    /**
+     * Allows access to some private vars
+     * @param str $var
+     */
+    public function generate_donate_box() {
+        $msg = '';
+        $file = WEBWEB_WP_DIGISHOP_BASE_DIR . '/zzz_donate_box.html';
+
+        if (!empty($_REQUEST['error'])) {
+            $msg = $this->message('There was a problem with the payment.');
+        }
+        
+        if (!empty($_REQUEST['ok'])) {
+            $msg = $this->message('Thank you so much!', 1);
+        }
+
+        $return_url = WebWeb_WP_DigiShopUtil::add_url_params($this->get('plugin_business_status_url'), array(
+            'r' => $this->get('plugin_admin_url_prefix') . '/menu.dashboard.php&ok=1', // paypal de/escapes
+            'status' => 1,
+        ));
+
+        $cancel_url = WebWeb_WP_DigiShopUtil::add_url_params($this->get('plugin_business_status_url'), array(
+            'r' => $this->get('plugin_admin_url_prefix') . '/menu.dashboard.php&error=1', // 
+            'status' => 0,
+        ));
+
+        $replace_vars = array(
+            '%%MSG%%' => $msg,
+            '%%AMOUNT%%' => '2.99',
+            '%%BUSINESS_EMAIL%%' => $this->plugin_business_email,
+            '%%ITEM_NAME%%' => $this->plugin_name . ' Donation',
+            '%%ITEM_NAME_REGULARLY%%' => $this->plugin_name . ' Donation (regularly)',
+            '%%PLUGIN_URL%%' => $this->get('plugin_url'),
+            '%%CUSTOM%%' => http_build_query(array('site_url' => $this->site_url, 'product_name' => $this->plugin_id_str)),
+            '%%NOTIFY_URL%%' => $this->get('plugin_business_ipn'),
+            '%%RETURN_URL%%' => $return_url,
+            '%%CANCEL_URL%%' => $cancel_url,
+        );
+
+        // Let's switch the Sandbox settings.
+        if ($this->plugin_business_sandbox) {
+            $replace_vars['paypal.com'] = 'sandbox.paypal.com';
+            $replace_vars['%%BUSINESS_EMAIL%%'] = $this->plugin_business_email_sandbox;
+        }
+
+        $buffer = WebWeb_WP_DigiShopUtil::read($file);
+        $buffer = str_replace(array_keys($replace_vars), array_values($replace_vars), $buffer);
+
+        return $buffer;
+    }	
 
     /**
      * Outputs some options info. No save for now.

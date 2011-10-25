@@ -14,7 +14,15 @@ $opts = $webweb_wp_digishop_obj->get_options();
                 <td><?php echo empty($opts['status']) ? $webweb_wp_digishop_obj->msg('Disabled') : $webweb_wp_digishop_obj->msg('Enabled', 1);?></td>
             </tr>            
         </table>
-		
+
+		<?php
+            echo $webweb_wp_digishop_obj->generate_newsletter_box();
+        ?>
+
+        <?php
+            echo $webweb_wp_digishop_obj->generate_donate_box();
+        ?>
+        
 		<?php
 		$app_link = $webweb_wp_digishop_obj->get('plugin_home_page');
 		$app_title = $webweb_wp_digishop_obj->get('app_title');
