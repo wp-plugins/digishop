@@ -634,8 +634,8 @@ SHORT_CODE_EOF;
 
                 $admin_email = get_option('admin_email');
                 
-                // TODO: insert order ?
-                
+                // TODO: insert order ?                
+                $email_subject = $subject_prefix . $opts['purchase_subject'];
                 $email_buffer = $opts['purchase_content'];
 
                 if (empty($email_buffer)) {
@@ -649,13 +649,16 @@ SHORT_CODE_EOF;
                     '%%DOWNLOAD_LINK%%' => WebWeb_WP_DigiShopUtil::add_url_params($this->site_url, array($dl_key => $product_rec['hash'])),
                     '%%TXN_ID%%' => $data['txn_id'],
                     '%%SITE%%' => $this->site_url,
+                    '%%PRODUCT_NAME%%' => $product_rec['label'],
+                    '%%PRODUCT_PRICE%%' => $product_rec['price'],
                 );
 
+                $email_subject = str_ireplace(array_keys($vars), array_values($vars), $email_subject);
                 $email_buffer = str_ireplace(array_keys($vars), array_values($vars), $email_buffer);
-                    
+
                 if (stripos($buffer, 'VERIFIED') !== false) {
                     $headers .= "BCC: $admin_email\r\n";
-                    wp_mail($opts['notification_email'], $subject_prefix . $opts['purchase_subject'], $email_buffer, $headers);
+                    wp_mail($opts['notification_email'], $email_subject, $email_buffer, $headers);
                 } else {
                     $admin_email_buffer = "Dear Admin,\n\nThe following transaction didn't validate with PayPal\n\n";
                     $admin_email_buffer .= "When you resolve the issue forward this email to your client.\n";
@@ -853,7 +856,7 @@ MSG_EOF;
 
             // TODO Sanitize vars
             $product_data['label'] = $data['label'];
-            $product_data['price'] = $data['price'];
+            $product_data['price'] = trim($data['price'], ' $');
             $product_data['active'] = empty($data['active']) ? 0 : 1;
             $product_data['added_on'] = empty($prev_rec['added_on']) ? current_time('mysql') : $prev_rec['added_on'];
 

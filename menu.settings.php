@@ -39,12 +39,14 @@ $opts = $webweb_wp_digishop_obj->get_options();
                     <br/>
                     <h4>Supported Variables <a href="javascript:void(0);" onclick="jQuery('.suppored_vars').toggle('slow');return false;">(show/hide)</a></h4>
                         <ul class="suppored_vars app_hide">
-                            <li>%%FIRST_NAME%%</li>
-                            <li>%%LAST_NAME%%</li>
-                            <li>%%EMAIL%%</li>
-                            <li>%%DOWNLOAD_LINK%%</li>
-                            <li>%%TXN_ID%%</li>
                             <li>%%SITE%%</li>
+                            <li>%%FIRST_NAME%% - Payer's first name</li>
+                            <li>%%LAST_NAME%% - Payer's last name</li>
+                            <li>%%EMAIL%% - Payer's email</li>
+                            <li>%%TXN_ID%% - Transaction ID (PayPal)</li>
+                            <li>%%PRODUCT_NAME%% - Product name</li>
+                            <li>%%PRODUCT_PRICE%% - Product price</li>
+                            <li>%%DOWNLOAD_LINK%% - Download link</li>
                         </ul>
                     </td>
                 </tr>

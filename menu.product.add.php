@@ -38,10 +38,10 @@ if (!empty($id)) {
             <table class="form-table">
                 <tr valign="top">
                     <th scope="row">Name</th>
-                    <td><input type="text" name="<?php echo $settings_key; ?>[label]" value="<?php echo $opts['label']; ?>" /></td>
+                    <td><input type="text" name="<?php echo $settings_key; ?>[label]" value="<?php echo $opts['label']; ?>" class="input_field" /></td>
                 </tr>
                 <tr valign="top">
-                    <th scope="row">Price</th>
+                    <th scope="row">Price (e.g. 29.95, 10)</th>
                     <td><input type="text" name="<?php echo $settings_key; ?>[price]" value="<?php echo $opts['price']; ?>" /></td>
                 </tr>
                 <tr valign="top">
