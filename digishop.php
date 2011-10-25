@@ -666,7 +666,6 @@ SHORT_CODE_EOF;
                     $admin_email_buffer .= $email_buffer;
                     $admin_email_buffer .= "\n\n=================================================================\n";
                     $admin_email_buffer .= "\nReceived Data: \n\n" . var_export($data, 1);
-
                     
                     wp_mail($admin_email, 'Unsuccessful Transaction', $admin_email_buffer, $headers);
                 }
