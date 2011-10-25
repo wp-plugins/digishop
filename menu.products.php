@@ -14,7 +14,9 @@ $edit_url   = $webweb_wp_digishop_obj->get('edit_product_url');
 
 $adm_prefix = $webweb_wp_digishop_obj->get('plugin_url');
 $plugin_uploads_dir = $webweb_wp_digishop_obj->get('plugin_uploads_dir');
-        
+
+$inactive_product = " <img src='$adm_prefix/images/product_inactive.png' title='' alt='' /> " . $webweb_wp_digishop_obj->m('Inactive');
+$active_product = " <img src='$adm_prefix/images/product_active.png' title='' alt='' /> " . $webweb_wp_digishop_obj->m('Active', 1);
 ?>
 
 <div class="webweb_wp_plugin">
@@ -31,6 +33,7 @@ $plugin_uploads_dir = $webweb_wp_digishop_obj->get('plugin_uploads_dir');
                         <th scope="col">Name</th>
                         <th scope="col">Price (<?php echo $options['currency']; ?>)</th>
                         <th scope="col">Actions</th>
+                        <th scope="col">Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -60,11 +63,15 @@ $plugin_uploads_dir = $webweb_wp_digishop_obj->get('plugin_uploads_dir');
                                 <a class="app_delete_button" onclick="return confirm('Are you sure?');"
                                    href="<?php echo WebWeb_WP_DigiShopUtil::add_url_params($delete_url, array('id' => $rec['id']));?>">Delete</a>
                             </td>
+                            <td><?php echo empty($rec['active']) ? $inactive_product : $active_product;?></td>
                         </tr>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </tbody>
             </table>
+
+
+            <p>Note: If a product is inactive its Buy now button will not be shown and it won't be allowed for download even with the correct download link.</p>
         </div>
     </div>
 </div>
