@@ -47,13 +47,19 @@ if (empty($_ENV['WEBWEB_WP_DIGISHOP_TEST'])) {
 class WebWeb_WP_DigiShop {
     private $log = 1;
     private static $instance = null; // singleton
+    private $site_url = null; // filled in later
     private $plugin_url = null; // filled in later
     private $plugin_settings_key = null; // filled in later
-    private $plugin_partners_key = null; // filled in later
     private $plugin_dir_name = null; // filled in later
     private $plugin_data_dir = null; // plugin data directory. for reports and data storing. filled in later
     private $plugin_name = 'DigiShop'; //
     private $plugin_id_str = 'digishop'; //
+    private $plugin_business_sandbox = false; // sandbox or live ???
+    private $plugin_business_email_sandbox = 'seller_1264288169_biz@slavi.biz'; // used for paypal payments
+    private $plugin_business_email = 'billing@WebWeb.ca'; // used for paypal payments
+    private $plugin_business_ipn = 'http://webweb.ca/wp/hosted/payment/ipn.php'; // used for paypal IPN payments
+    //private $plugin_business_status_url = 'http://localhost/wp/hosted/payment/status.php'; // used after paypal TXN to to avoid warning of non-ssl return urls
+    private $plugin_business_status_url = 'https://secure.webweb.ca/webweb.ca/wp/hosted/payment/status.php'; // used after paypal TXN to to avoid warning of non-ssl return urls
     private $plugin_support_email = 'help@WebWeb.ca'; //
     private $plugin_support_link = 'http://miniads.ca/widgets/contact/profile/digishop?height=200&width=500&description=Please enter your enquiry below.'; //
     private $plugin_admin_url_prefix = null; // filled in later
