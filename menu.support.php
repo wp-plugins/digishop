@@ -5,9 +5,9 @@
         <h3>How to use the plugin</h3>
         <p>
             First, add enter product name, price and upload a file (can be anything)<br/>
-            Second, go to Products to copy the short code OR click on the 
-                <img src="<?php echo $webweb_wp_digishop_obj->get('plugin_url');?>/images/icon.png" alt="" title="" /> icon when editing a post.<br/>
-            Third, paste the short code in the article/page where you'd like the buy button to appear. <br/>            
+            Second, go to Products to copy the short code and then paste the short code in the article/page where you'd like the buy button to appear. <br/>
+            With one of the recent updates you can just click on the
+                <img src="<?php echo $webweb_wp_digishop_obj->get('plugin_url');?>/images/icon.png" alt="" title="" /> icon when editing a post/page.<br/>
             Enter your PayPal details in the Settings page and enable the plugin. <br/>
         </p>
 
