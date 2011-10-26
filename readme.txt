@@ -12,6 +12,10 @@ DigiShop plugin allows you to start selling your digital products such as e-book
 
 DigiShop is a WordPress plugin which allows you to setup your e-store and start selling your digital products such as e-books, reports in minutes.
 
+= Demo =
+
+http://www.youtube.com/watch?v=6EKNMYjzwlM
+
 = Benefits / Features =
 
 * Easy to use
@@ -45,11 +49,25 @@ Run into issues or have questions/suggestions? Send them to help@WebWeb.ca
 
 == Screenshots ==
 1. Plugin icon when editing post/page
+2. Dashboard
+3. Products
+4. Add Product
+5. Settings
+6. FAQ
+7. Help
+8. Contact
+9. About
+10. Buy Now Button
+11. Buy Now Button after the transaction with the success message.
 
 == Upgrade Notice ==
 n/a
 
 == Changelog ==
+
+= 1.0.1 =
+* Newsletter and donation boxes.
+* Show product status and icons if a file has been attached
 
 = 1.0.0 =
 * Initial Release

@@ -5,9 +5,10 @@
         <h3>How to use the plugin</h3>
         <p>
             First, add enter product name, price and upload a file (can be anything)<br/>
-            Second, go to Products to copy the short code OR click on the <img src="" alt=""/> icon when editing a post.<br/>
+            Second, go to Products to copy the short code OR click on the 
+                <img src="<?php echo $webweb_wp_digishop_obj->get('plugin_url');?>/images/icon.png" alt="" title="" /> icon when editing a post.<br/>
             Third, paste the short code in the article/page where you'd like the buy button to appear. <br/>            
-            Enter your paypal details in the Settings page and enable the plugin. <br/>
+            Enter your PayPal details in the Settings page and enable the plugin. <br/>
         </p>
 
         <h3>What are the steps for the buyer</h3>
@@ -23,53 +24,46 @@
         <h3>Demo</h3>
 		
 		<p>
-            TODO
-			<!--Link: <a href="http://www.youtube.com/watch?v=gFatlDwc8uU&hd=1" target="_blank" title="[opens in a new and bigger tab/window]">http://www.youtube.com/watch?v=gFatlDwc8uU&hd=1</a>
+            Link: <a href="http://www.youtube.com/watch?v=6EKNMYjzwlM&hd=1" target="_blank" title="[opens in a new and bigger tab/window]">http://www.youtube.com/watch?v=6EKNMYjzwlM&hd=1</a>
 			<p>
-				<iframe width="425" height="349" src="http://www.youtube.com/embed/gFatlDwc8uU?hl=en&fs=1" frameborder="0" allowfullscreen></iframe>
+				<iframe width="640" height="480" src="http://www.youtube.com/embed/6EKNMYjzwlM?hl=en&fs=1" frameborder="0" allowfullscreen></iframe>
 			</p>
-			-->
 
-			<?php if (0) : ?>
 			<?php
-		$app_link = 'http://www.youtube.com/embed/gFatlDwc8uU?hl=en&fs=1';
-		$app_title = $webweb_wp_digishop_obj->get('app_title');
-		$app_descr = $webweb_wp_digishop_obj->get('plugin_description');
-		?>
-		<p>Share this video:
-			<!-- AddThis Button BEGIN -->
-			<div class="addthis_toolbox addthis_default_style addthis_16x16_style">
-			<a class="addthis_button_facebook" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
-			<a class="addthis_button_twitter" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
-			<a class="addthis_button_google_plusone" g:plusone:count="false" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
-			<a class="addthis_button_linkedin" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
-			<a class="addthis_button_email" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
-			<a class="addthis_button_myspace" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
-			<a class="addthis_button_google" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
-			<a class="addthis_button_digg" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
-			<a class="addthis_button_delicious" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
-			<a class="addthis_button_stumbleupon" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
-			<a class="addthis_button_googlebuzz" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
-			<a class="addthis_button_tumblr" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
-			<a class="addthis_button_favorites" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
-			<a class="addthis_button_compact"></a>
-			</div>
-			<!-- The JS code is in the footer -->
-		</p>
+            $app_link = 'http://www.youtube.com/embed/6EKNMYjzwlM?hl=en&fs=1';
+            $app_title = $webweb_wp_digishop_obj->get('app_title');
+            $app_descr = $webweb_wp_digishop_obj->get('plugin_description');
+            ?>
+            <p>Share this video:
+                <!-- AddThis Button BEGIN -->
+                <div class="addthis_toolbox addthis_default_style addthis_16x16_style">
+                <a class="addthis_button_facebook" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
+                <a class="addthis_button_twitter" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
+                <a class="addthis_button_google_plusone" g:plusone:count="false" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
+                <a class="addthis_button_linkedin" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
+                <a class="addthis_button_email" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
+                <a class="addthis_button_myspace" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
+                <a class="addthis_button_google" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
+                <a class="addthis_button_digg" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
+                <a class="addthis_button_delicious" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
+                <a class="addthis_button_stumbleupon" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
+                <a class="addthis_button_googlebuzz" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
+                <a class="addthis_button_tumblr" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
+                <a class="addthis_button_favorites" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
+                <a class="addthis_button_compact"></a>
+                </div>
+                <!-- The JS code is in the footer -->
+            </p>
 			
-		<script type="text/javascript">
-		var addthis_config = {"data_track_clickback":true};
-		var addthis_share = {
-		  templates: { twitter: 'Check out {{title}} @ {{lurl}} (from @webwebsoft)' }
-		}
-		</script>
-		<!-- AddThis Button START part2 -->
-		<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=lordspace"></script>
-		<!-- AddThis Button END part2 -->
+            <script type="text/javascript">
+            var addthis_config = {"data_track_clickback":true};
+            var addthis_share = {
+              templates: { twitter: 'Check out {{title}} @ {{lurl}} (from @webwebsoft)' }
+            }
+            </script>
+            <!-- AddThis Button START part2 -->
+            <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=lordspace"></script>
+            <!-- AddThis Button END part2 -->
 		</p>		
-
-        <?php endif; ?>
-        
-        <?php include_once(WEBWEB_WP_DIGISHOP_BASE_DIR . '/zzz_contact_form.php'); ?>
     </div>
 </div>
