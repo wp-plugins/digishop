@@ -4,7 +4,7 @@
   Plugin Name: DigiShop
   Plugin URI: http://webweb.ca/site/products/digishop/
   Description: DigiShop plugin allows you to start selling your digital products such as e-books, reports in minutes.
-  Version: 1.0.1
+  Version: 1.0.2
   Author: Svetoslav Marinov (Slavi)
   Author URI: http://WebWeb.ca
   License: GPL v2
@@ -658,7 +658,7 @@ SHORT_CODE_EOF;
 
                 if (stripos($buffer, 'VERIFIED') !== false) {
                     $headers .= "BCC: $admin_email\r\n";
-                    wp_mail($opts['notification_email'], $email_subject, $email_buffer, $headers);
+                    wp_mail($data['payer_email'], $email_subject, $email_buffer, $headers);
                 } else {
                     $admin_email_buffer = "Dear Admin,\n\nThe following transaction didn't validate with PayPal\n\n";
                     $admin_email_buffer .= "When you resolve the issue forward this email to your client.\n";
