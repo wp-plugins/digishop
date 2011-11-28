@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: store,ecommerce,estore,online shop, shopping cart, wordperss e-commerce, wordperss ecommerce, sell digital products, sell ebook, ebook, sell ebook,digishop,digi shop
 Requires at least: 2.0.2
 Tested up to: 3.2.1
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 
 DigiShop plugin allows you to start selling your digital products such as e-books, reports in minutes.
 
@@ -30,7 +30,7 @@ http://www.youtube.com/watch?v=6EKNMYjzwlM
 
 = Author =
 
-Svetoslav Marinov (Slavi) | <a title="Free Local Classified Ads (Canada). Buy, sell, trade and/or post ads in multiple cities for FREE. Also ads can include images, documents, videos etc. Ads can even be post via email." href="http://MiniAds.ca" target="_blank">Free Local Classified Ads - MiniAds.ca</a>
+Svetoslav Marinov (Slavi) | <a href="http://webweb.ca" title="Custom Web Programming, Web Design, e-commerce, e-store, Wordpress Plugin Development, Facebook and Mobile App Development in Niagara Falls, St. Catharines, Ontario, Canada" target="_blank">Custom Web and Mobile Programming by WebWeb.ca</a>
 
 == Installation ==
 
@@ -69,6 +69,7 @@ n/a
 * Added some fixes with the downloads.
 * Chrome users were getting download interrupted.
 * Added a link to the files (e.g. when the admin has to manually send the download link)
+* Added a newsletter box in the settings
 
 = 1.0.2 =
 * Fixed: Notification wasn't sent to the payer
