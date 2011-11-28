@@ -65,6 +65,11 @@ n/a
 
 == Changelog ==
 
+= 1.0.3 =
+* Added some fixes with the downloads.
+* Chrome users were getting download interrupted.
+* Added a link to the files (e.g. when the admin has to manually send the download link)
+
 = 1.0.2 =
 * Fixed: Notification wasn't sent to the payer
 

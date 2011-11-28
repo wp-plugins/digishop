@@ -53,6 +53,7 @@ $active_product = " <img src='$adm_prefix/images/product_active.png' title='' al
                                             <input type="text" value="<?php echo
                                                 WebWeb_WP_DigiShopUtil::add_url_params($webweb_wp_digishop_obj->get('site_url'),
                                                         array($webweb_wp_digishop_obj->get('download_key') => $rec['hash']));?>" onclick="this.select();" />
+                                            <br/>click to select it and then right click and copy it.
                                         </div>
                                     </small>
                                 <?php endif; ?>
