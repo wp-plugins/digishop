@@ -86,6 +86,8 @@ class WebWeb_WP_DigiShop {
     private $plugin_uploads_url = null; // E.g. http://yourdomain/wp-content/uploads/PLUGIN_ID_STR/
     private $plugin_uploads_dir = null; // E.g. DOC_ROOT/wp-content/uploads/PLUGIN_ID_STR/
 
+    private $download_key = null; // the param that will hold the download hash
+
     // can't be instantiated; just using get_instance
     private function __construct() {
         
@@ -127,6 +129,8 @@ class WebWeb_WP_DigiShop {
 
 			define('WEBWEB_WP_DIGISHOP_BASE_DIR', dirname(__FILE__)); // e.g. // htdocs/wordpress/wp-content/plugins/wp-command-center
 			define('WEBWEB_WP_DIGISHOP_DIR_NAME', $inst->plugin_dir_name);
+
+            $inst->download_key = $inst->plugin_id_str . '_dl';
 
 			if ($inst->log) {
 				ini_set('log_errors', 1);
@@ -583,7 +587,7 @@ SHORT_CODE_EOF;
      */
     function handle_non_ui() {
         $paypal_key = $this->payment_trigger_key;
-        $dl_key = $this->plugin_id_str . '_dl';
+        $dl_key = $this->download_key;
         $data = $_REQUEST;
 
         if (!empty($data[$dl_key])) {
@@ -949,26 +953,56 @@ class WebWeb_WP_DigiShopUtil {
     }
 
     /**
-     * Serves the file for download. Forces the browser to show Save as and not open the file in the browser
+     * Serves the file for download. Forces the browser to show Save as and not open the file in the browser.
+     * Makes the script run for 12h just in case and after the file is sent the script stops.
+     *
+     * Credits:
+	 * http://php.net/manual/en/function.readfile.php
+     * http://stackoverflow.com/questions/2222955/idiot-proof-cross-browser-force-download-in-php
+     * 
      * @param string $file
+     * @param bool $do_exit - exit after the file has been downloaded.
      */
-    public static function download_file($file) {
-        $mm_type = "application/octet-stream";
+    public static function download_file($file, $do_exit = 1) {
+        set_time_limit(12 * 3600); // 12 hours
 
-        // IE 6.0 fix for SSL
-        // SRC http://ca3.php.net/header
-        // Brandon K [ brandonkirsch uses gmail ] 25-Apr-2007 03:34
-        header('Cache-Control: maxage=3600'); //Adjust maxage appropriately
-        header('Pragma: public');
+        if (ini_get('zlib.output_compression')) {
+            @ini_set('zlib.output_compression', 0);
 
-        header("Cache-Control: public, must-revalidate");
-        header("Pragma: hack");
-        header("Content-Type: " . $mm_type);
-        header("Content-Length: " . (string) (filesize($file)));
+            if (function_exists('apache_setenv')) {
+                @apache_setenv('no-gzip', 1);
+            }
+        }
+
+        if (!empty($_SERVER['HTTPS'])
+                && ($_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443)) {
+            header("Cache-control: private");
+            header('Pragma: private');
+            
+            // IE 6.0 fix for SSL
+            // SRC http://ca3.php.net/header
+            // Brandon K [ brandonkirsch uses gmail ] 25-Apr-2007 03:34
+            header('Cache-Control: maxage=3600'); //Adjust maxage appropriately
+        } else {
+            header('Pragma: public');
+        }
+
+		header('Expires: 0');
+ 		header('Content-Description: File Transfer');
+		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Content-Type: application/octet-stream');
+        header('Content-Length: ' . (string) (filesize($file)));
         header('Content-Disposition: attachment; filename="' . basename($file) . '"');
-        header("Content-Transfer-Encoding: binary");
-
+        header('Content-Transfer-Encoding: binary');
+ 
+		ob_clean();
+		flush();
+		
         readfile($file);
+		
+		if ($do_exit) {
+			exit;
+		}
     }
 
     /**

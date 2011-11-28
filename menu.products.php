@@ -44,7 +44,19 @@ $active_product = " <img src='$adm_prefix/images/product_active.png' title='' al
                     <?php else: ?>
                         <?php foreach ($data as $idx => $rec) : ?>
                         <tr>
-                            <td><?php echo "[" . $webweb_wp_digishop_obj->get('plugin_id_str') . " id=\"{$rec['id']}\"]"?></td>
+                            <td><?php echo "[" . $webweb_wp_digishop_obj->get('plugin_id_str') . " id=\"{$rec['id']}\"]"?>
+
+                                <?php if (!empty($rec['file']) && !empty($rec['hash'])) : ?>
+                                    <small>
+                                        <a href="javascript:void(0);" onclick="jQuery('#download_link_container_<?php echo $rec['id']; ?>').toggle();">show/hide download link</a>
+                                        <div id="download_link_container_<?php echo $rec['id']; ?>" class="download_link app_hide">
+                                            <input type="text" value="<?php echo
+                                                WebWeb_WP_DigiShopUtil::add_url_params($webweb_wp_digishop_obj->get('site_url'),
+                                                        array($webweb_wp_digishop_obj->get('download_key') => $rec['hash']));?>" onclick="this.select();" />
+                                        </div>
+                                    </small>
+                                <?php endif; ?>
+                            </td>
                             <td><?php echo $rec['label'];
 
                             if (!empty($rec['file'])) {
