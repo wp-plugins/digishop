@@ -171,7 +171,7 @@ class WebWeb_WP_DigiShop {
             // code on automatic upgrade you need to check the plugin db version on another hook. like this:
             add_action('plugins_loaded', array($this, 'install_db_tables'));
             
-            wp_register_style($this->plugin_dir_name, $this->plugin_url . 'css/main.css', false, 0.1);
+            wp_register_style($this->plugin_dir_name, $this->plugin_url . 'css/main.css', false, 0.2);
             wp_enqueue_style($this->plugin_dir_name);
 
 
@@ -483,7 +483,7 @@ SHORT_CODE_EOF;
      * Allows access to some private vars
      * @param str $var
      */
-    public function generate_newsletter_box() {
+    public function generate_newsletter_box($params = array()) {
         $file = WEBWEB_WP_DIGISHOP_BASE_DIR . '/zzz_newsletter_box.html';
 
         $buffer = WebWeb_WP_DigiShopUtil::read($file);
@@ -495,9 +495,23 @@ SHORT_CODE_EOF;
         $replace_vars = array(
             '%%PLUGIN_URL%%' => $this->get('plugin_url'),
             '%%USER_EMAIL%%' => $user_email,
+            '%%PLUGIN_ID_STR%%' => $this->get('plugin_id_str'),
+            '%%admin_sidebar%%' => $this->get('plugin_id_str'),
         );
-        
-        $buffer = str_replace(array_keys($replace_vars), array_values($replace_vars), $buffer);
+
+        if (!empty($params['form_only'])) {
+            $replace_vars['NEWSLETTER_QR_EXTRA_CLASS'] = "app_hide";
+        } else {
+            $replace_vars['NEWSLETTER_QR_EXTRA_CLASS'] = "";
+        }
+
+        if (!empty($params['src2'])) {
+            $replace_vars['SRC2'] = $params['src2'];
+        } elseif (!empty($params['SRC2'])) {
+            $replace_vars['SRC2'] = $params['SRC2'];
+        }
+
+        $buffer = WebWeb_WP_DigiShopUtil::replace_vars($buffer, $replace_vars);
 
         return $buffer;
     }
@@ -943,6 +957,30 @@ class WebWeb_WP_DigiShopUtil {
     const UNSERIALIZE_DATA = 2;
     const SERIALIZE_DATA = 3;
 
+    /**
+     * Replaces the template variables
+     * @param string buffer to operate on
+     * @param array the keys are uppercased and surrounded by %%KEY_NAME%%
+     * @return string modified data
+     */
+    public static function replace_vars($buffer, $params = array()) {
+        foreach ($params as $key => $value) {
+            $key = trim($key, '%');
+            $key = strtoupper($key);
+            $key = '%%' . $key . '%%';
+
+            $buffer = str_ireplace($key, $value, $buffer);
+        }
+//        var_dump($params);
+        // Let's check if there are unreplaced variables
+        if (preg_match('#(%%[\w-]+%%)#si', $buffer, $matches)) {
+//            trigger_error("Not all template variables were replaced. Please check the missing and add them to the input params." . join(",", $matches[1]), E_USER_WARNING);
+            trigger_error("Not all template variables were replaced. Please check the missing and add them to the input params." . var_export($matches, 1), E_USER_WARNING);
+        }
+
+        return $buffer;
+    }
+    
     /**
      *
      * @param string $buffer

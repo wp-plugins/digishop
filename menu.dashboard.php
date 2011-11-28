@@ -16,7 +16,7 @@ $opts = $webweb_wp_digishop_obj->get_options();
         </table>
 
 		<?php
-            echo $webweb_wp_digishop_obj->generate_newsletter_box();
+            echo $webweb_wp_digishop_obj->generate_newsletter_box(array('src2' => 'dashboard'));
         ?>
 
         <?php

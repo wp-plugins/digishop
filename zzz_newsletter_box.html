@@ -1,44 +1,125 @@
 <!-- v.1.0.1 -->
 <style>
-    .app_newsletter_box {
+    .app_mailing_list_box {
         margin: 0;
-        padding:5px;
+        __padding:5px;
         background-color: #ffffcc;
     }
-</style>
-        <table>
-            <tr>
-                <td>
-                    <div id='digishop-notice' class='app_newsletter_box' width="100%">
-                        <!-- Begin MailChimp Signup Form -->
-                            <div id="mc_embed_signup">
-                            <form action="http://WebWeb.us2.list-manage.com/subscribe/post?u=005070a78d0e52a7b567e96df&amp;id=1b83cd2093" method="post"
-                                  id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank">
-                                <h2>Subscribe to our mailing list</h2>
-                                <div class="indicates-required"><span class="app_asterisk">*</span> indicates required
-                                     | <a href="javascript:void(0);" onclick="jQuery('#mce-EMAIL').val('%%USER_EMAIL%%');return false;">Prefill my email</a>
-                                </div>
-                                <div class="mc-field-group">
-                                    <label for="mce-EMAIL">Email Address  <span class="app_asterisk">*</span>
-                                        </label>
-                                    <input type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
-                                </div>
-                                <div id="mce-responses" class="clear">
-                                    <div class="response" id="mce-error-response" style="display:none"></div>
-                                    <div class="response" id="mce-success-response" style="display:none"></div>
-                                </div>	<div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
-                            </form>
-                            </div>
-                        <!--End mc_embed_signup-->
 
+    .zzz_app_mailing_list_container ul .newsletter_form {
+        float:left;
+        width: auto;
+        border: 1px red dashed;
+        padding: 5px;
+    }
+
+    .zzz_app_mailing_list_container ul .newsletter_qr {
+        float:right;
+        width: 30%;
+    }
+
+    .asterisk {
+        color:red;
+    }
+
+    .zzz_app_mailing_list_container ul li {
+        
+    }
+
+    .mc-field-group label {
+        width: 100px;
+        float: left;
+    }
+</style>
+
+<script>
+    /**
+     * When the user clicks on the predefined amounts we'll show an emotion.
+     */
+    function app_validate_newsletter_form() {
+        var email = jQuery('#mce-EMAIL').val();
+        var first_name = jQuery('#mce-FNAME').val();
+
+        email = email.replace(/^\s+|\s+$/g, '');
+        first_name = first_name.replace(/^\s+|\s+$/g, '');
+
+        if (email == '' || email.indexOf('@') == -1) {
+            jQuery('.zzz_app_mailing_list_email_inline').remove();
+
+            jQuery('#mce-EMAIL').focus();
+            jQuery('#mce-EMAIL').parent('div').addClass('app_error').after('<span class="zzz_app_mailing_list_email_inline app_error">Invalid email</span>');
+
+            return false;
+        }
+
+        // everything is cool with email, let's go
+        jQuery('#mce-EMAIL').parent('div').removeClass('app_error');
+        jQuery('.zzz_app_mailing_list_email_inline').remove();
+
+        if (first_name == '') {
+            jQuery('.zzz_app_mailing_list_first_name_inline').remove();
+
+            jQuery('#mce-FNAME').focus();
+            jQuery('#mce-FNAME').parent('div').addClass('app_error').after('<span class="zzz_app_mailing_list_first_name_inline app_error">Invalid name</span>');
+
+            return false;
+        }
+
+        // everything is cool with name, let's go
+        jQuery('#mce-FNAME').parent('div').removeClass('app_error');
+        jQuery('.zzz_app_mailing_list_first_name_inline').remove();
+        
+        return true;
+    }
+</script>
+
+
+<div class="zzz_app_mailing_list_container">
+    <ul class="">
+           <li class="newsletter_form">
+                <div id='app-plugin-notice' class='app_mailing_list_box'>
+                    <!-- Begin MailChimp Signup Form -->
+                    <div id="mc_embed_signup">
+                        <form action="http://WebWeb.us2.list-manage.com/subscribe/post?u=005070a78d0e52a7b567e96df&amp;id=1b83cd2093"
+                              onsubmit="return app_validate_newsletter_form();"
+                              method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank">
+                            <input type="hidden" value="%%PLUGIN_ID_STR%%" name="SRC" id="mce-SRC" />
+                            <input type="hidden" value="%%PLUGIN_ID_STR%%" name="MERGE3" id="mce-MERGE3" />
+
+                            <input type="hidden" value="%%SRC2%%" name="SRC2" id="mce-SRC2" />
+                            <input type="hidden" value="%%SRC2%%" name="MERGE4" id="mce-MERGE4" />
+                            
+                            <h2>Subscribe to our email list</h2>
+                            <p>Get the latest news and updates about this and future cool plugins we develop.</p>
+                            <div class="indicates-required"><span class="asterisk">*</span> indicates required
+                                | <a href="javascript:void(0);" onclick="jQuery('#mce-EMAIL').val('%%USER_EMAIL%%');jQuery('#mce-FNAME').focus();return false;">Prefill my email</a>
+                            </div>
+                            <div class="mc-field-group">
+                                <label for="mce-EMAIL">Email Address  <span class="asterisk">*</span>
+                                </label>
+                                <input type="text" value="" name="EMAIL" class="required email" id="mce-EMAIL">
+                            </div>
+                            <div class="mc-field-group">
+                                <label for="mce-FNAME">First Name  <span class="asterisk">*</span>
+                                </label>
+                                <input type="text" value="" name="FNAME" class="required" id="mce-FNAME">
+                            </div>
+                            <div id="mce-responses" class="clear">
+                                <div class="response" id="mce-error-response" style="display:none"></div>
+                                <div class="response" id="mce-success-response" style="display:none"></div>
+                            </div>	<div class="clear"><input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button"></div>
+                        </form>
                     </div>
-                </td>
-                <td>
-                    <p>
-                        You can also signup using this link: <a href="http://eepurl.com/guNzr" target="_blank">http://eepurl.com/guNzr</a> <br/>
-                        You can also signup using this QR code: <br/>
-                        <img src="%%PLUGIN_URL%%/zzz_media/qr_code.png" alt="" width="100"/>
-                    </p>
-                </td>
-            </tr>
-        </table>
+
+                    <!--End mc_embed_signup-->
+                </div>
+            </li>
+            <li class="newsletter_qr %%NEWSLETTER_QR_EXTRA_CLASS%%">
+                <p>
+                    You can also signup using this link: <a href="http://eepurl.com/guNzr" target="_blank">http://eepurl.com/guNzr</a> <br/>
+                    You can also signup using this QR code: <br/>
+                    <img src="%%PLUGIN_URL%%/zzz_media/qr_code.png" alt="" width="100"/>
+                </p>
+            </li>
+    </ul>
+</div>

@@ -52,3 +52,18 @@
 .asterisk, .app_asterisk {
     color: red;
 }
+
+.webweb_wp_digishop .main_content {
+	float: left;
+    margin: 0;
+    padding: 0;
+    width: 73%;
+    vertical-align: top;
+}
+
+.webweb_wp_digishop .zzz_app_admin_sidebar {
+	float: right;
+    margin: 0;
+    padding: 0;
+    width: 20%;
+}
