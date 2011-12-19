@@ -733,8 +733,10 @@ SHORT_CODE_EOF;
                 $custom = $_REQUEST['custom'];
             } else {
                 $admin_email_buffer = 'Missing data. Got' . "\n";
-                $admin_email_buffer .= "\n_REQUEST: \n" . var_export($_REQUEST, 1);
-                $admin_email_buffer .= "\n\nother data: \n" . var_export($data, 1);
+                $admin_email_buffer .= "\n\$_REQUEST: \n" . var_export($_REQUEST, 1);
+                $admin_email_buffer .= "\nOther data: \n" . var_export($data, 1);
+                $admin_email_buffer .= "\nIP: " . $_SERVER['REMOTE_ADDR'] . "";
+                $admin_email_buffer .= "\nBrowser: " . $_SERVER['HTTP_USER_AGENT'] . "\n";
                 
                 wp_mail($admin_email, 'Unsuccessful Transaction (missing custom field)', $admin_email_buffer, $headers);
                 
