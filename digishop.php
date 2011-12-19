@@ -212,13 +212,14 @@ class WebWeb_WP_DigiShop {
     private $query_vars;
 
     /**
-     *
+     * Parse requests containing "my_plugin=paypal"
      * @param type $wp
      * @see http://codex.wordpress.org/Rewrite_API/add_rewrite_rule
      * @see http://www.james-vandyne.com/process-paypal-ipn-requests-through-wordpress/
      */
     function parse_request($wp) {
-        // only process requests with "my_plugin=paypal"
+        $this->query_vars = $wp->query_vars;
+        
         if (array_key_exists($this->web_trigger_key, $wp->query_vars)
                 || array_key_exists($this->download_key, $wp->query_vars)) {
             if ($wp->query_vars[$this->web_trigger_key] == 'paypal') {
@@ -227,10 +228,10 @@ class WebWeb_WP_DigiShop {
                 $this->handle_non_ui($wp->query_vars);
             } elseif ($wp->query_vars[$this->web_trigger_key] == 'smtest') {
                 wp_die('OK :)');
+            } else {
+                wp_die('Invalid value.');
             }
         }
-
-        $this->query_vars = $wp->query_vars;
     }
 
     /**
@@ -721,8 +722,25 @@ SHORT_CODE_EOF;
             $file = $this->plugin_uploads_dir . $product_rec['file'];
             
             WebWeb_WP_DigiShopUtil::download_file($file);
-        } elseif (!empty($data[$paypal_key])) {
-            $custom = $data['custom'];
+        } elseif ( !empty($data[$paypal_key])
+                    || (!empty($this->query_vars[$this->web_trigger_key]) && $this->query_vars[$this->web_trigger_key] == 'paypal') ) {
+            $admin_email = get_option('admin_email');
+            $headers = "From: {$_SERVER['HTTP_HOST']} Wordpress <wordpress@{$_SERVER['HTTP_HOST']}>\r\n";
+            
+            if (!empty($data['custom'])) {
+                $custom = $data['custom'];
+            } elseif (!empty($_REQUEST['custom'])) {
+                $custom = $_REQUEST['custom'];
+            } else {
+                $admin_email_buffer = 'Missing data. Got' . "\n";
+                $admin_email_buffer .= "\n_REQUEST: \n" . var_export($_REQUEST, 1);
+                $admin_email_buffer .= "\n\nother data: \n" . var_export($data, 1);
+                
+                wp_mail($admin_email, 'Unsuccessful Transaction (missing custom field)', $admin_email_buffer, $headers);
+                
+                wp_die('Invalid call.');
+            }
+            
             $paypal_data = array();
             parse_str($custom, $paypal_data);
             
@@ -733,7 +751,7 @@ SHORT_CODE_EOF;
             }
 
             $product_rec = $this->get_product($id);
-            
+
             // handle PayPal IPN calls
             $data['cmd'] = '_notify-validate';
 
@@ -752,11 +770,8 @@ SHORT_CODE_EOF;
 
                 $subject_prefix = empty($data['test_ipn']) ? '' : 'Test Txn: ';
 
-                $headers = "From: {$_SERVER['HTTP_HOST']} Wordpress <wordpress@{$_SERVER['HTTP_HOST']}>\r\n";
                 $opts = $this->get_options();
 
-                $admin_email = get_option('admin_email');
-                
                 // TODO: insert order ?                
                 $email_subject = $subject_prefix . $opts['purchase_subject'];
                 $email_buffer = $opts['purchase_content'];
@@ -857,7 +872,7 @@ SHORT_CODE_EOF;
     }
 
     /**
-     * Checks if WP simpple shopping cart is installed.
+     * Outputs message after a transaction in addition to the other message.
      */
     function public_notices() {
         $opts = $this->get_options();
