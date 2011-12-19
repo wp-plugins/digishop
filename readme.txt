@@ -65,6 +65,10 @@ n/a
 
 == Changelog ==
 
+= 1.0.4 =
+* Added some rewrite rules (if permalinks are enabled)
+* Showing transaction status message (positive/negative) at the top
+
 = 1.0.3 =
 * Added some fixes with the downloads.
 * Chrome users were getting download interrupted.

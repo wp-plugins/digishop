@@ -203,9 +203,13 @@ class WebWeb_WP_DigiShop {
                     add_filter('rewrite_rules_array', array($this, 'add_rewrite_rules'));
                     add_action('wp_loaded', array($this, 'flush_rewrite_rules'));
                 }
+
+                add_action('get_footer', array($this, 'header_notices')); // status after TXN
             }
         }
     }
+
+    private $query_vars;
 
     /**
      *
@@ -225,6 +229,8 @@ class WebWeb_WP_DigiShop {
                 wp_die('OK :)');
             }
         }
+
+        $this->query_vars = $wp->query_vars;
     }
 
     /**
@@ -328,8 +334,8 @@ class WebWeb_WP_DigiShop {
         $currency = $opts['currency'];		
         $price = $prev_rec['price'];
         
-        $return_page = WebWeb_WP_DigiShopUtil::add_url_params($post_url, array($this->plugin_id_str . '_txn_ok' => 1));
-        $cancel_return = WebWeb_WP_DigiShopUtil::add_url_params($post_url, array($this->plugin_id_str . '_txn_error' => 1));
+        $return_page = WebWeb_WP_DigiShopUtil::add_url_params($post_url, array($this->web_trigger_key => 'txn_ok'));
+        $cancel_return = WebWeb_WP_DigiShopUtil::add_url_params($post_url, array($this->web_trigger_key => 'txn_error'));
         
         $item_name = esc_attr($prev_rec['label']);
         $item_number = $prev_rec['id'];
@@ -359,10 +365,12 @@ SHORT_CODE_EOF;
 
         $extra_msg = '';
         
-        if (!empty($_REQUEST[$this->plugin_id_str . '_txn_ok'])) {
-            $extra_msg = $this->m("<br/>" . $opts['purchase_thanks'], 1, 1);
-        } elseif (!empty($_REQUEST[$this->plugin_id_str . '_txn_error'])) {
-            $extra_msg = $this->m("<br/>" . $opts['purchase_error'], 0, 1);
+        if (!empty($_REQUEST[$this->web_trigger_key])) {
+            if ($_REQUEST[$this->web_trigger_key] == 'txn_ok') {
+                $extra_msg = $this->m("<br/>" . $opts['purchase_thanks'], 1, 1);
+            } elseif ($_REQUEST[$this->web_trigger_key] == 'txn_error') {
+                $extra_msg = $this->m("<br/>" . $opts['purchase_error'], 0, 1);
+            }
         }
 
         if (!empty($extra_msg)) {
@@ -849,6 +857,32 @@ SHORT_CODE_EOF;
     }
 
     /**
+     * Checks if WP simpple shopping cart is installed.
+     */
+    function header_notices() {
+        $opts = $this->get_options();
+
+        if (!empty($this->query_vars[$this->web_trigger_key])) {
+            if ($this->query_vars[$this->web_trigger_key] == 'txn_ok') {
+                $extra_msg = $this->msg("<br/>" . $opts['purchase_thanks'], 1, 1);
+            } elseif ($this->query_vars[$this->web_trigger_key] == 'txn_error') {
+                $extra_msg = $this->msg("<br/>" . $opts['purchase_error'], 0, 1);
+            }
+
+            $extra_msg = str_replace('\'', "\"", $extra_msg);
+            
+            echo <<<CODE_EOF
+       <script>
+       jQuery(document).ready( function($) {
+            $('body').prepend('$extra_msg');
+       });
+       </script>
+CODE_EOF;
+
+        }
+    }
+
+    /**
      * Outputs a message (adds some paragraphs)
      */
     function message($msg, $status = 0) {
@@ -864,12 +898,18 @@ MSG_EOF;
     /**
      * a simple status message, no formatting except color
      */
-    function msg($msg, $status = 0) {
+    function msg($msg, $status = 0, $use_inline_css = 0) {
+        $inline_css = '';
         $id = $this->plugin_id_str;
         $cls = empty($status) ? 'app_error' : 'app_success';
 
+        if ($use_inline_css) {
+            $inline_css = empty($status) ? 'background-color:red;' : 'background-color:green;';
+            $inline_css .= 'text-align:center;margin-left: auto; margin-right:auto; padding-bottom:10px;color:white;';
+        }
+
         $str = <<<MSG_EOF
-<div id='$id-notice' class='$cls'><strong>$msg</strong></div>
+<div id='$id-notice' class='$cls' style="$inline_css"><strong>$msg</strong></div>
 MSG_EOF;
         return $str;
     }
@@ -883,6 +923,7 @@ MSG_EOF;
 
         if ($use_inline_css) {
             $inline_css = empty($status) ? 'color:red;' : 'color:green;';
+            $inline_css .= 'text-align:center;margin-left: auto; margin-right: auto;';
         }
 
         $str = <<<MSG_EOF
