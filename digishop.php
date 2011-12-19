@@ -46,6 +46,7 @@ if (empty($_ENV['WEBWEB_WP_DIGISHOP_TEST'])) {
 
 class WebWeb_WP_DigiShop {
     private $log = 1;
+    private $permalinks = 0;
     private static $instance = null; // singleton
     private $site_url = null; // filled in later
     private $plugin_url = null; // filled in later
@@ -87,6 +88,7 @@ class WebWeb_WP_DigiShop {
     private $plugin_uploads_dir = null; // E.g. DOC_ROOT/wp-content/uploads/PLUGIN_ID_STR/
 
     private $download_key = null; // the param that will hold the download hash
+    private $web_trigger_key = null; // the param will trigger something to happen. (e.g. PayPal IPN, test check etc.)
 
     // can't be instantiated; just using get_instance
     private function __construct() {
@@ -124,12 +126,17 @@ class WebWeb_WP_DigiShop {
 
             // will be retrieved later by ->get method calls
             $inst->plugin_db_prefix = $wpdb->prefix . $inst->plugin_id_str . '_';
+            $inst->web_trigger_key = $inst->plugin_id_str . '_cmd';
             $inst->payment_trigger_key = $inst->plugin_id_str . '_ipn';
-            $inst->payment_notify_url = WebWeb_WP_DigiShopUtil::add_url_params($site_url, array($inst->payment_trigger_key => 1));
 
-			define('WEBWEB_WP_DIGISHOP_BASE_DIR', dirname(__FILE__)); // e.g. // htdocs/wordpress/wp-content/plugins/wp-command-center
-			define('WEBWEB_WP_DIGISHOP_DIR_NAME', $inst->plugin_dir_name);
-
+            $inst->permalinks = get_option('permalink_structure') != '';
+                
+            if ($inst->permalinks) { // WP/digishop_cmd/paypal
+                $inst->payment_notify_url = $site_url . '/' . $inst->web_trigger_key . '=paypal';
+            } else { // old way
+                $inst->payment_notify_url = WebWeb_WP_DigiShopUtil::add_url_params($site_url, array($inst->payment_trigger_key => 1));
+            }
+            
             $inst->download_key = $inst->plugin_id_str . '_dl';
 
 			if ($inst->log) {
@@ -138,6 +145,9 @@ class WebWeb_WP_DigiShop {
 			}
 
 			add_action('plugins_loaded', array($inst, 'init'), 100);
+            
+			define('WEBWEB_WP_DIGISHOP_BASE_DIR', dirname(__FILE__)); // e.g. // htdocs/wordpress/wp-content/plugins/wp-command-center
+			define('WEBWEB_WP_DIGISHOP_DIR_NAME', $inst->plugin_dir_name);
 
             self::$instance = $inst;
         }
@@ -176,11 +186,7 @@ class WebWeb_WP_DigiShop {
 
 
         } else {
-            if (!is_feed()) {
-                // Runs after WordPress has finished loading but before any headers are sent. Useful for intercepting $_GET or $_POST triggers.
-                // http://adambrown.info/p/wp_hooks/hook/init
-                add_action('init', array($this, 'handle_non_ui'), 1);
-                
+            if (!is_feed()) {                
                 add_action('wp_head', array($this, 'add_plugin_credits'), 1); // be the first in the header
                 add_action('wp_footer', array($this, 'add_plugin_credits'), 1000); // be the last in the footer
                 wp_enqueue_script('jquery');
@@ -188,10 +194,95 @@ class WebWeb_WP_DigiShop {
                 // The short code is has a closing *tag* e.g. [tag]...[/tag] so normal tag partse won't work
                 add_shortcode($this->plugin_id_str, array($this, 'parse_short_code'));
                 //add_filter('the_content', array($this, 'parse_short_code'), 10000); // run last to check fb container and other stuff are added
+
+                add_filter('parse_request', array($this, 'parse_request'));
+                add_filter('query_vars', array($this, 'add_query_vars'));
+
+                // If permalinks are enabled
+                if ($this->permalinks) {
+                    add_filter('rewrite_rules_array', array($this, 'add_rewrite_rules'));
+                    add_action('wp_loaded', array($this, 'flush_rewrite_rules'));
+                }
             }
         }
     }
 
+    /**
+     *
+     * @param type $wp
+     * @see http://codex.wordpress.org/Rewrite_API/add_rewrite_rule
+     * @see http://www.james-vandyne.com/process-paypal-ipn-requests-through-wordpress/
+     */
+    function parse_request($wp) {
+        // only process requests with "my_plugin=paypal"
+        if (array_key_exists($this->web_trigger_key, $wp->query_vars)
+                || array_key_exists($this->download_key, $wp->query_vars)) {
+            if ($wp->query_vars[$this->web_trigger_key] == 'paypal') {
+                $this->handle_non_ui($wp->query_vars);
+            } elseif (!empty($wp->query_vars[$this->download_key])) {
+                $this->handle_non_ui($wp->query_vars);
+            } elseif ($wp->query_vars[$this->web_trigger_key] == 'smtest') {
+                wp_die('OK :)');
+            }
+        }
+    }
+
+    /**
+     *
+     * Whitelabels the variable 'digishop'... so WP allows it
+     *
+     * @param type $vars
+     * @return type
+     * @see http://codex.wordpress.org/Rewrite_API/add_rewrite_rule
+     * @see http://www.james-vandyne.com/process-paypal-ipn-requests-through-wordpress/
+     */
+    function add_query_vars($vars) {
+        // add my_plugin to the valid list of variables
+        $new_vars = array($this->web_trigger_key, $this->download_key);
+        $vars = $new_vars + $vars;
+
+        add_rewrite_tag('%' . $this->web_trigger_key . '%','([^&]+)');
+        add_rewrite_tag('%' . $this->download_key . '%','([^&]+)');
+        
+        return $vars;
+    }
+
+    /**
+     *
+     * Adds rewrite rules. If you change them or add new update them in flush_rewrite_rules
+     *
+     * @global WP_Rewrite $wp_rewrite
+     * @param array $wp_rewrite
+     * @see http://codex.wordpress.org/Class_Reference/WP_Rewrite
+     * @see http://codex.wordpress.org/Rewrite_API/add_rewrite_rule
+     * @see http://www.james-vandyne.com/process-paypal-ipn-requests-through-wordpress/
+     */
+    function add_rewrite_rules($rules) {
+        $new_rules = array(
+            // handles SITE_URL/digishop_cmd/SOMETHING
+            $this->web_trigger_key . '/([\w-]+)/?' => 'index.php?' . $this->web_trigger_key . '=$matches[1]',
+
+            // Handles: http://localhost/wordpress313/digishop_dl/f524efe208d0397d0ac0593ef81a15df79efbf3f
+            $this->download_key . '/([\w-]+)/?' => 'index.php?' . $this->download_key . '=$matches[1]',
+        );
+        
+        return $new_rules + $rules;
+    }
+
+    /**
+     *
+     * @global WP_Rewrite $wp_rewrite 
+     */
+    function flush_rewrite_rules() {
+        $rules = get_option('rewrite_rules');
+
+        if (!isset($rules[$this->web_trigger_key . '/([\w-]+)/?'])
+                    || !isset($rules[$this->download_key . '/([\w-]+)/?'])) {
+            global $wp_rewrite;
+            $wp_rewrite->flush_rules();
+        }
+    }
+    
     /**
      * Searches and replaces the short code [digishop]
      * It will replace the code with errors in case of
@@ -460,7 +551,7 @@ SHORT_CODE_EOF;
      */
     public function administration_menu() {
         // Settings > DigiShop
-        add_options_page(__($this->plugin_name, "WEBWEB_WP_DIGISHOP"), __($this->plugin_name, "WEBWEB_WP_DIGISHOP"), 'manage_options', __FILE__, array($this, 'options'));
+        add_options_page(__($this->plugin_name, "WEBWEB_WP_DIGISHOP"), __($this->plugin_name, "WEBWEB_WP_DIGISHOP"), 'manage_options', $this->plugin_dir_name . '/menu.settings.php');
 
         add_menu_page(__($this->plugin_name, $this->plugin_dir_name), __($this->plugin_name, $this->plugin_dir_name), 'manage_options', $this->plugin_dir_name . '/menu.dashboard.php', null, $this->plugin_url . '/images/icon.png');
 
@@ -596,20 +687,26 @@ SHORT_CODE_EOF;
     }
 
     /**
-     * Downloads served when accessed via yourwpsite.com/?PLUGNI_dl=asflasfjlasjflajslkf124
+     * Downloads served when accessed via yourwpsite.com/?digishop_dl=asflasfjlasjflajslkf124
+     * OR yourwpsite.com/digishop_dl/asflasfjlasjflajslkf124
      * Missing or inactive products are not served.
      */
-    function handle_non_ui() {
+    function handle_non_ui($params = null) {
         $paypal_key = $this->payment_trigger_key;
         $dl_key = $this->download_key;
-        $data = $_REQUEST;
+
+        if (!is_null($params)) {
+            $data = $params;
+        } else {
+            $data = $_REQUEST;
+        }
 
         if (!empty($data[$dl_key])) {
             $product_rec = $this->get_product($data[$dl_key]);
 
             // TODO: limit the downloads by a counter
             if (empty($product_rec) || empty($product_rec['active'])) {
-                die($this->m($this->plugin_id_str . ': Invalid download hash.', 0, 1)
+                wp_die($this->m($this->plugin_id_str . ': Invalid download hash.', 0, 1)
                         . $this->add_plugin_credits());
             }
 
