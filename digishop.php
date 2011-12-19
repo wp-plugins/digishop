@@ -204,7 +204,7 @@ class WebWeb_WP_DigiShop {
                     add_action('wp_loaded', array($this, 'flush_rewrite_rules'));
                 }
 
-                add_action('get_footer', array($this, 'header_notices')); // status after TXN
+                add_action('get_footer', array($this, 'public_notices')); // status after TXN
             }
         }
     }
@@ -859,7 +859,7 @@ SHORT_CODE_EOF;
     /**
      * Checks if WP simpple shopping cart is installed.
      */
-    function header_notices() {
+    function public_notices() {
         $opts = $this->get_options();
 
         if (!empty($this->query_vars[$this->web_trigger_key])) {
@@ -870,7 +870,8 @@ SHORT_CODE_EOF;
             }
 
             $extra_msg = str_replace('\'', "\"", $extra_msg);
-            
+
+            // 2011-12-19: WP doesn't have a filter/action to insert after the <body> tag yet
             echo <<<CODE_EOF
        <script>
        jQuery(document).ready( function($) {
