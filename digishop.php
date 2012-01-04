@@ -106,8 +106,9 @@ class WebWeb_WP_DigiShop {
 			$inst = new $cls;
 			
 			$site_url = get_settings('siteurl');
+			$site_url = rtrim($site_url, '/') . '/'; // e.g. http://domain.com/blog/
 
-			$inst->site_url = rtrim($site_url, '/') . '/'; // e.g. http://domain.com/blog
+			$inst->site_url = $site_url;
 			$inst->plugin_dir_name = basename(dirname(__FILE__)); // e.g. wp-command-center; this can change e.g. a 123 can be appended if such folder exist
 			$inst->plugin_data_dir = dirname(__FILE__) . '/data';
 			$inst->plugin_url = $site_url . '/wp-content/plugins/' . $inst->plugin_dir_name . '/';
@@ -129,7 +130,8 @@ class WebWeb_WP_DigiShop {
             $inst->web_trigger_key = $inst->plugin_id_str . '_cmd';
             $inst->payment_trigger_key = $inst->plugin_id_str . '_ipn';
 
-            $inst->permalinks = get_option('permalink_structure') != '';
+            // let's keep using the old links.
+//            $inst->permalinks = get_option('permalink_structure') != '';
                 
             if ($inst->permalinks) { // WP/digishop_cmd/paypal
                 $inst->payment_notify_url = $site_url . $inst->web_trigger_key . '=paypal';
@@ -161,6 +163,13 @@ class WebWeb_WP_DigiShop {
 
     public function __wakeup() {
         trigger_error('Unserializing is not allowed.', E_USER_ERROR);
+    }
+
+    /**
+     * Logs whatever is passed
+     */
+    function log($msg = '') {
+        
     }
     
     /**
@@ -767,9 +776,17 @@ SHORT_CODE_EOF;
 
             $ua = new WebWeb_WP_DigiShopCrawler();
 
-            if ($ua->fetch($paypal_url)) {
-                $buffer = $ua->get_content();
+            $check_status = $ua->fetch($paypal_url);
 
+            // Let's try again
+            if (empty($check_status)) {
+                $check_status = $ua->fetch($paypal_url);
+            }
+
+            if ($check_status) {
+                $buffer = $ua->get_content();
+                $buffer = trim($buffer);
+                
                 $subject_prefix = empty($data['test_ipn']) ? '' : 'Test Txn: ';
 
                 $opts = $this->get_options();
@@ -795,8 +812,8 @@ SHORT_CODE_EOF;
 
                 $email_subject = str_ireplace(array_keys($vars), array_values($vars), $email_subject);
                 $email_buffer = str_ireplace(array_keys($vars), array_values($vars), $email_buffer);
-
-                if (stripos($buffer, 'VERIFIED') !== false) {
+                
+                if (strcmp($buffer, "VERIFIED") == 0) {
                     $headers .= "BCC: $admin_email\r\n";
                     wp_mail($data['payer_email'], $email_subject, $email_buffer, $headers);
                 } else {
