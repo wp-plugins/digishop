@@ -722,7 +722,7 @@ SHORT_CODE_EOF;
         $dl_key = $this->download_key;
 
         if (!is_null($params)) {
-            $data = $params;
+            $data = array_merge($_REQUEST, $params);
         } else {
             $data = $_REQUEST;
         }
