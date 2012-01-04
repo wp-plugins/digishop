@@ -227,7 +227,7 @@ class WebWeb_WP_DigiShop {
      */
     function parse_request($wp) {
         $this->query_vars = $wp->query_vars;
-        
+
         if (array_key_exists($this->web_trigger_key, $wp->query_vars)
                 || array_key_exists($this->download_key, $wp->query_vars)) {
             if ($wp->query_vars[$this->web_trigger_key] == 'paypal') {
@@ -235,9 +235,10 @@ class WebWeb_WP_DigiShop {
             } elseif (!empty($wp->query_vars[$this->download_key])) {
                 $this->handle_non_ui($wp->query_vars);
             } elseif ($wp->query_vars[$this->web_trigger_key] == 'smtest') {
-                wp_die('OK :)');
+                wp_die($this->plugin_name . ': OK :)');
             } else {
-                wp_die('Invalid value.');
+                // if it's txdigishop_cmd=txn_okn_ok it'll be handled by the page which renders the form.
+                //wp_die($this->plugin_name . ': Invalid value.');
             }
         }
     }
