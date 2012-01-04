@@ -66,8 +66,12 @@ n/a
 == Changelog ==
 
 = 1.0.4 =
-* Added some rewrite rules (if permalinks are enabled)
-* Showing transaction status message (positive/negative) at the top
+* Added trailing slash to the blog ... 
+* Showing transaction status message (positive/negative) at the top in addition to the old message.
+* added uninstall script to clean stuff up after plugin removal
+* added sanbox paypal email in the settings
+* added .htaccess in data/ folder
+* fixes and tweaks
 
 = 1.0.3 =
 * Added some fixes with the downloads.
@@ -76,7 +80,7 @@ n/a
 * Added a newsletter box in the settings
 
 = 1.0.2 =
-* Fixed: Notification wasn't sent to the payer
+* Fixed: Notification was not sent to the payer
 
 = 1.0.1 =
 * Newsletter and donation boxes.
