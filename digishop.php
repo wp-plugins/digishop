@@ -107,7 +107,7 @@ class WebWeb_WP_DigiShop {
 			
 			$site_url = get_settings('siteurl');
 
-			$inst->site_url = $site_url; // e.g. wp-command-center; this can change e.g. a 123 can be appended if such folder exist
+			$inst->site_url = rtrim($site_url, '/') . '/'; // e.g. http://domain.com/blog
 			$inst->plugin_dir_name = basename(dirname(__FILE__)); // e.g. wp-command-center; this can change e.g. a 123 can be appended if such folder exist
 			$inst->plugin_data_dir = dirname(__FILE__) . '/data';
 			$inst->plugin_url = $site_url . '/wp-content/plugins/' . $inst->plugin_dir_name . '/';
@@ -132,7 +132,7 @@ class WebWeb_WP_DigiShop {
             $inst->permalinks = get_option('permalink_structure') != '';
                 
             if ($inst->permalinks) { // WP/digishop_cmd/paypal
-                $inst->payment_notify_url = $site_url . '/' . $inst->web_trigger_key . '=paypal';
+                $inst->payment_notify_url = $site_url . $inst->web_trigger_key . '=paypal';
             } else { // old way
                 $inst->payment_notify_url = WebWeb_WP_DigiShopUtil::add_url_params($site_url, array($inst->payment_trigger_key => 1));
             }
@@ -181,7 +181,7 @@ class WebWeb_WP_DigiShop {
             // code on automatic upgrade you need to check the plugin db version on another hook. like this:
             add_action('plugins_loaded', array($this, 'install_db_tables'));
             
-            wp_register_style($this->plugin_dir_name, $this->plugin_url . 'css/main.css', false, 0.2);
+            wp_register_style($this->plugin_dir_name, $this->plugin_url . 'css/main.css', false, 0.3);
             wp_enqueue_style($this->plugin_dir_name);
 
 
@@ -1381,7 +1381,7 @@ class WebWeb_WP_DigiShopCrawler {
     }
 
     // checks if buffer is gzip encoded
-    function is_gziped($buffer) {
+    function isGziped($buffer) {
         return (strcmp(substr($buffer, 0, 8), "\x1f\x8b\x08\x00\x00\x00\x00\x00") === 0) ? true : false;
     }
 
@@ -1391,7 +1391,7 @@ class WebWeb_WP_DigiShopCrawler {
       http://php.online.bg/manual/hu/function.gzencode.php
      */
 
-    function gzdecode($string) {
+    function gzDecode($string) {
         if (!function_exists('gzinflate')) {
             return false;
         }
@@ -1424,8 +1424,8 @@ class WebWeb_WP_DigiShopCrawler {
 
                 curl_setopt($ch, CURLOPT_URL, $url);
                 curl_setopt($ch, CURLOPT_HEADER, 0);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept-Encoding: gzip'));
-                curl_setopt($ch, CURLOPT_TIMEOUT, 45);
+//                curl_setopt($ch, CURLOPT_HTTPHEADER, array('Accept-Encoding: gzip'));
+                curl_setopt($ch, CURLOPT_TIMEOUT, 90);
                 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
                 curl_setopt($ch, CURLOPT_MAXREDIRS, 5); /* Max redirection to follow */
                 curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
@@ -1443,8 +1443,8 @@ class WebWeb_WP_DigiShopCrawler {
                 curl_close($ch);
 
                 if (empty($curl_res) && strlen($string)) {
-                    if ($this->is_gziped($string)) {
-                        $string = $this->gzdecode($string);
+                    if ($this->isGziped($string)) {
+                        $string = $this->gzDecode($string);
                     }
 
                     $this->buffer = $string;
@@ -1454,8 +1454,9 @@ class WebWeb_WP_DigiShopCrawler {
                     $this->error = $curl_res;
                     return 0;
                 }
-            }
+            } // no curl
         } // empty ok*/
+        
         // try #2 file_get_contents
         if (empty($ok)) {
             $buffer = @file_get_contents($url);

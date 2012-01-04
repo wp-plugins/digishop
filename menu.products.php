@@ -21,8 +21,9 @@ $active_product = " <img src='$adm_prefix/images/product_active.png' title='' al
 
 <div class="webweb_wp_plugin">
     <div class="wrap">
-        <h2>Products</h2>
-
+        <h2>Products
+        <span class="op_cmd_right"><a href="<?php echo $webweb_wp_digishop_obj->get('plugin_admin_url_prefix') . '/menu.product.add.php';?>">Add Product</a></span>
+        </h2>
         <p>The list of products you currently have. Copy the short code into the post where you'd like the buy now button to appear.</p>
 
         <div class="wrap" id="app-partners-container">
