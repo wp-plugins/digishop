@@ -72,6 +72,7 @@ class WebWeb_WP_DigiShop {
     private $plugin_default_opts = array(
         'status' => 0,
         'test_mode' => 0,
+        'sandbox_business_email' => '',
         'business_email' => '',
         'purchase_subject' => 'Download Link',
         'purchase_content' => "Dear %%FIRST_NAME%%,\n\nThank you for your order.\nTransaction: %%TXN_ID%%\nHere is the download link: %%DOWNLOAD_LINK%% for %%PRODUCT_NAME%%.\n\nRegards,\n%%SITE%% team",
@@ -130,7 +131,7 @@ class WebWeb_WP_DigiShop {
             $inst->web_trigger_key = $inst->plugin_id_str . '_cmd';
             $inst->payment_trigger_key = $inst->plugin_id_str . '_ipn';
 
-            // let's keep using the old links.
+            // 2012:01:04: let's keep using the old links.
 //            $inst->permalinks = get_option('permalink_structure') != '';
                 
             if ($inst->permalinks) { // WP/digishop_cmd/paypal
@@ -190,10 +191,8 @@ class WebWeb_WP_DigiShop {
             // code on automatic upgrade you need to check the plugin db version on another hook. like this:
             add_action('plugins_loaded', array($this, 'install_db_tables'));
             
-            wp_register_style($this->plugin_dir_name, $this->plugin_url . 'css/main.css', false, 0.3);
+            wp_register_style($this->plugin_dir_name, $this->plugin_url . 'css/main.css', false, 0.31);
             wp_enqueue_style($this->plugin_dir_name);
-
-
         } else {
             if (!is_feed()) {                
                 add_action('wp_head', array($this, 'add_plugin_credits'), 1); // be the first in the header
@@ -337,9 +336,11 @@ class WebWeb_WP_DigiShop {
 
         if (!empty($opts['test_mode'])) {
             $paypal_url = str_replace('paypal.com', 'sandbox.paypal.com', $paypal_url);
+            $email = empty($opts['sandbox_business_email']) ? $opts['business_email'] : $opts['sandbox_business_email'];
+        } else {
+            $email = $opts['business_email'];
         }
 
-        $email = $opts['business_email'];
         $notify_url = $this->payment_notify_url;
         $currency = $opts['currency'];		
         $price = $prev_rec['price'];

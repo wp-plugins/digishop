@@ -28,6 +28,7 @@ $opts = $webweb_wp_digishop_obj->get_options();
 		$app_title = $webweb_wp_digishop_obj->get('app_title');
 		$app_descr = $webweb_wp_digishop_obj->get('plugin_description');
 		?>
+        <p>&nbsp;</p>
 		<h3>Love this plugin? Share it with your friends!</h3>
 		<p>
 			<!-- AddThis Button BEGIN -->

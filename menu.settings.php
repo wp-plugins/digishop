@@ -9,6 +9,10 @@ $opts = $webweb_wp_digishop_obj->get_options();
             <h2>Settings</h2>
 
             <form method="post" action="options.php">
+                <p class="submit">
+                    <input type="submit" class="button-primary" value="<?php _e('Save') ?>" />
+                </p>
+
                 <?php settings_fields($webweb_wp_digishop_obj->get('plugin_dir_name')); ?>
                 <table class="form-table">
                     <tr valign="top">
@@ -71,11 +75,15 @@ $opts = $webweb_wp_digishop_obj->get_options();
                                     <?php echo empty($opts['test_mode']) ? '' : 'checked="checked"'; ?> />
                         </td>
                     </tr>
+                    <tr valign="top">
+                        <th scope="row">Sandbox PayPal Email</th>
+                        <td><input type="text" name="<?php echo $settings_key; ?>[sandbox_business_email]" value="<?php echo $opts['sandbox_business_email']; ?>" class="input_field"/></td>
+                    </tr>
                 </table>
 
-                        <p>Note: Keep in mind when the sandbox is enabled do make sure you are using the paypal email generated from
-                                <a href="http://developer.paypal.com" target="_blank">developer.paypal.com</a> otherwise transactions will fail.
-                        </p>
+                <p>Note: Keep in mind when the sandbox is enabled do make sure you are using the paypal email generated from
+                        <a href="http://developer.paypal.com" target="_blank">developer.paypal.com</a> otherwise transactions will fail.
+                </p>
 
                 <p class="submit">
                     <input type="submit" class="button-primary" value="<?php _e('Save') ?>" />
