@@ -112,7 +112,7 @@ class WebWeb_WP_DigiShop {
 			$inst->site_url = $site_url;
 			$inst->plugin_dir_name = basename(dirname(__FILE__)); // e.g. wp-command-center; this can change e.g. a 123 can be appended if such folder exist
 			$inst->plugin_data_dir = dirname(__FILE__) . '/data';
-			$inst->plugin_url = $site_url . '/wp-content/plugins/' . $inst->plugin_dir_name . '/';
+			$inst->plugin_url = $site_url . 'wp-content/plugins/' . $inst->plugin_dir_name . '/';
 			$inst->plugin_settings_key = $inst->plugin_id_str . '_settings';			
             $inst->plugin_support_link .= '&css_file=' . urlencode(get_bloginfo('stylesheet_url'));
             $inst->plugin_admin_url_prefix = $site_url . 'wp-admin/admin.php?page=' . $inst->plugin_dir_name;
