@@ -34,6 +34,12 @@ $opts = $webweb_wp_digishop_obj->get_options();
                         <td><input type="text" name="<?php echo $settings_key; ?>[business_email]" value="<?php echo $opts['business_email']; ?>" class="input_field" /></td>
                     </tr>
                     <tr valign="top">
+                        <th scope="row">Notification Email</th>
+                        <td><input type="text" name="<?php echo $settings_key; ?>[notification_email]" value="<?php echo $opts['notification_email']; ?>" class="input_field" />
+                            (This email will get the transaction status)
+                        </td>
+                    </tr>
+                    <tr valign="top">
                         <th scope="row">Subject (download email)</th>
                         <td><input type="text" name="<?php echo $settings_key; ?>[purchase_subject]" value="<?php echo $opts['purchase_subject']; ?>" class="input_field"/></td>
                     </tr>

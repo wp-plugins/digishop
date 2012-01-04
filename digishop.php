@@ -73,6 +73,7 @@ class WebWeb_WP_DigiShop {
         'status' => 0,
         'test_mode' => 0,
         'sandbox_business_email' => '',
+        'notification_email' => '',
         'business_email' => '',
         'purchase_subject' => 'Download Link',
         'purchase_content' => "Dear %%FIRST_NAME%%,\n\nThank you for your order.\nTransaction: %%TXN_ID%%\nHere is the download link: %%DOWNLOAD_LINK%% for %%PRODUCT_NAME%%.\n\nRegards,\n%%SITE%% team",
@@ -135,9 +136,9 @@ class WebWeb_WP_DigiShop {
 //            $inst->permalinks = get_option('permalink_structure') != '';
                 
             if ($inst->permalinks) { // WP/digishop_cmd/paypal
-                $inst->payment_notify_url = $site_url . $inst->web_trigger_key . '=paypal';
+                $inst->payment_notify_url = $site_url . $inst->web_trigger_key . '=paypal_ipn';
             } else { // old way
-                $inst->payment_notify_url = WebWeb_WP_DigiShopUtil::add_url_params($site_url, array($inst->payment_trigger_key => 1));
+                $inst->payment_notify_url = WebWeb_WP_DigiShopUtil::add_url_params($site_url, array($inst->web_trigger_key => 'paypal_ipn'));
             }
             
             $inst->download_key = $inst->plugin_id_str . '_dl';
@@ -230,7 +231,7 @@ class WebWeb_WP_DigiShop {
 
         if (array_key_exists($this->web_trigger_key, $wp->query_vars)
                 || array_key_exists($this->download_key, $wp->query_vars)) {
-            if ($wp->query_vars[$this->web_trigger_key] == 'paypal') {
+            if ($wp->query_vars[$this->web_trigger_key] == 'paypal_ipn') {
                 $this->handle_non_ui($wp->query_vars);
             } elseif (!empty($wp->query_vars[$this->download_key])) {
                 $this->handle_non_ui($wp->query_vars);
@@ -726,6 +727,8 @@ SHORT_CODE_EOF;
             $data = $_REQUEST;
         }
 
+        $opts = $this->get_options();
+
         if (!empty($data[$dl_key])) {
             $product_rec = $this->get_product($data[$dl_key]);
 
@@ -739,8 +742,18 @@ SHORT_CODE_EOF;
             
             WebWeb_WP_DigiShopUtil::download_file($file);
         } elseif ( !empty($data[$paypal_key])
-                    || (!empty($this->query_vars[$this->web_trigger_key]) && $this->query_vars[$this->web_trigger_key] == 'paypal') ) {
+                    || (!empty($this->query_vars[$this->web_trigger_key]) && $this->query_vars[$this->web_trigger_key] == 'paypal_ipn') ) {
+
             $admin_email = get_option('admin_email');
+            
+            if (!empty($opts['notification_email'])) {
+                $admin_email = $opts['notification_email'];
+            } 
+            // ?? send to business email ???
+            else {
+                
+            }
+
             $headers = "From: {$_SERVER['HTTP_HOST']} Wordpress <wordpress@{$_SERVER['HTTP_HOST']}>\r\n";
             
             if (!empty($data['custom'])) {
@@ -756,9 +769,9 @@ SHORT_CODE_EOF;
                 
                 wp_mail($admin_email, 'Unsuccessful Transaction (missing custom field)', $admin_email_buffer, $headers);
                 
-                wp_die('Invalid call.');
+                wp_die($this->plugin_name . ': Invalid call.');
             }
-            
+
             $paypal_data = array();
             parse_str($custom, $paypal_data);
             
@@ -795,8 +808,6 @@ SHORT_CODE_EOF;
                 $buffer = trim($buffer);
                 
                 $subject_prefix = empty($data['test_ipn']) ? '' : 'Test Txn: ';
-
-                $opts = $this->get_options();
 
                 // TODO: insert order ?                
                 $email_subject = $subject_prefix . $opts['purchase_subject'];
