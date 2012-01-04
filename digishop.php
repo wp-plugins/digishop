@@ -697,9 +697,13 @@ SHORT_CODE_EOF;
     // Add the ? settings link in Plugins page very good
     function add_plugin_settings_link($links, $file) {
         if ($file == plugin_basename(__FILE__)) {
-            $settings_link = '<a href="options-general.php?page='
-                    . dirname(plugin_basename(__FILE__)) . '/' . basename(__FILE__) . '">' . (__("Settings", "WEBWEB_WP_DIGISHOP")) . '</a>';
+            $prefix = 'options-general.php?page=' . dirname(plugin_basename(__FILE__)) . '/';
+            
+            $dashboard_link = "<a href=\"{$prefix}menu.dashboard.php\">" . __("Dashboard", $this->plugin_dir_name) . '</a>';
+            $settings_link = "<a href=\"{$prefix}menu.settings.php\">" . __("Settings", $this->plugin_dir_name) . '</a>';
+
             array_unshift($links, $settings_link);
+            array_unshift($links, $dashboard_link);
         }
 
         return $links;
