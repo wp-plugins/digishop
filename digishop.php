@@ -115,7 +115,7 @@ class WebWeb_WP_DigiShop {
 			$inst->plugin_url = $site_url . '/wp-content/plugins/' . $inst->plugin_dir_name . '/';
 			$inst->plugin_settings_key = $inst->plugin_id_str . '_settings';			
             $inst->plugin_support_link .= '&css_file=' . urlencode(get_bloginfo('stylesheet_url'));
-            $inst->plugin_admin_url_prefix = $site_url . '/wp-admin/admin.php?page=' . $inst->plugin_dir_name;
+            $inst->plugin_admin_url_prefix = $site_url . 'wp-admin/admin.php?page=' . $inst->plugin_dir_name;
 		
             $inst->delete_product_url = $inst->plugin_admin_url_prefix . '/menu.products.php&do=delete';
 			$inst->add_product_url = $inst->plugin_admin_url_prefix . '/menu.product.add.php';
@@ -697,8 +697,9 @@ SHORT_CODE_EOF;
     // Add the ? settings link in Plugins page very good
     function add_plugin_settings_link($links, $file) {
         if ($file == plugin_basename(__FILE__)) {
-            $prefix = 'options-general.php?page=' . dirname(plugin_basename(__FILE__)) . '/';
-            
+            //$prefix = 'options-general.php?page=' . dirname(plugin_basename(__FILE__)) . '/';
+            $prefix = $this->plugin_admin_url_prefix . '/';
+
             $dashboard_link = "<a href=\"{$prefix}menu.dashboard.php\">" . __("Dashboard", $this->plugin_dir_name) . '</a>';
             $settings_link = "<a href=\"{$prefix}menu.settings.php\">" . __("Settings", $this->plugin_dir_name) . '</a>';
 
