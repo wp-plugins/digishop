@@ -160,8 +160,6 @@ class WebWeb_WP_DigiShop {
 			define('WEBWEB_WP_DIGISHOP_DIR_NAME', $inst->plugin_dir_name);
 
             self::$instance = $inst;
-
-            $inst->log(111);
         }
 		
 		return self::$instance;
