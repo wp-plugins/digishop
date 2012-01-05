@@ -46,6 +46,7 @@ if (empty($_ENV['WEBWEB_WP_DIGISHOP_TEST'])) {
 
 class WebWeb_WP_DigiShop {
     private $log_enabled = 1;
+    private $log_file = null;
     private $permalinks = 0;
     private static $instance = null; // singleton
     private $site_url = null; // filled in later
@@ -148,10 +149,9 @@ class WebWeb_WP_DigiShop {
 
             // the log file be: log.1dd9091e045b9374dfb6b042990d65cc.2012-01-05.log
 			if ($inst->log_enabled) {
-				ini_set('log_errors', 1);
-				ini_set('error_log', $inst->plugin_data_dir . '/log.' 
+				$inst->log_file = $inst->plugin_data_dir . '/log.'
                         . md5($site_url . $inst->plugin_dir_name)
-                        . '.' . date('Y-m-d') . '.log');
+                        . '.' . date('Y-m-d') . '.log';
 			}
 
 			add_action('plugins_loaded', array($inst, 'init'), 100);
@@ -179,7 +179,7 @@ class WebWeb_WP_DigiShop {
     function log($msg = '') {
         if ($this->log_enabled) {
             $msg = '[' . date('r') . '] ' . '[' . $_SERVER['REMOTE_ADDR'] . '] ' . $msg . "\n";
-            error_log($msg, 3, ini_get('error_log'));
+            error_log($msg, 3, $this->log_file);
         }
     }
     
@@ -872,12 +872,12 @@ SHORT_CODE_EOF;
                 //$id = $data['item_number'];
             }
 
-            if (empty($product_rec) || empty($product_rec['active'])) {
-                $this->log('paypal_ipn: Invalid Product ID: ' . $id);
-                wp_die('Invalid Product ID (x2): ' . $id);
-            }
-
             $product_rec = $this->get_product($id);
+
+            if (empty($product_rec) || empty($product_rec['active'])) {
+                $this->log('paypal_ipn: Invalid/inactive Product ID: ' . $id);
+                wp_die('paypal_ipn: Invalid/inactive Product ID: ' . $id);
+            }
 
             // handle PayPal IPN calls
             $data['cmd'] = '_notify-validate';
@@ -949,6 +949,7 @@ SHORT_CODE_EOF;
                     } else {
                         $data['digishop_paypal_status'] = 'NOT_AVAILABLE';
                     }
+                    
                     $this->log("Email: (status: $mail_status) To: " . $admin_email . "\n" . $admin_email_buffer);
                 }
 
