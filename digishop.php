@@ -730,7 +730,9 @@ SHORT_CODE_EOF;
 
             $dashboard_link = "<a href=\"{$prefix}menu.dashboard.php\">" . __("Dashboard", $this->plugin_dir_name) . '</a>';
             $settings_link = "<a href=\"{$prefix}menu.settings.php\">" . __("Settings", $this->plugin_dir_name) . '</a>';
+            $products_link = "<a href=\"{$prefix}menu.products.php\">" . __("Products", $this->plugin_dir_name) . '</a>';
 
+            array_unshift($links, $products_link);
             array_unshift($links, $settings_link);
             array_unshift($links, $dashboard_link);
         }
