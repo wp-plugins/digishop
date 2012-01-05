@@ -67,6 +67,7 @@ class WebWeb_WP_DigiShop {
     private $plugin_home_page = 'http://webweb.ca/site/products/digishop/';
     private $plugin_tinymce_name = 'wwwpdigishop'; // if you change it update the tinymce/editor_plugin.js and reminify the .min.js file.
     private $plugin_cron_hook = __CLASS__;
+    private $paypal_url = 'https://www.paypal.com/cgi-bin/webscr';
     private $db_version = '1.0';
     private $plugin_cron_freq = 'daily';
     private $plugin_default_opts = array(
@@ -130,7 +131,6 @@ class WebWeb_WP_DigiShop {
             // will be retrieved later by ->get method calls
             $inst->plugin_db_prefix = $wpdb->prefix . $inst->plugin_id_str . '_';
             $inst->web_trigger_key = $inst->plugin_id_str . '_cmd';
-            $inst->payment_trigger_key = $inst->plugin_id_str . '_ipn';
 
             // 2012:01:04: let's keep using the old links.
 //            $inst->permalinks = get_option('permalink_structure') != '';
@@ -231,7 +231,8 @@ class WebWeb_WP_DigiShop {
 
         if (array_key_exists($this->web_trigger_key, $wp->query_vars)
                 || array_key_exists($this->download_key, $wp->query_vars)) {
-            if ($wp->query_vars[$this->web_trigger_key] == 'paypal_ipn') {
+            if ($wp->query_vars[$this->web_trigger_key] == 'paypal_ipn'
+                    || $wp->query_vars[$this->web_trigger_key] == 'paypal_checkout') {
                 $this->handle_non_ui($wp->query_vars);
             } elseif (!empty($wp->query_vars[$this->download_key])) {
                 $this->handle_non_ui($wp->query_vars);
@@ -356,9 +357,17 @@ class WebWeb_WP_DigiShop {
 
         $custom = http_build_query(array('id' => $item_number, 'site' => $this->site_url));
 
-        $buffer = <<<SHORT_CODE_EOF
-<!-- $this->plugin_id_str | Plugin URL: {$this->plugin_home_page} | Post URL: $post_url -->
-<form action="$paypal_url" method="post" target="_blank">
+        $aaa_cmd_key = $this->web_trigger_key;
+        
+        $submit_button_img_src = empty($opts['submit_button_img_src']) ? 'https://www.paypal.com/en_GB/i/btn/btn_buynow_LG.gif' : $opts['submit_button_img_src'];
+        $form_new_window = empty($opts['form_new_window']) ? '' : ' target="_blank" ';
+
+        $post_url_esc = esc_attr($post_url);
+
+        if (!empty($opts['render_old_paypal_form'])) {
+            $buffer = <<<SHORT_CODE_EOF
+<!-- $this->plugin_id_str | Plugin URL: {$this->plugin_home_page} | Post URL: $post_url_esc -->
+<form action="$paypal_url" method="post" target="_blank" >
             <input type='hidden' name="business" value="$email" />
             <input type="hidden" name="cmd" value="_xclick" />
             <input type='hidden' name="item_name" value="$item_name" />
@@ -371,10 +380,24 @@ class WebWeb_WP_DigiShop {
             <input type='hidden' name="return" value="$return_page" />
             <input type='hidden' name="cancel_return" value="$cancel_return" />
             <input type='hidden' name="custom" value="$custom" />
-            <input type="image" src="https://www.paypal.com/en_GB/i/btn/btn_buynow_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online." />
+            <input type='image' src='https://www.paypal.com/en_GB/i/btn/btn_buynow_LG.gif' border="0" name="submit" alt="PayPal - The safer, easier way to pay online." />
 </form>
-<!-- /$this->plugin_id_str | Plugin URL: {$this->plugin_home_page} | Post URL: $post_url -->
+<!-- /$this->plugin_id_str | Plugin URL: {$this->plugin_home_page} | Post URL: $post_url_esc -->
 SHORT_CODE_EOF;
+        } else {
+            $buffer = <<<SHORT_CODE_EOF
+<!-- $this->plugin_id_str | Plugin URL: {$this->plugin_home_page} | Post URL: $post_url_esc -->
+<form id="{$this->plugin_id_str}_form_$id" class="{$this->plugin_id_str}_form" action="$post_url_esc" method="post" $form_new_window>
+    <input type='hidden' name="$aaa_cmd_key" value="paypal_checkout" />
+    <input type='hidden' name="{$this->plugin_id_str}_product_id" value="$id" />
+    <input type='hidden' name="{$this->plugin_id_str}_post_id" value="{$post->ID}" />
+
+    <input type="image" src="$submit_button_img_src" border="0" name="submit" alt="PayPal" />
+</form>
+<!-- /$this->plugin_id_str | Plugin URL: {$this->plugin_home_page} | Post URL: $post_url_esc -->
+SHORT_CODE_EOF;
+
+        }
 
         $extra_msg = '';
         
@@ -718,7 +741,6 @@ SHORT_CODE_EOF;
      * Missing or inactive products are not served.
      */
     function handle_non_ui($params = null) {
-        $paypal_key = $this->payment_trigger_key;
         $dl_key = $this->download_key;
 
         if (!is_null($params)) {
@@ -741,8 +763,58 @@ SHORT_CODE_EOF;
             $file = $this->plugin_uploads_dir . $product_rec['file'];
             
             WebWeb_WP_DigiShopUtil::download_file($file);
-        } elseif ( !empty($data[$paypal_key])
-                    || (!empty($this->query_vars[$this->web_trigger_key]) && $this->query_vars[$this->web_trigger_key] == 'paypal_ipn') ) {
+        }
+        // get product info and prepare PayPal form and redirect.
+        elseif (!empty($this->query_vars[$this->web_trigger_key]) && $this->query_vars[$this->web_trigger_key] == 'paypal_checkout') {
+            $id = empty($data[$this->plugin_id_str . '_product_id']) ? 0 : $data[$this->plugin_id_str . '_product_id'];
+            $post_id = empty($data[$this->plugin_id_str . '_post_id']) ? 0 : $data[$this->plugin_id_str . '_post_id'];
+            $post_url = get_permalink($post_id);
+
+            $product_rec = $this->get_product($id);
+
+            if (empty($product_rec) || empty($product_rec['active'])) {
+                wp_die('Invalid Product ID: ' . $id);
+            }
+
+            $paypal_url = $this->paypal_url;
+
+            if (!empty($opts['test_mode'])) {
+                $paypal_url = str_replace('paypal.com', 'sandbox.paypal.com', $paypal_url);
+                $email = empty($opts['sandbox_business_email']) ? $opts['business_email'] : $opts['sandbox_business_email'];
+            } else {
+                $email = $opts['business_email'];
+            }
+
+            $item_name = esc_attr($product_rec['label']);
+            $item_number = $product_rec['id'];
+
+            $price = $product_rec['price'];
+            $price = sprintf("%01.2f", $price);
+
+            $return_page = WebWeb_WP_DigiShopUtil::add_url_params($post_url, array($this->web_trigger_key => 'txn_ok'));
+            $cancel_return = WebWeb_WP_DigiShopUtil::add_url_params($post_url, array($this->web_trigger_key => 'txn_error'));
+
+            $paypal_params = array(
+                'cmd' => '_xclick',
+                'business' => $email,
+                'no_shipping' => 1,
+                'no_note' => 1,
+                'amount' => $price,
+                'item_name' => $item_name,
+                'item_number' => $item_number,
+                'currency_code' => $opts['currency'],
+                'custom' => http_build_query(array('id' => $item_number, 'site' => $this->site_url)),
+                
+                'notify_url' => $this->payment_notify_url,
+                'return' => $return_page,
+                'cancel_return' => $cancel_return,
+            );
+
+            $location = $paypal_url . '?' . http_build_query($paypal_params);
+
+            wp_redirect($location);
+            exit;
+        } elseif (!empty($this->query_vars[$this->web_trigger_key]) && $this->query_vars[$this->web_trigger_key] == 'paypal_ipn') {
 
             $admin_email = get_option('admin_email');
             
@@ -786,7 +858,7 @@ SHORT_CODE_EOF;
             // handle PayPal IPN calls
             $data['cmd'] = '_notify-validate';
 
-            $paypal_url = 'https://www.paypal.com/cgi-bin/webscr';
+            $paypal_url = $this->paypal_url;
 
             if (!empty($opts['test_mode'])) {
                 $paypal_url = str_replace('paypal.com', 'sandbox.paypal.com', $paypal_url);
