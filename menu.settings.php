@@ -94,6 +94,9 @@ EOF;
                         <th scope="row">Sandbox (no real transactions)</th>
                         <td><input type="checkbox" name="<?php echo $settings_key; ?>[test_mode]" value="1"
                                     <?php echo empty($opts['test_mode']) ? '' : 'checked="checked"'; ?> />
+                            <p>Note: Keep in mind when the sandbox is enabled do make sure you are using the paypal email generated from
+                                    <a href="http://developer.paypal.com" target="_blank">developer.paypal.com</a> otherwise transactions will fail.
+                            </p>
                         </td>
                     </tr>
                     <tr valign="top">
@@ -112,11 +115,7 @@ EOF;
                         </td>
                     </tr>
                 </table>
-
-                <p>Note: Keep in mind when the sandbox is enabled do make sure you are using the paypal email generated from
-                        <a href="http://developer.paypal.com" target="_blank">developer.paypal.com</a> otherwise transactions will fail.
-                </p>
-
+                
                 <p class="submit">
                     <input type="submit" class="button-primary" value="<?php _e('Save') ?>" />
                 </p>

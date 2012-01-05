@@ -69,10 +69,11 @@ n/a
 * made the payment form to submit to the blog and then the WP site will redirect to PayPal
 * functionality to call another URL after a transaction
 * added option to customize the submit button's image
+* fixed the IPN part
 * added trailing slash to the blog ...
 * showing transaction status message (positive/negative) at the top in addition to the old message.
 * added uninstall script to clean stuff up after plugin removal
-* added sanbox paypal email in the settings
+* added sanbox paypal email in the settings (useful when testing with sandbox)
 * added .htaccess in data/ folder
 * fixes and tweaks
 
