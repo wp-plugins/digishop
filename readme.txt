@@ -67,6 +67,7 @@ n/a
 
 = 1.0.4 =
 * made the payment form to submit to the blog and then the WP site will redirect to PayPal
+* functionality to call another URL after a transaction
 * added option to customize the submit button's image
 * added trailing slash to the blog ...
 * showing transaction status message (positive/negative) at the top in addition to the old message.

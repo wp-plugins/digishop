@@ -36,7 +36,7 @@ $opts = $webweb_wp_digishop_obj->get_options();
                     <tr valign="top">
                         <th scope="row">Notification Email</th>
                         <td><input type="text" name="<?php echo $settings_key; ?>[notification_email]" value="<?php echo $opts['notification_email']; ?>" class="input_field" />
-                            (This email will get the transaction status)
+                            This email will get the transaction info
                         </td>
                     </tr>
                     <tr valign="top">
@@ -73,14 +73,14 @@ $opts = $webweb_wp_digishop_obj->get_options();
                     </tr>
                     <tr valign="top">
                         <th scope="row">Currency</th>
-                        <td><input type="text" name="<?php echo $settings_key; ?>[currency]" value="<?php echo $opts['currency']; ?>" /> (Example: USD, CAD, EUR)</td>
+                        <td><input type="text" name="<?php echo $settings_key; ?>[currency]" value="<?php echo $opts['currency']; ?>" /> Example: USD, CAD, EUR</td>
                     </tr>
                     <tr valign="top">
                         <th scope="row">Submit Button Image Source
                                 <br/>(optional)
                         </th>
                         <td><input type="text" name="<?php echo $settings_key; ?>[submit_button_img_src]" value="<?php echo $opts['submit_button_img_src']; ?>" />
-                            (Example: http://domain.com/image.jpg)
+                            Example: http://domain.com/image.jpg , 
                             <?php
                             if (!empty($opts['submit_button_img_src'])) {
                                 echo <<<EOF
@@ -99,6 +99,17 @@ EOF;
                     <tr valign="top">
                         <th scope="row">Sandbox PayPal Email</th>
                         <td><input type="text" name="<?php echo $settings_key; ?>[sandbox_business_email]" value="<?php echo $opts['sandbox_business_email']; ?>" class="input_field"/></td>
+                    </tr>
+                    <tr valign="top">
+                        <th scope="row">Post Transaction Callback URL (<strong>advanced</strong>)</th>
+                        <td><input type="text" name="<?php echo $settings_key; ?>[callback_url]" value="<?php echo $opts['callback_url']; ?>" />
+                            Example: http://yourdomain.com/another_ipn.php
+                            <br/>
+                            This is useful if you want to do execute operations after a transaction. <br/>
+                            This could be creating user accounts, calling external APIs e.g. mailchimp to subscribe the person to a mailing list.<br/>
+                            Your script will receveive all the info received from PayPal plus a variable called <strong>digishop_paypal_status</strong>
+                                which can be: VERIFIED, INVALID, or NOT_AVAILABLE
+                        </td>
                     </tr>
                 </table>
 

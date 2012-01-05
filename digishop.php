@@ -83,6 +83,7 @@ class WebWeb_WP_DigiShop {
         'currency' => 'USD',
         'purchase_thanks' => 'Thanks. The payment is being processing now. You should receive an email very soon.',
         'purchase_error' => 'There was a problem with the payment.',
+        'callback_url' => '',
     );
 
 	private $app_title = 'Start selling your digital products (e-books, music, reports) within minutes!';
@@ -855,6 +856,10 @@ SHORT_CODE_EOF;
                 //$id = $data['item_number'];
             }
 
+            if (empty($product_rec) || empty($product_rec['active'])) {
+                wp_die('Invalid Product ID (x2): ' . $id);
+            }
+
             $product_rec = $this->get_product($id);
 
             // handle PayPal IPN calls
@@ -904,10 +909,12 @@ SHORT_CODE_EOF;
 
                 $email_subject = str_ireplace(array_keys($vars), array_values($vars), $email_subject);
                 $email_buffer = str_ireplace(array_keys($vars), array_values($vars), $email_buffer);
-                
+
                 if (strcmp($buffer, "VERIFIED") == 0) {
                     $headers .= "BCC: $admin_email\r\n";
                     wp_mail($data['payer_email'], $email_subject, $email_buffer, $headers);
+                    
+                    $data['digishop_paypal_status'] = 'VERIFIED';
                 } else {
                     $admin_email_buffer = "Dear Admin,\n\nThe following transaction didn't validate with PayPal\n\n";
                     $admin_email_buffer .= "When you resolve the issue forward this email to your client.\n";
@@ -917,6 +924,19 @@ SHORT_CODE_EOF;
                     $admin_email_buffer .= "\nReceived Data: \n\n" . var_export($data, 1);
                     
                     wp_mail($admin_email, 'Unsuccessful Transaction', $admin_email_buffer, $headers);
+
+                    if (strcmp($buffer, "INVALID") == 0) {
+                        $data['digishop_paypal_status'] = 'INVALID';
+                    } else {
+                        $data['digishop_paypal_status'] = 'NOT_AVAILABLE';
+                    }
+                }
+
+                // Let's execute the callback
+                if (!empty($opts['callback_url'])) {
+                    $data['digishop_callback_time'] = time();
+                    $callback_url = WebWeb_WP_DigiShopUtil::add_url_params($opts['callback_url'], $data);
+                    $ua->fetch($callback_url);
                 }
             }
         }
