@@ -842,7 +842,7 @@ SHORT_CODE_EOF;
                 $admin_email_buffer .= "\nIP: " . $_SERVER['REMOTE_ADDR'] . "";
                 $admin_email_buffer .= "\nBrowser: " . $_SERVER['HTTP_USER_AGENT'] . "\n";
                 
-                wp_mail($admin_email, 'Unsuccessful Transaction (missing custom field)', $admin_email_buffer, $headers);
+                wp_mail($admin_email, 'Invalid Transaction (missing custom field)', $admin_email_buffer, $headers);
                 
                 wp_die($this->plugin_name . ': Invalid call.');
             }
