@@ -45,7 +45,7 @@ if (empty($_ENV['WEBWEB_WP_DIGISHOP_TEST'])) {
 }
 
 class WebWeb_WP_DigiShop {
-    private $log = 1;
+    private $log_enabled = 1;
     private $permalinks = 0;
     private static $instance = null; // singleton
     private $site_url = null; // filled in later
@@ -146,9 +146,12 @@ class WebWeb_WP_DigiShop {
             
             $inst->download_key = $inst->plugin_id_str . '_dl';
 
-			if ($inst->log) {
+            // the log file be: log.1dd9091e045b9374dfb6b042990d65cc.2012-01-05.log
+			if ($inst->log_enabled) {
 				ini_set('log_errors', 1);
-				ini_set('error_log', $inst->plugin_data_dir . '/error.log');
+				ini_set('error_log', $inst->plugin_data_dir . '/log.' 
+                        . md5($site_url . $inst->plugin_dir_name)
+                        . '.' . date('Y-m-d') . '.log');
 			}
 
 			add_action('plugins_loaded', array($inst, 'init'), 100);
@@ -157,6 +160,8 @@ class WebWeb_WP_DigiShop {
 			define('WEBWEB_WP_DIGISHOP_DIR_NAME', $inst->plugin_dir_name);
 
             self::$instance = $inst;
+
+            $inst->log(111);
         }
 		
 		return self::$instance;
@@ -171,10 +176,13 @@ class WebWeb_WP_DigiShop {
     }
 
     /**
-     * Logs whatever is passed
+     * Logs whatever is passed IF logs are enabled.
      */
     function log($msg = '') {
-        
+        if ($this->log_enabled) {
+            $msg = '[' . date('r') . '] ' . '[' . $_SERVER['REMOTE_ADDR'] . '] ' . $msg . "\n";
+            error_log($msg, 3, ini_get('error_log'));
+        }
     }
     
     /**
@@ -766,7 +774,8 @@ SHORT_CODE_EOF;
             }
 
             $file = $this->plugin_uploads_dir . $product_rec['file'];
-            
+
+            $this->log("Going to serve: $file");
             WebWeb_WP_DigiShopUtil::download_file($file);
         }
         // get product info and prepare PayPal form and redirect.
@@ -778,6 +787,7 @@ SHORT_CODE_EOF;
             $product_rec = $this->get_product($id);
 
             if (empty($product_rec) || empty($product_rec['active'])) {
+                $this->log('paypal_checkout (1): Invalid Product ID: ' . $id);
                 wp_die('Invalid Product ID: ' . $id);
             }
 
@@ -817,10 +827,14 @@ SHORT_CODE_EOF;
 
             $location = $paypal_url . '?' . http_build_query($paypal_params);
 
+            $this->log('paypal_checkout URL: ' . $location);
+            $this->log('paypal_checkout Params: ' . var_export($paypal_params, 1));
+            
             wp_redirect($location);
             exit;
-        } elseif (!empty($this->query_vars[$this->web_trigger_key]) && $this->query_vars[$this->web_trigger_key] == 'paypal_ipn') {
-
+        }
+        // IPN
+        elseif (!empty($this->query_vars[$this->web_trigger_key]) && $this->query_vars[$this->web_trigger_key] == 'paypal_ipn') {
             $admin_email = get_option('admin_email');
             
             if (!empty($opts['notification_email'])) {
@@ -845,7 +859,9 @@ SHORT_CODE_EOF;
                 $admin_email_buffer .= "\nBrowser: " . $_SERVER['HTTP_USER_AGENT'] . "\n";
                 
                 wp_mail($admin_email, 'Invalid Transaction (missing custom field)', $admin_email_buffer, $headers);
-                
+
+                $this->log('paypal_ipn Invalid Transaction (missing custom field). Adm email.' . $admin_email_buffer);
+
                 wp_die($this->plugin_name . ': Invalid call.');
             }
 
@@ -859,6 +875,7 @@ SHORT_CODE_EOF;
             }
 
             if (empty($product_rec) || empty($product_rec['active'])) {
+                $this->log('paypal_ipn: Invalid Product ID: ' . $id);
                 wp_die('Invalid Product ID (x2): ' . $id);
             }
 
@@ -881,6 +898,7 @@ SHORT_CODE_EOF;
 
             // Let's try again
             if (empty($check_status)) {
+                $this->log('paypal_ipn (2): will try to call paypal again. Got data: ' . var_export($data, 1));
                 $check_status = $ua->fetch($paypal_url);
             }
 
@@ -914,9 +932,10 @@ SHORT_CODE_EOF;
 
                 if (strcmp($buffer, "VERIFIED") == 0) {
                     $headers .= "BCC: $admin_email\r\n";
-                    wp_mail($data['payer_email'], $email_subject, $email_buffer, $headers);
+                    $mail_status = wp_mail($data['payer_email'], $email_subject, $email_buffer, $headers);
                     
                     $data['digishop_paypal_status'] = 'VERIFIED';
+                    $this->log("Email: (status: $mail_status) To: " . $data['payer_email'] . "\n" . $email_buffer);
                 } else {
                     $admin_email_buffer = "Dear Admin,\n\nThe following transaction didn't validate with PayPal\n\n";
                     $admin_email_buffer .= "When you resolve the issue forward this email to your client.\n";
@@ -925,20 +944,26 @@ SHORT_CODE_EOF;
                     $admin_email_buffer .= "\n\n=================================================================\n";
                     $admin_email_buffer .= "\nReceived Data: \n\n" . var_export($data, 1);
                     
-                    wp_mail($admin_email, 'Unsuccessful Transaction', $admin_email_buffer, $headers);
+                    $mail_status = wp_mail($admin_email, 'Unsuccessful Transaction', $admin_email_buffer, $headers);
 
                     if (strcmp($buffer, "INVALID") == 0) {
                         $data['digishop_paypal_status'] = 'INVALID';
                     } else {
                         $data['digishop_paypal_status'] = 'NOT_AVAILABLE';
                     }
+                    $this->log("Email: (status: $mail_status) To: " . $admin_email . "\n" . $admin_email_buffer);
                 }
+
+                $this->log('TXN Status: ' . $data['digishop_paypal_status']);
 
                 // Let's execute the callback
                 if (!empty($opts['callback_url'])) {
                     $data['digishop_callback_time'] = time();
                     $callback_url = WebWeb_WP_DigiShopUtil::add_url_params($opts['callback_url'], $data);
-                    $ua->fetch($callback_url);
+                    $cb_status = $ua->fetch($callback_url);
+
+                    $this->log("Called Callback URL: " . $callback_url . " status: $cb_status\nContent (from Callback URL): \n"
+                            . $ua->get_content() . "\n Data: " . var_export($data, 1));
                 }
             }
         }
