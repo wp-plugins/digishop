@@ -78,6 +78,7 @@ n/a
 * added sanbox paypal email in the settings (useful when testing with sandbox)
 * added .htaccess in data/ folder
 * added aggressive logging. the log file is made up hash and date for harder guessing. It should not be accessible because of htaccess
+* Rearranged settings menu screen
 * fixes and tweaks
 
 = 1.0.3 =

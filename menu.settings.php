@@ -16,6 +16,9 @@ $opts = $webweb_wp_digishop_obj->get_options();
                 <?php settings_fields($webweb_wp_digishop_obj->get('plugin_dir_name')); ?>
                 <table class="form-table">
                     <tr valign="top">
+                        <th scope="row" colspan="2"><h2>General</h2></th>
+                    </tr>
+                    <tr valign="top">
                         <th scope="row">Status</th>
                         <td>
                             <label for="radio1">
@@ -34,9 +37,9 @@ $opts = $webweb_wp_digishop_obj->get_options();
                         <td><input type="text" name="<?php echo $settings_key; ?>[business_email]" value="<?php echo $opts['business_email']; ?>" class="input_field" /></td>
                     </tr>
                     <tr valign="top">
-                        <th scope="row">Notification Email</th>
+                        <th scope="row">Order Notification Email</th>
                         <td><input type="text" name="<?php echo $settings_key; ?>[notification_email]" value="<?php echo $opts['notification_email']; ?>" class="input_field" />
-                            This email will get the transaction info
+                            This email will CC or BCC'ed with the email sent to the customer.
                         </td>
                     </tr>
                     <tr valign="top">
@@ -74,29 +77,20 @@ $opts = $webweb_wp_digishop_obj->get_options();
                     <tr valign="top">
                         <th scope="row">Currency</th>
                         <td><input type="text" name="<?php echo $settings_key; ?>[currency]" value="<?php echo $opts['currency']; ?>" /> Example: USD, CAD, EUR
-                            <a href="https://cms.paypal.com/ca/cgi-bin/?cmd=_render-content&content_ID=developer/e_howto_api_nvp_currency_codes" target="_blank">full list</a>
+                            <a href="https://cms.paypal.com/ca/cgi-bin/?cmd=_render-content&content_ID=developer/e_howto_api_nvp_currency_codes" target="_blank">See full list</a>
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th scope="row">Submit Button Image Source
-                                <br/>(optional)
-                        </th>
-                        <td><input type="text" name="<?php echo $settings_key; ?>[submit_button_img_src]" value="<?php echo $opts['submit_button_img_src']; ?>" class="input_field" />
-                            Example: http://domain.com/image.jpg , 
-                            <?php
-                            if (!empty($opts['submit_button_img_src'])) {
-                                echo <<<EOF
-    <span style="vertical-align:middle;">Preview: <img src="{$opts['submit_button_img_src']}" alt="" /></span>
-EOF;
-                            }
-                            ?>
-                        </td>
+                        <th scope="row" colspan="2"><h2>Advanced</h2></th>
                     </tr>
                     <tr valign="top">
                         <th scope="row">Sandbox (no real transactions)</th>
-                        <td><input type="checkbox" name="<?php echo $settings_key; ?>[test_mode]" value="1"
-                                    <?php echo empty($opts['test_mode']) ? '' : 'checked="checked"'; ?> />
-                            <p>Note: Keep in mind when the sandbox is enabled do make sure you are using the paypal email generated from
+                        <td>
+                            <label for="digishop_sandbox_mode">
+                                    <input type="checkbox" id="digishop_sandbox_mode" name="<?php echo $settings_key; ?>[test_mode]" value="1"
+                                        <?php echo empty($opts['test_mode']) ? '' : 'checked="checked"'; ?> /> Enable Sandbox</label>
+
+                            <p>When the sandbox is enabled please use the test accounts generated from
                                     <a href="http://developer.paypal.com" target="_blank">developer.paypal.com</a> otherwise transactions will fail.
                             </p>
                         </td>
@@ -106,13 +100,43 @@ EOF;
                         <td><input type="text" name="<?php echo $settings_key; ?>[sandbox_business_email]" value="<?php echo $opts['sandbox_business_email']; ?>" class="input_field" /></td>
                     </tr>
                     <tr valign="top">
-                        <th scope="row">Post Transaction Callback URL (<strong>advanced</strong>)</th>
+                        <th scope="row">Submit Button Image Source
+                                <br/>(optional)
+                        </th>
+                        <td><input type="text" name="<?php echo $settings_key; ?>[submit_button_img_src]" value="<?php echo $opts['submit_button_img_src']; ?>" class="input_field" />
+                            Example: http://domain.com/image.jpg ,
+                            <?php
+                            if (!empty($opts['submit_button_img_src'])) {
+                                echo <<<EOF
+    <br/> <span style="vertical-align:middle;">Preview: <img src="{$opts['submit_button_img_src']}" alt="" /></span>
+EOF;
+                            }
+                            ?>
+                        </td>
+                    </tr>
+                    <tr valign="top">
+                        <th scope="row">Logging (for debugging purposes only!)</th>
+                        <td>
+                                <label for="digishop_logging">
+                                    <input type="checkbox" id="digishop_logging" name="<?php echo $settings_key; ?>[logging_enabled]" value="1"
+                                        <?php echo empty($opts['logging_enabled']) ? '' : 'checked="checked"'; ?> /> Enable Logging</label>
+
+                                <br/> Log Directory: <?php echo $webweb_wp_digishop_obj->get('plugin_data_dir'); ?>
+                                <?php echo is_writable($webweb_wp_digishop_obj->get('plugin_data_dir'))
+                                            ? '<br/>'
+                                            : $webweb_wp_digishop_obj->msg('Folder not writable!'); ?>
+                                For security reasons files are not available for direct download. Please use an FTP client for that purpose.
+                                <br/>All the transaction info will be recorded including customer info.
+                        </td>
+                    </tr>
+                    <tr valign="top">
+                        <th scope="row">Post Transaction Callback URL</th>
                         <td><input type="text" name="<?php echo $settings_key; ?>[callback_url]" value="<?php echo $opts['callback_url']; ?>" class="input_field" />
                             Example: http://yourdomain.com/another_ipn.php
                             <br/>
                             This is useful if you want to do execute operations after a transaction. <br/>
                             This could be creating user accounts, calling external APIs e.g. mailchimp to subscribe the person to a mailing list.<br/>
-                            Your script will receveive all the info received from PayPal plus a variable called <strong>digishop_paypal_status</strong>
+                            Your script will receive all the info sent from PayPal plus a variable called <strong>digishop_paypal_status</strong>
                                 which can be: VERIFIED, INVALID, or NOT_AVAILABLE which will reflect the status of the transaction.
                         </td>
                     </tr>

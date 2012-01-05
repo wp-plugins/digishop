@@ -45,7 +45,7 @@ if (empty($_ENV['WEBWEB_WP_DIGISHOP_TEST'])) {
 }
 
 class WebWeb_WP_DigiShop {
-    private $log_enabled = 1;
+    private $log_enabled = 0;
     private $log_file = null;
     private $permalinks = 0;
     private static $instance = null; // singleton
@@ -75,6 +75,7 @@ class WebWeb_WP_DigiShop {
     private $plugin_default_opts = array(
         'status' => 0,
         'test_mode' => 0,
+        'logging_enabled' => 0,
         'sandbox_business_email' => '',
         'notification_email' => '',
         'submit_button_img_src' => 'https://www.paypal.com/en_GB/i/btn/btn_buynow_LG.gif',
@@ -147,8 +148,10 @@ class WebWeb_WP_DigiShop {
             
             $inst->download_key = $inst->plugin_id_str . '_dl';
 
+            $opts = $inst->get_options();
+
             // the log file be: log.1dd9091e045b9374dfb6b042990d65cc.2012-01-05.log
-			if ($inst->log_enabled) {
+			if ($inst->log_enabled || !empty($opts['logging_enabled'])) {
 				$inst->log_file = $inst->plugin_data_dir . '/log.'
                         . md5($site_url . $inst->plugin_dir_name)
                         . '.' . date('Y-m-d') . '.log';
