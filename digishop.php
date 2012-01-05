@@ -68,6 +68,7 @@ class WebWeb_WP_DigiShop {
     private $plugin_tinymce_name = 'wwwpdigishop'; // if you change it update the tinymce/editor_plugin.js and reminify the .min.js file.
     private $plugin_cron_hook = __CLASS__;
     private $paypal_url = 'https://www.paypal.com/cgi-bin/webscr';
+    private $paypal_submit_image_src = 'https://www.paypal.com/en_GB/i/btn/btn_buynow_LG.gif';
     private $db_version = '1.0';
     private $plugin_cron_freq = 'daily';
     private $plugin_default_opts = array(
@@ -75,6 +76,7 @@ class WebWeb_WP_DigiShop {
         'test_mode' => 0,
         'sandbox_business_email' => '',
         'notification_email' => '',
+        'submit_button_img_src' => 'https://www.paypal.com/en_GB/i/btn/btn_buynow_LG.gif',
         'business_email' => '',
         'purchase_subject' => 'Download Link',
         'purchase_content' => "Dear %%FIRST_NAME%%,\n\nThank you for your order.\nTransaction: %%TXN_ID%%\nHere is the download link: %%DOWNLOAD_LINK%% for %%PRODUCT_NAME%%.\n\nRegards,\n%%SITE%% team",
@@ -359,7 +361,7 @@ class WebWeb_WP_DigiShop {
 
         $aaa_cmd_key = $this->web_trigger_key;
         
-        $submit_button_img_src = empty($opts['submit_button_img_src']) ? 'https://www.paypal.com/en_GB/i/btn/btn_buynow_LG.gif' : $opts['submit_button_img_src'];
+        $submit_button_img_src = empty($opts['submit_button_img_src']) ? $this->paypal_submit_image_src : $opts['submit_button_img_src'];
         $form_new_window = empty($opts['form_new_window']) ? '' : ' target="_blank" ';
 
         $post_url_esc = esc_attr($post_url);

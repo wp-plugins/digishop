@@ -76,6 +76,21 @@ $opts = $webweb_wp_digishop_obj->get_options();
                         <td><input type="text" name="<?php echo $settings_key; ?>[currency]" value="<?php echo $opts['currency']; ?>" /> (Example: USD, CAD, EUR)</td>
                     </tr>
                     <tr valign="top">
+                        <th scope="row">Submit Button Image Source
+                                <br/>(optional)
+                        </th>
+                        <td><input type="text" name="<?php echo $settings_key; ?>[submit_button_img_src]" value="<?php echo $opts['submit_button_img_src']; ?>" />
+                            (Example: http://domain.com/image.jpg)
+                            <?php
+                            if (!empty($opts['submit_button_img_src'])) {
+                                echo <<<EOF
+    <span style="vertical-align:middle;">Preview: <img src="{$opts['submit_button_img_src']}" alt="" /></span>
+EOF;
+                            }
+                            ?>
+                        </td>
+                    </tr>
+                    <tr valign="top">
                         <th scope="row">Sandbox (no real transactions)</th>
                         <td><input type="checkbox" name="<?php echo $settings_key; ?>[test_mode]" value="1"
                                     <?php echo empty($opts['test_mode']) ? '' : 'checked="checked"'; ?> />

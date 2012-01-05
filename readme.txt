@@ -66,8 +66,10 @@ n/a
 == Changelog ==
 
 = 1.0.4 =
-* Added trailing slash to the blog ... 
-* Showing transaction status message (positive/negative) at the top in addition to the old message.
+* made the payment form to submit to the blog and then the WP site will redirect to PayPal
+* added option to customize the submit button's image
+* added trailing slash to the blog ...
+* showing transaction status message (positive/negative) at the top in addition to the old message.
 * added uninstall script to clean stuff up after plugin removal
 * added sanbox paypal email in the settings
 * added .htaccess in data/ folder
