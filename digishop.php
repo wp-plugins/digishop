@@ -150,8 +150,12 @@ class WebWeb_WP_DigiShop {
 
             $opts = $inst->get_options();
 
+            if (!$inst->log_enabled && !empty($opts['logging_enabled'])) {
+                $inst->log_enabled = $opts['logging_enabled'];
+            }
+
             // the log file be: log.1dd9091e045b9374dfb6b042990d65cc.2012-01-05.log
-			if ($inst->log_enabled || !empty($opts['logging_enabled'])) {
+			if ($inst->log_enabled) {
 				$inst->log_file = $inst->plugin_data_dir . '/log.'
                         . md5($site_url . $inst->plugin_dir_name)
                         . '.' . date('Y-m-d') . '.log';
@@ -774,9 +778,17 @@ SHORT_CODE_EOF;
                         . $this->add_plugin_credits());
             }
 
+            // Ext URL
+            if (WebWeb_WP_DigiShopUtil::validate_url($product_rec['file'])) {
+                $this->log("Going to serve product ID: {$product_rec['id']}, ext URL: " . $product_rec['file']);
+
+                wp_redirect($product_rec['file']);
+                exit;
+            }
+
             $file = $this->plugin_uploads_dir . $product_rec['file'];
 
-            $this->log("Going to serve: $file");
+            $this->log("Going to serve product ID: {$product_rec['id']}, file: $file");
             WebWeb_WP_DigiShopUtil::download_file($file);
         }
         // get product info and prepare PayPal form and redirect.
@@ -1179,6 +1191,8 @@ MSG_EOF;
             $this->add_error("Product price cannot be empty.");
         }
 
+        $ext_link = empty($data['ext_link']) ? '' : trim($data['ext_link']);
+
         if (!$this->has_errors()) {
             // add product
             if (!empty($id)) {
@@ -1217,6 +1231,11 @@ MSG_EOF;
 
                 // add file name and not the full because people can switch hostings
                 $product_data['file'] = $target_file;
+            }
+            // external SRC
+            elseif (!empty($ext_link) && WebWeb_WP_DigiShopUtil::validate_url($ext_link)) {
+                $product_data['hash'] = sha1($ext_link);
+                $product_data['file'] = $ext_link;
             }
 
             if (empty($id)) {
@@ -1296,11 +1315,21 @@ class WebWeb_WP_DigiShopUtil {
     }
     
     /**
+     * Checks if the url is valid
+     * @param string $url
+     */
+    public static function validate_url($url = '') {
+        $status = preg_match("@^(?:ht|f)tps?://@si", $url);
+
+        return $status;
+    }
+
+    /**
      *
      * @param string $buffer
      */
     public static function sanitizeFile($str = '') {
-        
+
         return $str;
     }
 
@@ -1343,9 +1372,9 @@ class WebWeb_WP_DigiShopUtil {
  		header('Content-Description: File Transfer');
 		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
         header('Content-Type: application/octet-stream');
+        header('Content-Transfer-Encoding: binary');
         header('Content-Length: ' . (string) (filesize($file)));
         header('Content-Disposition: attachment; filename="' . basename($file) . '"');
-        header('Content-Transfer-Encoding: binary');
  
 		ob_clean();
 		flush();
@@ -1517,6 +1546,54 @@ class WebWeb_WP_DigiShopUtil {
         return $msg;
     }
 
+    /**
+     * checks several variables and returns the lowest.
+     * @see http://www.kavoir.com/2010/02/php-get-the-file-uploading-limit-max-file-size-allowed-to-upload.html
+     * @return int
+     */
+    public static function get_max_upload_size() {
+        $max_upload = (int)(ini_get('upload_max_filesize'));
+        $max_post = (int)(ini_get('post_max_size'));
+        $memory_limit = (int)(ini_get('memory_limit'));
+        
+        $upload_mb = min($max_upload, $max_post, $memory_limit);
+
+        return $upload_mb;
+    }
+
+    /**
+     * proto str formatFileSize( int $size )
+     *
+     * @param string
+     * @return string 1 KB/ MB
+     */
+    public static function format_file_size($size) {
+    	$size_suff = 'Bytes';
+
+        if ($size > 1024 ) {
+            $size /= 1024;
+            $size_suff = 'KB';
+        }
+
+        if ( $size > 1024 ) {
+            $size /= 1024;
+            $size_suff = 'MB';
+        }
+
+        if ( $size > 1024 ) {
+            $size /= 1024;
+            $size_suff = 'GB';
+        }
+
+        if ( $size > 1024 ) {
+            $size /= 1024;
+            $size_suff = 'TB';
+        }
+
+        $size = number_format($size, 2);
+
+        return $size . " $size_suff";
+    }
 }
 
 class WebWeb_WP_DigiShopCrawler {

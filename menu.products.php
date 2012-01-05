@@ -62,7 +62,7 @@ $active_product = " <img src='$adm_prefix/images/product_active.png' title='' al
                             <td><?php echo $rec['label'];
 
                             if (!empty($rec['file'])) {
-                                if (file_exists($plugin_uploads_dir . $rec['file'])) {
+                                if (WebWeb_WP_DigiShopUtil::validate_url($rec['file']) || file_exists($plugin_uploads_dir . $rec['file'])) {
                                     echo " <img src='$adm_prefix/images/attach.png' title='The product has a file linked to it.' alt='' />";
                                 } else {
                                     echo " <img src='$adm_prefix/images/error.png' title='The product has a file linked to it but the file cannot be found.' alt='' />";

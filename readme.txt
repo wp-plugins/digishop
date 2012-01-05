@@ -67,6 +67,7 @@ n/a
 
 = 1.0.4 =
 * made the payment form to submit to the blog and then the WP site will redirect to PayPal
+* added files to be supplied as external URL
 * functionality to call another URL after a transaction
 * added option to customize the submit button's image
 * added info about what to backup in FAQ.
@@ -78,7 +79,8 @@ n/a
 * added sanbox paypal email in the settings (useful when testing with sandbox)
 * added .htaccess in data/ folder
 * added aggressive logging. the log file is made up hash and date for harder guessing. It should not be accessible because of htaccess
-* Rearranged settings menu screen
+* rearranged settings menu screen
+* showing the max upload size (hosting dependant)
 * fixes and tweaks
 
 = 1.0.3 =

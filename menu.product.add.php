@@ -47,13 +47,33 @@ if (!empty($id)) {
                 <tr valign="top">
                     <th scope="row">File</th>
                     <td>
-                        <input type="file" name="file" value="" />
+                        <input type="file" name="file" value="" /> Max Upload Size: <?php echo WebWeb_WP_DigiShopUtil::get_max_upload_size(); ?> MB
 
                         <?php if (!empty($opts['file'])) : ?>
-                        <br/><?php echo $opts['file'];?>
+                            <br/>
+                            <?php
+                                if (!WebWeb_WP_DigiShopUtil::validate_url($opts['file'])) {
+                                    if (file_exists($webweb_wp_digishop_obj->get('plugin_uploads_dir') . $opts['file'])) {
+                                        echo $opts['file'] . ' (' . WebWeb_WP_DigiShopUtil::format_file_size(
+                                            @filesize($webweb_wp_digishop_obj->get('plugin_uploads_dir') . $opts['file'])) . ')';
+                                    } else {
+                                        echo "<span class='app_error'>The uploaded file [{$opts['file']}] cannot be found.</span>";
+                                    }
+                                }
+                            ?>
                         <?php elseif (!empty($id)) : ?>
                         <span class="app_error">You haven't uploaded a file yet.</span>
                         <?php endif; ?>
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <th scope="row">External URL</th>
+                    <td><input type="text" name="<?php echo $settings_key; ?>[ext_link]" value="<?php 
+                        echo empty($opts['ext_link']) && WebWeb_WP_DigiShopUtil::validate_url($opts['file']) ? $opts['file'] : $opts['ext_link']; ?>" class="input_field" />
+                    <p>
+                        Example: http://yourdomain.com/some-document.pdf<br/>
+                        Example: ftp://yourdomain.com/sample.doc<br/>
+                        If your file is too big you can provide an external link and your users will be redirected to that file. </p>
                     </td>
                 </tr>
                 <tr valign="top">
@@ -64,8 +84,8 @@ if (!empty($id)) {
             </table>
                         <p>
                             <br/>Notes:<br/> One file per product. If you need more please add them to a ZIP file.
-                            <br/>Uploading a new file will override the previous one with the same name. Therefore please make sure
-                            the files are unique for each product.
+                            <br/>Uploading a new file will override the previous one with the same name and replace the external URL (if any).
+                            Therefore please make sure the files are unique for each product.
                         </p>
             <p class="submit">
                 <input type="submit" class="button-primary" value="<?php _e('Save') ?>" />
