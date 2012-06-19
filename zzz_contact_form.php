@@ -1,6 +1,6 @@
 <h2>Contact Us</h2>
 
-<?php if (1&&(preg_match('#win#si', PHP_OS) || $_SERVER['HTTP_HOST'] == 'localhost')) : ?>
+<?php if (0&&(preg_match('#win#si', PHP_OS) || $_SERVER['HTTP_HOST'] == 'localhost')) : ?>
     <p>
         <iframe src="<?php echo $webweb_wp_digishop_obj->get('plugin_support_link');?>"
                 style="overflow: hidden; width: 100%; height: 810px;border: none;"
@@ -69,7 +69,7 @@ if (!empty($_POST)) {
         $headers = "From: $name <$email>\r\n";
         $headers .= "Content-type: text\r\n";
         
-        $email_subject = 'Contact Form: ' . $subject;
+        $email_subject = ' Contact Form: [' . $webweb_wp_digishop_obj->get('plugin_name') . '] ' .  $subject;
         $email_message = $message;
 
         if (!empty($phone)) {
@@ -134,18 +134,27 @@ if (!empty($_POST)) {
 <?php endif; ?>
 
 <br/>
-<p>If you want to reach us
+<p>
+
+    If you want to reach us
     via email: <a href="mailto:<?php echo $webweb_wp_digishop_obj->get('plugin_support_email');?>?subject=<?php echo urlencode($webweb_wp_digishop_obj->get('plugin_id_str'));?>"><?php echo $webweb_wp_digishop_obj->get('plugin_support_email');?></a>
     or phone: US: <a href="tel:1-716-514-8880">1-716-514-8880</a>, Canada: <a href="tel:1-647-478-6512">1-647-478-6512</a>
     <br/>Plugin's page: <a href="<?php echo $webweb_wp_digishop_obj->get('plugin_home_page');?>" target="_blank"><?php echo $webweb_wp_digishop_obj->get('plugin_home_page');?></a>
-<?php if (0) : ?>
-or via skype:
-<!--
-Skype 'Skype Me™!' button
-http://www.skype.com/go/skypebuttons
--->
-<script type="text/javascript" src="http://download.skype.com/share/skypebuttons/js/skypeCheck.js"></script>
-<a href="skype:WebWeb.ca?call"><img src="http://download.skype.com/share/skypebuttons/buttons/call_green_transparent_70x23.png" style="border: none;" width="70" height="23" alt="Skype Me™!" /></a>
-<?php endif; ?>
+
+    <p>
+        Note: If you want priority support and/or troubleshooting please contacts us so we can discuss how much will cost. <br/>
+        We put higher priority on our commercial products and paying customers. <br/>
+        We love open source but we have bills to pay ...
+    </p>
+
+    <?php if (0) : ?>
+    or via skype:
+    <!--
+    Skype 'Skype Me™!' button
+    http://www.skype.com/go/skypebuttons
+    -->
+    <script type="text/javascript" src="http://download.skype.com/share/skypebuttons/js/skypeCheck.js"></script>
+    <a href="skype:WebWeb.ca?call"><img src="http://download.skype.com/share/skypebuttons/buttons/call_green_transparent_70x23.png" style="border: none;" width="70" height="23" alt="Skype Me™!" /></a>
+    <?php endif; ?>
 
 </p>
