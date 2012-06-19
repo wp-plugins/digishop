@@ -2,16 +2,19 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1">
         <file>
+            <url>menu.product.add.php</url>
+            <line>56</line>
+        </file>
+        <file>
             <url>digishop.php</url>
-            <line>76</line>
-            <line>368</line>
-            <line>881</line>
+            <line>782</line>
+            <line>1377</line>
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
-        <file>file:/C:/projects/default/htdocs/wordpress313/wp-content/plugins/digishop/readme.txt</file>
         <file>file:/C:/projects/default/htdocs/wordpress313/wp-content/plugins/digishop/digishop.php</file>
-        <file>file:/C:/projects/default/htdocs/wordpress313/wp-content/plugins/digishop/menu.settings.php</file>
+        <file>file:/C:/projects/default/htdocs/wordpress313/wp-content/plugins/digishop/readme.txt</file>
+        <file>file:/C:/projects/default/htdocs/wordpress313/wp-content/plugins/digishop/menu.product.add.php</file>
         <file>file:/C:/projects/default/htdocs/wordpress313/wp-content/plugins/digishop/menu.products.php</file>
     </open-files>
 </project-private>

@@ -90,8 +90,20 @@ $opts = $webweb_wp_digishop_obj->get_options();
                                     <input type="checkbox" id="digishop_sandbox_mode" name="<?php echo $settings_key; ?>[test_mode]" value="1"
                                         <?php echo empty($opts['test_mode']) ? '' : 'checked="checked"'; ?> /> Enable Sandbox</label>
 
-                            <p>When the sandbox is enabled please use the test accounts generated from
+                            <p>If the sandbox mode is enabled please use the test accounts generated from
                                     <a href="http://developer.paypal.com" target="_blank">developer.paypal.com</a> otherwise transactions will fail.
+                            </p>
+                        </td>
+                    </tr>
+                    <tr valign="top">
+                        <th scope="row">Sandbox IP Address</th>
+                        <td>
+                            <input type="text" id="sandbox_only_ip" name="<?php echo $settings_key; ?>[sandbox_only_ip]"
+                                    value="<?php echo $opts['sandbox_only_ip']; ?>" class="input_field" />
+                            Your IP: <?php echo $_SERVER['REMOTE_ADDR']; ?> (<a href="javascript:void(0);" onclick="jQuery('#sandbox_only_ip').val('<?php echo $_SERVER['REMOTE_ADDR']; ?>');"
+                                                                                    title="This will use your current IP address as sandbox IP address.">Use</a>)
+                            <p>If the sandbox is enabled and you have entered IP in the box the sandbox will be enabled only for that specific IP address. <br/>
+                                Is it made for testing live installation of DigiShop.
                             </p>
                         </td>
                     </tr>

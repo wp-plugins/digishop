@@ -77,6 +77,7 @@ class WebWeb_WP_DigiShop {
         'test_mode' => 0,
         'logging_enabled' => 0,
         'sandbox_business_email' => '',
+        'sandbox_only_ip' => '',
         'notification_email' => '',
         'submit_button_img_src' => 'https://www.paypal.com/en_GB/i/btn/btn_buynow_LG.gif',
         'business_email' => '',
@@ -581,6 +582,10 @@ SHORT_CODE_EOF;
         if (empty($opts['purchase_content'])) {
             $opts['purchase_content'] = $this->plugin_default_opts['purchase_content'];
         }
+        
+        if (isset($opts['sandbox_only_ip'])) {
+            $opts['sandbox_only_ip'] = trim($opts['sandbox_only_ip']);
+        }
 
         return $opts;
     }
@@ -630,7 +635,7 @@ SHORT_CODE_EOF;
         add_filter('plugin_action_links', array($this, 'add_plugin_settings_link'), 10, 2);
     }
 	
- /**
+	/**
      * Allows access to some private vars
      * @param str $var
      */
@@ -896,11 +901,17 @@ SHORT_CODE_EOF;
 
             // handle PayPal IPN calls
             $data['cmd'] = '_notify-validate';
+            unset($data['digishop_cmd']);
 
             $paypal_url = $this->paypal_url;
 
             if (!empty($opts['test_mode'])) {
-                $paypal_url = str_replace('paypal.com', 'sandbox.paypal.com', $paypal_url);
+                // we are in test mode
+                // and if the sandbox IP is supplied we are going to enable sandbox only for that IP address.
+                if (empty($opts['sandbox_only_ip'])
+                            || (!empty($opts['sandbox_only_ip']) && $_SERVER['REMOTE_ADDR'] == $opts['sandbox_only_ip'])) {
+                    $paypal_url = str_replace('paypal.com', 'sandbox.paypal.com', $paypal_url);
+                }
             }
 
             $paypal_url = WebWeb_WP_DigiShopUtil::add_url_params($paypal_url, $data);
@@ -1038,8 +1049,14 @@ SHORT_CODE_EOF;
             echo $this->message($this->plugin_name . " is currently disabled. Please, enable it from " 
                     . "<a href='{$this->plugin_admin_url_prefix}/menu.settings.php'> {$this->plugin_name} &gt; Settings</a>");
         } elseif (!empty($opts['test_mode'])) {
-            echo $this->message($this->plugin_name . " is currently in Sandbox mode. To accept real transactions please uncheck Sandbox mode from "
+            if (!empty($opts['sandbox_only_ip'])) {
+                echo $this->message($this->plugin_name . " is currently in Sandbox mode for <strong>{$opts['sandbox_only_ip']}</strong> address only. "
+                    . "Regular users will be using the live PayPal site. To change the settings please go to: "
                     . "<a href='{$this->plugin_admin_url_prefix}/menu.settings.php'> {$this->plugin_name} &gt; Settings</a>");
+            } else {
+                echo $this->message($this->plugin_name . " is currently in Sandbox mode. To accept real transactions please uncheck Sandbox mode from "
+                    . "<a href='{$this->plugin_admin_url_prefix}/menu.settings.php'> {$this->plugin_name} &gt; Settings</a>");
+            }
         }
     }
 

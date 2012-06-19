@@ -65,6 +65,11 @@ n/a
 
 == Changelog ==
 
+= 1.0.5 =
+* fixed: passing an extra variable which caused PayPal transactions not to validate
+* Address Settings > sandbox IP which if supplied with enabled sandbox will enable sandbox mode only for that specific IP address.
+* 
+
 = 1.0.4 =
 * made the payment form to submit to the blog and then the WP site will redirect to PayPal
 * added files to be supplied as external URL
