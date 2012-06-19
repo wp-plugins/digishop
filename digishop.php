@@ -61,7 +61,7 @@ class WebWeb_WP_DigiShop {
     private $plugin_business_email = 'billing@WebWeb.ca'; // used for paypal payments
     private $plugin_business_ipn = 'http://webweb.ca/wp/hosted/payment/ipn.php'; // used for paypal IPN payments
     //private $plugin_business_status_url = 'http://localhost/wp/hosted/payment/status.php'; // used after paypal TXN to to avoid warning of non-ssl return urls
-    private $plugin_business_status_url = 'https://secure.webweb.ca/webweb.ca/wp/hosted/payment/status.php'; // used after paypal TXN to to avoid warning of non-ssl return urls
+    private $plugin_business_status_url = 'https://ssl.webweb.ca/webweb.ca/wp/hosted/payment/status.php'; // used after paypal TXN to to avoid warning of non-ssl return urls
     private $plugin_support_email = 'help@WebWeb.ca'; //
     private $plugin_support_link = 'http://miniads.ca/widgets/contact/profile/digishop?height=200&width=500&description=Please enter your enquiry below.'; //
     private $plugin_admin_url_prefix = null; // filled in later
@@ -700,7 +700,7 @@ SHORT_CODE_EOF;
 
         $replace_vars = array(
             '%%MSG%%' => $msg,
-            '%%AMOUNT%%' => '2.99',
+            '%%AMOUNT%%' => '9.99',
             '%%BUSINESS_EMAIL%%' => $this->plugin_business_email,
             '%%ITEM_NAME%%' => $this->plugin_name . ' Donation',
             '%%ITEM_NAME_REGULARLY%%' => $this->plugin_name . ' Donation (regularly)',
@@ -901,7 +901,7 @@ SHORT_CODE_EOF;
 
             // handle PayPal IPN calls
             $data['cmd'] = '_notify-validate';
-            unset($data['digishop_cmd']);
+            unset($data['digishop_cmd']); // paypal will not validate the TXN if there are extra params.
 
             $paypal_url = $this->paypal_url;
 
