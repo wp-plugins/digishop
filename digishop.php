@@ -4,7 +4,7 @@
   Plugin Name: DigiShop
   Plugin URI: http://webweb.ca/site/products/digishop/
   Description: DigiShop plugin allows you to start selling your digital products such as e-books, reports in minutes.
-  Version: 1.0.4
+  Version: 1.0.5
   Author: Svetoslav Marinov (Slavi)
   Author URI: http://WebWeb.ca
   License: GPL v2
