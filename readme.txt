@@ -3,8 +3,8 @@ Contributors: lordspace
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7APYDVPBCSY9A
 Tags: store,ecommerce,estore,online shop, shopping cart, wordperss e-commerce, wordperss ecommerce, sell digital products, sell ebook, ebook, sell ebook,digishop,digi shop
 Requires at least: 2.0.2
-Tested up to: 3.4
-Stable tag: 1.0.5
+Tested up to: 3.4.1
+Stable tag: 1.0.6
 
 DigiShop plugin allows you to start selling your digital products such as e-books, reports in minutes.
 
@@ -64,6 +64,16 @@ Run into issues or have questions/suggestions? Send them to help@WebWeb.ca
 n/a
 
 == Changelog ==
+
+= 1.0.6 =
+* Added a check for invalid input. The plugin stops working if it receives invalid input e.g. text instead of a number (applicable for IDs)
+* Implemented file sanitization method ... leaves only nicely formatted filenames. If the filename is totally cleaned up then it'll use a default name
+* Turned autocomplete input box for Price in Add Product
+* Fix: If the file exists when adding a product append a number (timestamp) before the extension
+* Fix: some people reported that they or their clients got lots of emails. The plugin will not process it a transaction if PayPal calls the plugin for 2nd or more times
+* Added download expiration within 48 hours for new orders.
+* Showing the annoying messages when sandbox mode is turned on to appear only on the plugins page(s)
+* Added a limit to the downloaded files 3 per hash
 
 = 1.0.5 =
 * fixed: passing an extra variable which caused PayPal transactions not to validate
