@@ -1246,6 +1246,12 @@ MSG_EOF;
 
                 $target_file_full = $this->plugin_uploads_dir . $target_file;
 
+                // if the file exists append number (timestamp) before the extension
+                while (file_exists($target_file_full)) {
+                    $target_file_full = preg_replace('#(\.\w{2,5})$#si', '-sss' . time() . '\\1', $target_file_full);
+                    $target_file = basename($target_file_full); // let's update the name.
+                }
+
                 if (!@copy($_FILES['file']['tmp_name'], $target_file_full)) {
                    $this->add_error("Cannot save the file in [$target_file_full]");
                 }
@@ -1474,13 +1480,20 @@ class WebWeb_WP_DigiShopUtil {
             header('Pragma: public');
         }
 
+        // the actual file that will be downloaded
+        $download_file_name = basename($file);
+
+        // if a file with the same name existed we've appended some numbers to the filename but before
+        // the extension. Now we'll offer the file without the appended numbers.
+        $download_file_name = preg_replace('#-sss\d+(\.\w{2,5})$#si', '\\1', $download_file_name);
+
 		header('Expires: 0');
  		header('Content-Description: File Transfer');
 		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
         header('Content-Type: application/octet-stream');
         header('Content-Transfer-Encoding: binary');
         header('Content-Length: ' . (string) (filesize($file)));
-        header('Content-Disposition: attachment; filename="' . basename($file) . '"');
+        header('Content-Disposition: attachment; filename="' . $download_file_name . '"');
  
 		ob_clean();
 		flush();
