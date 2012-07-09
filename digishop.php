@@ -1115,7 +1115,7 @@ SHORT_CODE_EOF;
         if (empty($opts['status'])) {
             echo $this->message($this->plugin_name . " is currently disabled. Please, enable it from " 
                     . "<a href='{$this->plugin_admin_url_prefix}/menu.settings.php'> {$this->plugin_name} &gt; Settings</a>");
-        } elseif (!empty($opts['test_mode'])) {
+        } elseif (!empty($opts['test_mode']) && WebWeb_WP_DigiShopUtil::is_on_plugin_page()) { // show the notice only when checking the settings.
             if (!empty($opts['sandbox_only_ip'])) {
                 echo $this->message($this->plugin_name . " is currently in Sandbox mode for <strong>{$opts['sandbox_only_ip']}</strong> address only. "
                     . "Regular users will be using the live PayPal site. To change the settings please go to: "
@@ -1382,6 +1382,27 @@ class WebWeb_WP_DigiShopUtil {
     const FILE_APPEND = 1;
     const UNSERIALIZE_DATA = 2;
     const SERIALIZE_DATA = 3;
+
+    /**
+     * Checks if we are on a page that belongs to our plugin.
+     * It is really annoying to see a notice in every section of WordPress.
+     * That way the notice will be shown only on the plugin's page.
+     */
+    public static function is_on_plugin_page() {
+        $webweb_wp_digishop_obj = WebWeb_WP_Mibew::get_instance();
+
+        $req_uri = $_SERVER['REQUEST_URI'];
+        $id_str = $webweb_wp_digishop_obj->get('plugin_id_str');
+
+        $req_uri = str_replace('_', '-', $req_uri);
+        $id_str = str_replace('_', '-', $id_str);
+
+        // because the plugin id str and uri can have dashes or underscore we'll make underscore dashes
+        // for both req uri and plugin str id
+        $stat = preg_match('#' . preg_quote($id_str) . '#si', $req_uri);
+
+        return $stat;
+    }
 
     /**
      * Replaces the template variables
