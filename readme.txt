@@ -11,7 +11,7 @@ DigiShop plugin allows you to start selling your digital products such as e-book
 == Description ==
 
 DigiShop is a WordPress plugin which allows you to setup your e-store and start selling your digital products such as e-books, reports in minutes.
-It adds a buy now button which connects to PayPal to accept the payment.
+It adds a simple buy now button which sends your customer to PayPal to complete the payment and after that he/she is returned to your site.
 
 = Demo =
 
@@ -26,9 +26,9 @@ http://www.youtube.com/watch?v=6EKNMYjzwlM
 * Functionality to enable/disable products (when a product is disabled the buy now link will not be shown and the file can't be downloaded even with the download link)
 * Customize the text for the successful and unsuccessful transaction
 * In case of a failed transaction the email is sent to the admin so he can handle the failed transaction manually
-* Short codes are just ready to copied and pasted into your pages
-* Update:There is a button in edit page/post that allows you to choose a product to insert
-* Download expires within 48 hours
+* There is a button in edit page/post that allows you to choose a product this will insert to correct shortcode
+* Protection against multiple calls made from PayPal IPN which paypal makes to notify the site owner for the transaction.
+* Download expires after 48 hours
 * Download limits: maximum 3 per order
 
 = Author =
