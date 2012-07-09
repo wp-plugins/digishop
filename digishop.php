@@ -775,11 +775,32 @@ SHORT_CODE_EOF;
         $opts = $this->get_options();
 
         if (!empty($data[$dl_key])) {
-            $product_rec = $this->get_product($data[$dl_key]);
+            $hash = $data[$dl_key];
+
+            // shortened hash so read it from a file + check for expiration
+            if (strlen($hash) < 40) {
+                $file = $this->plugin_uploads_dir . '___sys_txn_dl_' . $hash . '.txt';
+
+                if (!file_exists($file)) {
+                    wp_die($this->m($this->plugin_id_str . ': Invalid download hash (1).', 0, 1)
+                        . $this->add_plugin_credits());
+                }
+
+                $hash = WebWeb_WP_DigiShopUtil::read($file); // long sha1 hash
+                
+                if (time() - filemtime($file) > 48 * 3600) { // dl expire after 48h
+                    wp_die($this->m($this->plugin_id_str . ': The download has expired.', 0, 1)
+                            . $this->add_plugin_credits());
+                }
+            } else { // old sha1 hash
+                $hash = $data[$dl_key];
+            }
+
+            $product_rec = $this->get_product($hash);
 
             // TODO: limit the downloads by a counter
             if (empty($product_rec) || empty($product_rec['active'])) {
-                wp_die($this->m($this->plugin_id_str . ': Invalid download hash.', 0, 1)
+                wp_die($this->m($this->plugin_id_str . ': Invalid download hash (2).', 0, 1)
                         . $this->add_plugin_credits());
             }
 
@@ -857,10 +878,9 @@ SHORT_CODE_EOF;
         // IPN called by PayPal: some people reported that they or their clients got lots of emails.
         // we'll create a hash file based on the TXN and not notify if we're called more than once by paypal
         elseif (!empty($this->query_vars[$this->web_trigger_key]) && $this->query_vars[$this->web_trigger_key] == 'paypal_ipn') {
-
             // checking if this TXN has been processed. Paypal should always provide a unique TXN ID
             if (!empty($data['txn_id'])) {
-                $txn_flag_file = $this->plugin_uploads_dir . '___sys_txn__' . WebWeb_WP_DigiShopUtil::generate_hash($data['txn_id']);
+                $txn_flag_file = $this->plugin_uploads_dir . '___sys_txn_' . WebWeb_WP_DigiShopUtil::generate_hash($data['txn_id']) . '.txt';
                 $do_stop = 0;
 
                 if (file_exists($txn_flag_file)) {
@@ -872,7 +892,7 @@ SHORT_CODE_EOF;
                 }
                 
                 if (mt_rand(0, 10) % 2 == 0) { // 50% chance to cleanup the txn files after a paypal call.
-                    $txn_files = glob($this->plugin_uploads_dir . '___sys_txn__*');
+                    $txn_files = glob($this->plugin_uploads_dir . '___sys_txn_*');
 
                     foreach ($txn_files as $file) {
                         if (time() - filemtime($txn_flag_file) > 7 * 24 * 3600) { // clean txns older than 7 days
@@ -977,11 +997,20 @@ SHORT_CODE_EOF;
                     $email_buffer = $this->plugin_default_opts['purchase_content'];
                 }
 
+                // Download link will be shortened by using a shortening class
+                // we'll generate an ID e.g. time based + the IP of the person
+                // this will create a text file with the download hash of the file
+                $short = new WebWeb_WP_DigiShop_Shorty();
+                $download_hash = $short->encode(time() + mt_rand(100, 100000));
+
+                $file = $this->plugin_uploads_dir . '___sys_txn_dl_' . $download_hash . '.txt';
+                WebWeb_WP_DigiShopUtil::write($file, $product_rec['hash']);
+
                 $vars = array(
                     '%%FIRST_NAME%%' => $data['first_name'],
                     '%%LAST_NAME%%' => $data['last_name'],
                     '%%EMAIL%%' => $data['payer_email'],
-                    '%%DOWNLOAD_LINK%%' => WebWeb_WP_DigiShopUtil::add_url_params($this->site_url, array($dl_key => $product_rec['hash'])),
+                    '%%DOWNLOAD_LINK%%' => WebWeb_WP_DigiShopUtil::add_url_params($this->site_url, array($dl_key => $download_hash)),
                     '%%TXN_ID%%' => $data['txn_id'],
                     '%%SITE%%' => $this->site_url,
                     '%%PRODUCT_NAME%%' => $product_rec['label'],
@@ -1003,7 +1032,8 @@ SHORT_CODE_EOF;
                     $admin_email_buffer .= "\n=================================================================\n\n";
                     $admin_email_buffer .= $email_buffer;
                     $admin_email_buffer .= "\n\n=================================================================\n";
-                    $admin_email_buffer .= "\nReceived Data: \n\n" . var_export($data, 1);
+                    $admin_email_buffer .= "\nSubmitted Data: \n\n" . var_export($vars, 1);
+                    $admin_email_buffer .= "\nReceived Data: \n\n" .  var_export($data, 1);
                     
                     $mail_status = wp_mail($admin_email, 'Unsuccessful Transaction', $admin_email_buffer, $headers);
 
@@ -1627,7 +1657,6 @@ class WebWeb_WP_DigiShopUtil {
     public static function read($file, $option = null) {
         $buff = false;
         $read_mod = "rb";
-        $tries = 0;
         $handle = false;
 
         if (($handle = @fopen($file, $read_mod))
@@ -1880,5 +1909,59 @@ class WebWeb_WP_DigiShopCrawler {
 
     function get_content() {
         return $this->buffer;
+    }
+}
+
+/**
+ * A nice shorting class based on Ryan Charmley's suggestion see the link on stackoverflow below.
+ * @author Svetoslav Marinov (Slavi) | http://WebWeb.ca
+ * @see https://github.com/lordspace/
+ * @see http://stackoverflow.com/questions/742013/how-to-code-a-url-shortener/10386945#10386945
+ */
+class WebWeb_WP_DigiShop_Shorty {
+    /**
+     * Explicitely omitted: i, o, 1, 0 because they are confusing. Also use only lowercase ... as
+     * dictating this over the phone might be tough.
+     * @var string
+     */
+    private $dictionary = "abcdfghjklmnpqrstvwxyz23456789";
+    private $dictionary_array = array();
+
+    public function __construct() {
+        $this->dictionary_array = str_split($this->dictionary);
+    }
+
+    /**
+     * Gets ID and converts it into a string.
+     * @param int $id
+     */
+    public function encode($id) {
+        $str_id = '';
+        $base = count($this->dictionary_array);
+
+        while ($id > 0) {
+            $rem = $id % $base;
+            $id = ($id - $rem) / $base;
+            $str_id .= $this->dictionary_array[$rem];
+        }
+
+        return $str_id;
+    }
+
+    /**
+     * Converts /abc into an integer ID
+     * @param string
+     * @return int $id
+     */
+    public function decode($str_id) {
+        $id = 0;
+        $id_ar = str_split($str_id);
+        $base = count($this->dictionary_array);
+
+        for ($i = count($id_ar); $i > 0; $i--) {
+            $id += array_search($id_ar[$i - 1], $this->dictionary_array) * pow($base, $i - 1);
+        }
+
+        return $id;
     }
 }
