@@ -4,7 +4,7 @@
   Plugin Name: DigiShop
   Plugin URI: http://webweb.ca/site/products/digishop/
   Description: DigiShop plugin allows you to start selling your digital products such as e-books, reports in minutes.
-  Version: 1.0.5
+  Version: 1.0.6
   Author: Svetoslav Marinov (Slavi)
   Author URI: http://WebWeb.ca
   License: GPL v2
@@ -331,7 +331,7 @@ class WebWeb_WP_DigiShop {
 
         $opts = $this->get_options();
 
-        $id = empty($attr['id']) ? 0 : $attr['id'];
+        $id = empty($attr['id']) ? 0 : WebWeb_WP_DigiShopUtil::stop_bad_input($attr['id'], WebWeb_WP_DigiShopUtil::SANITIZE_NUMERIC);
 
         if (empty($id)) {
             return $this->m($this->plugin_id_str . ': empty product ID. Possibly incorrect use of the short code.', 0, 1);
@@ -802,6 +802,9 @@ SHORT_CODE_EOF;
             $post_id = empty($data[$this->plugin_id_str . '_post_id']) ? 0 : $data[$this->plugin_id_str . '_post_id'];
             $post_url = get_permalink($post_id);
 
+            $id = WebWeb_WP_DigiShopUtil::stop_bad_input($id, WebWeb_WP_DigiShopUtil::SANITIZE_NUMERIC);
+            $post_id = WebWeb_WP_DigiShopUtil::stop_bad_input($post_id, WebWeb_WP_DigiShopUtil::SANITIZE_NUMERIC);
+
             $product_rec = $this->get_product($id);
 
             if (empty($product_rec) || empty($product_rec['active'])) {
@@ -892,6 +895,7 @@ SHORT_CODE_EOF;
                 //$id = $data['item_number'];
             }
 
+            $id = WebWeb_WP_DigiShopUtil::stop_bad_input($id, WebWeb_WP_DigiShopUtil::SANITIZE_NUMERIC);
             $product_rec = $this->get_product($id);
 
             if (empty($product_rec) || empty($product_rec['active'])) {
@@ -1092,7 +1096,7 @@ CODE_EOF;
      */
     function message($msg, $status = 0) {
         $id = $this->plugin_id_str;
-        $cls = empty($status) ? 'error fade' : 'success';
+        $cls = empty($status) ? 'error fade' : 'success update'; // update is the WP class for success ?!?
 
         $str = <<<MSG_EOF
 <div id='$id-notice' class='$cls'><p><strong>$msg</strong></p></div>
@@ -1200,6 +1204,8 @@ MSG_EOF;
         $st = 0;
         $prev_rec = array();
 
+        $id = WebWeb_WP_DigiShopUtil::stop_bad_input($id, WebWeb_WP_DigiShopUtil::SANITIZE_NUMERIC);
+
         if (empty($data['label'])) {
             $this->add_error("Product name cannot be empty.");
         }
@@ -1274,6 +1280,7 @@ MSG_EOF;
     function delete_product($id = -1) {
         global $wpdb;
 
+        $id = WebWeb_WP_DigiShopUtil::stop_bad_input($id, WebWeb_WP_DigiShopUtil::SANITIZE_NUMERIC);
         $prev_rec = $this->get_product($id);
         
         // if a new file is supplied the old gets deleted.
@@ -1345,9 +1352,77 @@ class WebWeb_WP_DigiShopUtil {
      *
      * @param string $buffer
      */
-    public static function sanitizeFile($str = '') {
+    public static function sanitizeFile($str = '', $lowercase = 0, $sep = '-') {
+        $str = urldecode($str);
+        $ext = @end(explode('.', $str));
+
+        if (function_exists('iconv')) {
+            $src    = "UTF-8";
+            // If you append the string //TRANSLIT to out_charset  transliteration is activated.
+            $target = "ISO-8859-1//TRANSLIT";
+            $str = iconv($src, $target, $str);
+        }
+
+        $ext = preg_replace('#[^a-z\d]+#', '', $ext);
+        $ext = strtolower($ext);
+
+        $str = preg_replace('#\.\w{2,5}$#si', '', $str); // remove ext
+        $str = preg_replace('#[^\w\-]+#', $sep, $str);
+        $str = preg_replace('#[\s\-\_]+#', $sep, $str);
+        $str = trim($str, ' /\\ -_');
+
+        // If there are non-english characters they will be replaced with entities which we'll use
+        // as guideline to find the equivalent in English.
+        $str = htmlentities($str);
+
+        // non-enlgish -> english equivalent
+        $str = preg_replace('/&([a-z][ez]?)(?:acute|uml|circ|grave|ring|cedil|slash|tilde|caron|lig);/si', '\\1', $str);
+
+        // remove any unrecognized entities
+        $str = preg_replace('/&([a-z]+);/', '', $str);
+
+        // remove any unrecognized entities
+        $str = preg_replace('@\&\#\d+;@s', '', $str);
+
+        if ($lowercase) {
+            $str = strtolower($str);
+        }
+
+        // There are creazy people that may enter longer link :)
+        $str = substr($str, 0, 200);
+
+        if (empty($str)) {
+            $str = 'default-name-' . time();
+        }
+        
+        if (empty($ext)) {
+            $ext = 'default-ext';
+        }
+
+        $str .= '.' . $ext;
 
         return $str;
+    }
+
+    const SANITIZE_NUMERIC = 1;
+
+    /**
+     * Initially this was planned to be a function to clean the IDs. Not it stops when invalid input is found.
+     * 
+     * @param string $value
+     * @return string
+     */
+    public static function stop_bad_input($value = '', $type_id = self::SANITIZE_NUMERIC) {
+        if (!empty($value) && $type_id == self::SANITIZE_NUMERIC && !is_numeric($value)) {
+            $webweb_wp_digishop_obj = WebWeb_WP_DigiShop::get_instance();
+            $webweb_wp_digishop_obj->log("Invalid value supplied. Received: \n----------------------------------------------------\n"
+                        . $value
+                        . "\n----------------------------------------------------\n");
+            wp_die($webweb_wp_digishop_obj->m($webweb_wp_digishop_obj->get('plugin_id_str') . ': Received invalid input.', 0, 1)
+                        . $webweb_wp_digishop_obj->add_plugin_credits());
+        }
+        
+        return $value;
     }
 
     /**

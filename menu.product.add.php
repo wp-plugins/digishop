@@ -42,7 +42,7 @@ if (!empty($id)) {
                 </tr>
                 <tr valign="top">
                     <th scope="row">Price (e.g. 29.95, 10)</th>
-                    <td><input type="text" name="<?php echo $settings_key; ?>[price]" value="<?php echo $opts['price']; ?>" /></td>
+                    <td><input type="text" name="<?php echo $settings_key; ?>[price]" value="<?php echo $opts['price']; ?>" autocomplete="off" /></td>
                 </tr>
                 <tr valign="top">
                     <th scope="row">File</th>

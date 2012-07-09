@@ -7,14 +7,15 @@
         </file>
         <file>
             <url>digishop.php</url>
-            <line>782</line>
-            <line>1377</line>
+            <line>1051</line>
+            <line>1394</line>
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
         <file>file:/C:/projects/default/htdocs/wordpress313/wp-content/plugins/digishop/digishop.php</file>
         <file>file:/C:/projects/default/htdocs/wordpress313/wp-content/plugins/digishop/readme.txt</file>
-        <file>file:/C:/projects/default/htdocs/wordpress313/wp-content/plugins/digishop/menu.product.add.php</file>
-        <file>file:/C:/projects/default/htdocs/wordpress313/wp-content/plugins/digishop/menu.products.php</file>
+        <file>file:/C:/projects/default/htdocs/wordpress313/wp-content/plugins/digishop/menu.settings.php</file>
+        <file>file:/C:/projects/default/htdocs/wordpress313/wp-content/plugins/digishop/menu.dashboard.php</file>
+        <file>file:/C:/projects/default/htdocs/wordpress313/wp-content/plugins/digishop/zzz_contact_form.php</file>
     </open-files>
 </project-private>
