@@ -84,8 +84,9 @@ if (!empty($id)) {
             </table>
                         <p>
                             <br/>Notes:<br/> One file per product. If you need more please add them to a ZIP file.
-                            <br/>Uploading a new file will override the previous one with the same name and replace the external URL (if any).
-                            Therefore please make sure the files are unique for each product.
+                            <br/>Update: 2012-07-09: Uploading a new file will NOT override a file with the same name that belongs to another product.
+                            <br/>If a file exists the plugin will append some random text + number e.g. "-sss0123456789" which will <strong>NOT</strong>
+                            appear in the filename when the product is downloaded.
                         </p>
             <p class="submit">
                 <input type="submit" class="button-primary" value="<?php _e('Save') ?>" />
