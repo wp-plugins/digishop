@@ -854,8 +854,39 @@ SHORT_CODE_EOF;
             wp_redirect($location);
             exit;
         }
-        // IPN
+        // IPN called by PayPal: some people reported that they or their clients got lots of emails.
+        // we'll create a hash file based on the TXN and not notify if we're called more than once by paypal
         elseif (!empty($this->query_vars[$this->web_trigger_key]) && $this->query_vars[$this->web_trigger_key] == 'paypal_ipn') {
+
+            // checking if this TXN has been processed. Paypal should always provide a unique TXN ID
+            if (!empty($data['txn_id'])) {
+                $txn_flag_file = $this->plugin_uploads_dir . '___sys_txn__' . WebWeb_WP_DigiShopUtil::generate_hash($data['txn_id']);
+                $do_stop = 0;
+
+                if (file_exists($txn_flag_file)) {
+                    $this->log('paypal txn already processed. Will not process the txn. Got data: ' . var_export($data, 1));
+
+                    $do_stop = 1;
+                } else {
+                    touch($txn_flag_file);
+                }
+                
+                if (mt_rand(0, 10) % 2 == 0) { // 50% chance to cleanup the txn files after a paypal call.
+                    $txn_files = glob($this->plugin_uploads_dir . '___sys_txn__*');
+
+                    foreach ($txn_files as $file) {
+                        if (time() - filemtime($txn_flag_file) > 7 * 24 * 3600) { // clean txns older than 7 days
+                            $this->log('Deleting old txn flag file: ' . $file);
+                            unlink($file);
+                        }
+                    }
+                }
+
+                if ($do_stop) {
+                    return;
+                }
+            }
+
             $admin_email = get_option('admin_email');
             
             if (!empty($opts['notification_email'])) {
