@@ -1250,14 +1250,14 @@ MSG_EOF;
                    $this->add_error("Cannot save the file in [$target_file_full]");
                 }
                 
-                $product_data['hash'] = sha1($target_file);
+                $product_data['hash'] = WebWeb_WP_DigiShopUtil::generate_hash($target_file);
 
                 // add file name and not the full because people can switch hostings
                 $product_data['file'] = $target_file;
             }
             // external SRC
             elseif (!empty($ext_link) && WebWeb_WP_DigiShopUtil::validate_url($ext_link)) {
-                $product_data['hash'] = sha1($ext_link);
+                $product_data['hash'] = WebWeb_WP_DigiShopUtil::generate_hash($ext_link);
                 $product_data['file'] = $ext_link;
             }
 
@@ -1405,6 +1405,20 @@ class WebWeb_WP_DigiShopUtil {
     }
 
     const SANITIZE_NUMERIC = 1;
+
+    /**
+     * Generates the hash + salt
+     *
+     * @param type $input_str
+     * @return string
+     */
+    public static function generate_hash($input_str = '') {
+        $webweb_wp_digishop_obj = WebWeb_WP_DigiShop::get_instance();
+        
+        $res = sha1($input_str . $_SERVER['HTTP_HOST'] . '-' . $webweb_wp_digishop_obj->get('plugin_id_str'));
+
+        return $res;
+    }
 
     /**
      * Initially this was planned to be a function to clean the IDs. Not it stops when invalid input is found.
