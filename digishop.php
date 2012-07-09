@@ -776,10 +776,12 @@ SHORT_CODE_EOF;
 
         if (!empty($data[$dl_key])) {
             $hash = $data[$dl_key];
+            $hash = WebWeb_WP_DigiShopUtil::stop_bad_input($hash, WebWeb_WP_DigiShopUtil::SANITIZE_ALPHA_NUMERIC);
 
-            // shortened hash so read it from a file + check for expiration
+            // shortened hash so read it from a file + check for expiration + check download count
             if (strlen($hash) < 40) {
                 $file = $this->plugin_uploads_dir . '___sys_txn_dl_' . $hash . '.txt';
+                $dl_cnt_file = $this->plugin_uploads_dir . '___sys_txn_dl_' . $hash . '_cnt.txt';
 
                 if (!file_exists($file)) {
                     wp_die($this->m($this->plugin_id_str . ': Invalid download hash (1).', 0, 1)
@@ -787,18 +789,28 @@ SHORT_CODE_EOF;
                 }
 
                 $hash = WebWeb_WP_DigiShopUtil::read($file); // long sha1 hash
-                
+                $dl_cnt = WebWeb_WP_DigiShopUtil::read($dl_cnt_file);
+                $dl_cnt = empty($dl_cnt) ? 0 : intval($dl_cnt);
+
                 if (time() - filemtime($file) > 48 * 3600) { // dl expire after 48h
                     wp_die($this->m($this->plugin_id_str . ': The download has expired.', 0, 1)
                             . $this->add_plugin_credits());
                 }
+
+                // was it downloaded more than 3 times?
+                if ($dl_cnt > 3) {
+                    wp_die($this->m($this->plugin_id_str . ': The download limit has been reached.', 0, 1)
+                            . $this->add_plugin_credits());
+                }
+
+                $dl_cnt++;
+                WebWeb_WP_DigiShopUtil::write($dl_cnt_file, $dl_cnt);
             } else { // old sha1 hash
                 $hash = $data[$dl_key];
             }
 
             $product_rec = $this->get_product($hash);
 
-            // TODO: limit the downloads by a counter
             if (empty($product_rec) || empty($product_rec['active'])) {
                 wp_die($this->m($this->plugin_id_str . ': Invalid download hash (2).', 0, 1)
                         . $this->add_plugin_credits());
@@ -1494,8 +1506,6 @@ class WebWeb_WP_DigiShopUtil {
         return $str;
     }
 
-    const SANITIZE_NUMERIC = 1;
-
     /**
      * Generates the hash + salt
      *
@@ -1504,11 +1514,14 @@ class WebWeb_WP_DigiShopUtil {
      */
     public static function generate_hash($input_str = '') {
         $webweb_wp_digishop_obj = WebWeb_WP_DigiShop::get_instance();
-        
+
         $res = sha1($input_str . $_SERVER['HTTP_HOST'] . '-' . $webweb_wp_digishop_obj->get('plugin_id_str'));
 
         return $res;
     }
+    
+    const SANITIZE_NUMERIC = 1;
+    const SANITIZE_ALPHA_NUMERIC = 2;
 
     /**
      * Initially this was planned to be a function to clean the IDs. Not it stops when invalid input is found.
@@ -1517,13 +1530,26 @@ class WebWeb_WP_DigiShopUtil {
      * @return string
      */
     public static function stop_bad_input($value = '', $type_id = self::SANITIZE_NUMERIC) {
-        if (!empty($value) && $type_id == self::SANITIZE_NUMERIC && !is_numeric($value)) {
+        if (!empty($value)) {
+            $msg = '';
             $webweb_wp_digishop_obj = WebWeb_WP_DigiShop::get_instance();
-            $webweb_wp_digishop_obj->log("Invalid value supplied. Received: \n----------------------------------------------------\n"
-                        . $value
-                        . "\n----------------------------------------------------\n");
-            wp_die($webweb_wp_digishop_obj->m($webweb_wp_digishop_obj->get('plugin_id_str') . ': Received invalid input.', 0, 1)
-                        . $webweb_wp_digishop_obj->add_plugin_credits());
+            
+            if ($type_id == self::SANITIZE_NUMERIC && !is_numeric($value)) {
+                $webweb_wp_digishop_obj->log("Invalid value supplied. Received: \n----------------------------------------------------\n"
+                            . $value
+                            . "\n----------------------------------------------------\n");
+                $msg = $webweb_wp_digishop_obj->get('plugin_id_str') . ': Received invalid input. <!-- r: n -->';
+            } elseif ($type_id == self::SANITIZE_ALPHA_NUMERIC && !preg_match('#^[\w-]+$#si', $value)) { // alphanum from start to end + dash
+                $webweb_wp_digishop_obj->log("Invalid value supplied. Received: \n----------------------------------------------------\n"
+                            . $value
+                            . "\n----------------------------------------------------\n");
+                $msg = $webweb_wp_digishop_obj->get('plugin_id_str') . ': Received invalid input. <!-- r: an -->';
+            }
+
+            if (!empty($msg)) {
+                $msg = $webweb_wp_digishop_obj->m($msg, 0, 1) . $webweb_wp_digishop_obj->add_plugin_credits();
+                wp_die($msg);
+            }
         }
         
         return $value;

@@ -144,7 +144,7 @@ EOF;
                     <tr valign="top">
                         <th scope="row">Post Transaction Callback URL</th>
                         <td><input type="text" name="<?php echo $settings_key; ?>[callback_url]" value="<?php echo $opts['callback_url']; ?>" class="input_field" />
-                            Example: http://yourdomain.com/another_ipn.php
+                            <br/>Example: http://yourdomain.com/another_ipn.php
                             <br/>
                             This is useful if you want to do execute operations after a transaction. <br/>
                             This could be creating user accounts, calling external APIs e.g. mailchimp to subscribe the person to a mailing list.<br/>
