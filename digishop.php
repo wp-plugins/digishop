@@ -883,7 +883,9 @@ SHORT_CODE_EOF;
                 }
 
                 if ($do_stop) {
-                    return;
+                    wp_die($this->m($this->get('plugin_id_str')
+                        . ': this transaction seem to have been processed already. Stopping.', 0, 1)
+                        . $this->add_plugin_credits());
                 }
             }
 
