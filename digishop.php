@@ -790,7 +790,7 @@ SHORT_CODE_EOF;
 
                 $hash = WebWeb_WP_DigiShopUtil::read($file); // long sha1 hash
                 $dl_cnt = WebWeb_WP_DigiShopUtil::read($dl_cnt_file);
-                $dl_cnt = empty($dl_cnt) ? 0 : intval($dl_cnt);
+                $dl_cnt = empty($dl_cnt) ? 1 : intval($dl_cnt);
 
                 if (time() - filemtime($file) > 48 * 3600) { // dl expire after 48h
                     wp_die($this->m($this->plugin_id_str . ': The download has expired.', 0, 1)
