@@ -46,7 +46,12 @@ Please go to Wordpress Admin &gt; Plugins &gt; Add New Plugin &gt; Search for: D
 
 == Frequently Asked Questions ==
 
-n/a
+= Is DIGIshop Purchase Required? =
+DigiShop WordPress plugin has nothing to do with the DigiSHOP from sumeffect
+
+DigiShop WordPress plugin is free to use for personal or com
+
+
 
 Run into issues or have questions/suggestions? Send them to help@WebWeb.ca
 
