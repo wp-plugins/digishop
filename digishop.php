@@ -4,7 +4,7 @@
   Plugin Name: DigiShop
   Plugin URI: http://webweb.ca/site/products/digishop/
   Description: DigiShop plugin allows you to start selling your digital products such as e-books, reports in minutes.
-  Version: 1.0.6
+  Version: 1.0.7
   Author: Svetoslav Marinov (Slavi)
   Author URI: http://WebWeb.ca
   License: GPL v2
@@ -397,7 +397,7 @@ class WebWeb_WP_DigiShop {
             <input type='hidden' name="return" value="$return_page" />
             <input type='hidden' name="cancel_return" value="$cancel_return" />
             <input type='hidden' name="custom" value="$custom" />
-            <input type='image' src='https://www.paypal.com/en_GB/i/btn/btn_buynow_LG.gif' border="0" name="submit" alt="PayPal - The safer, easier way to pay online." />
+            <input type='image' src='https://www.paypal.com/en_GB/i/btn/btn_buynow_LG.gif' border="0" name="submit" alt="Buy Now! - The safer, easier way to pay online." />
 </form>
 <!-- /$this->plugin_id_str | Plugin URL: {$this->plugin_home_page} | Post URL: $post_url_esc -->
 SHORT_CODE_EOF;
@@ -409,7 +409,9 @@ SHORT_CODE_EOF;
     <input type='hidden' name="{$this->plugin_id_str}_product_id" value="$id" />
     <input type='hidden' name="{$this->plugin_id_str}_post_id" value="{$post->ID}" />
 
-    <input type="image" src="$submit_button_img_src" border="0" name="submit" alt="PayPal" />
+	<span id="{$this->plugin_id_str}_form_submit_button_container_$id" class="{$this->plugin_id_str}_form_submit_button_container">
+		<input id="{$this->plugin_id_str}_form_submit_button_$id" type="image" class="{$this->plugin_id_str}_form_submit_button" src="$submit_button_img_src" border="0" name="submit" alt="Buy Now!" />
+	</span>
 </form>
 <!-- /$this->plugin_id_str | Plugin URL: {$this->plugin_home_page} | Post URL: $post_url_esc -->
 SHORT_CODE_EOF;

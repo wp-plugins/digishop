@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: store,ecommerce,estore,online shop, shopping cart, wordperss e-commerce, wordperss ecommerce, sell digital products, sell ebook, ebook, sell ebook,digishop,digi shop
 Requires at least: 2.0.2
 Tested up to: 3.4.1
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 
 DigiShop plugin allows you to start selling your digital products such as e-books, reports in minutes.
 
@@ -72,6 +72,9 @@ Run into issues or have questions/suggestions? Send them to help@WebWeb.ca
 n/a
 
 == Changelog ==
+
+= 1.0.7 =
+* put css classes on the buy now button in case people want to apply styles to it.
 
 = 1.0.6 =
 * Added a check for invalid input. The plugin stops working if it receives invalid input e.g. text instead of a number (applicable for IDs)
