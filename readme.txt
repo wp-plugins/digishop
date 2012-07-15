@@ -26,7 +26,7 @@ http://www.youtube.com/watch?v=6EKNMYjzwlM
 * Functionality to enable/disable products (when a product is disabled the buy now link will not be shown and the file can't be downloaded even with the download link)
 * Customize the text for the successful and unsuccessful transaction
 * In case of a failed transaction the email is sent to the admin so he can handle the failed transaction manually
-* There is a button in edit page/post that allows you to choose a product this will insert to correct shortcode
+* There is a dollar sign button in edit page/post that allows you to choose a product and this will insert the correct shortcode which will be later replaced by Buy Now button
 * Protection against multiple calls made from PayPal IPN which paypal makes to notify the site owner for the transaction.
 * Download expires after 48 hours
 * Download limits: maximum 3 per order
@@ -49,9 +49,7 @@ Please go to Wordpress Admin &gt; Plugins &gt; Add New Plugin &gt; Search for: D
 = Is DIGIshop Purchase Required? =
 DigiShop WordPress plugin has nothing to do with the DigiSHOP from sumeffect
 
-DigiShop WordPress plugin is free to use for personal or com
-
-
+DigiShop WordPress plugin is free to use for personal or commercial one.
 
 Run into issues or have questions/suggestions? Send them to help@WebWeb.ca
 
@@ -72,6 +70,9 @@ Run into issues or have questions/suggestions? Send them to help@WebWeb.ca
 n/a
 
 == Changelog ==
+
+= 1.0.8 =
+
 
 = 1.0.7 =
 * put css classes on the buy now button in case people want to apply styles to it.
