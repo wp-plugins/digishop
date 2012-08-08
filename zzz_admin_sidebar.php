@@ -8,7 +8,11 @@
         padding: 0 0 3px 20px;
     }
 </style>
+
 <div class="zzz_app_admin_sidebar">
+    <p style="border:2px dashed red; padding:3px;"><a href="http://orbisius.com/go/intro2site?s=<?php echo $webweb_wp_digishop_obj->get('plugin_id_str'); ?>"
+                                                target="_blank">Free e-book: How to Build a Website Using WordPress: Beginners Guide</a>
+    </p>
         <?php echo $webweb_wp_digishop_obj->generate_newsletter_box(array('form_only' => 1, 'src2' => 'admin_sidebar')); ?>
         <br class="clear_both" />
        
