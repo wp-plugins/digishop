@@ -72,7 +72,9 @@ n/a
 == Changelog ==
 
 = 1.0.8 =
-
+= added checkbox to select if the form submission should be done in a new window
+= fixed a call that was breaking because was referencing a different plugin of mine
+= 
 
 = 1.0.7 =
 * put css classes on the buy now button in case people want to apply styles to it.

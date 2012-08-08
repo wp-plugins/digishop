@@ -4,7 +4,7 @@
   Plugin Name: DigiShop
   Plugin URI: http://webweb.ca/site/products/digishop/
   Description: DigiShop plugin allows you to start selling your digital products such as e-books, reports in minutes.
-  Version: 1.0.7
+  Version: 1.0.8
   Author: Svetoslav Marinov (Slavi)
   Author URI: http://WebWeb.ca
   License: GPL v2
@@ -1403,7 +1403,7 @@ class WebWeb_WP_DigiShopUtil {
      * That way the notice will be shown only on the plugin's page.
      */
     public static function is_on_plugin_page() {
-        $webweb_wp_digishop_obj = WebWeb_WP_Mibew::get_instance();
+        $webweb_wp_digishop_obj = WebWeb_WP_DigiShopUtil::get_instance();
 
         $req_uri = $_SERVER['REQUEST_URI'];
         $id_str = $webweb_wp_digishop_obj->get('plugin_id_str');

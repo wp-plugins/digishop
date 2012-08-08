@@ -81,6 +81,14 @@ $opts = $webweb_wp_digishop_obj->get_options();
                         </td>
                     </tr>
                     <tr valign="top">
+                        <th scope="row">Submit the form in a new window</th>
+                        <td>
+                            <label for="digishop_form_new_window">
+                                    <input type="checkbox" id="digishop_form_new_window" name="<?php echo $settings_key; ?>[form_new_window]" value="1"
+                                        <?php echo empty($opts['form_new_window']) ? '' : 'checked="checked"'; ?> /> Enable form submission in a new window</label>
+                        </td>
+                    </tr>
+                    <tr valign="top">
                         <th scope="row" colspan="2"><h2>Advanced</h2></th>
                     </tr>
                     <tr valign="top">
