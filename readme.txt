@@ -30,10 +30,15 @@ http://www.youtube.com/watch?v=6EKNMYjzwlM
 * Protection against multiple calls made from PayPal IPN which paypal makes to notify the site owner for the transaction.
 * Download expires after 48 hours
 * Download limits: maximum 3 per order
+* Allows functionality the form submission to go in a new window
+
+
+<a href="http://orbisius.com/go/intro2site?digishop"
+    target="_blank">Free e-book: How to Build a Website Using WordPress: Beginners Guide</a>
 
 = Author =
 
-Svetoslav Marinov (Slavi) | <a href="http://webweb.ca" title="Custom Web Programming, Web Design, e-commerce, e-store, Wordpress Plugin Development, Facebook and Mobile App Development in Niagara Falls, St. Catharines, Ontario, Canada" target="_blank">Custom Web and Mobile Programming by WebWeb.ca</a>
+Svetoslav Marinov (Slavi) | <a href="http://orbisius.com" title="Custom Web Programming, Web Design, e-commerce, e-store, Wordpress Plugin Development, Facebook and Mobile App Development in Niagara Falls, St. Catharines, Ontario, Canada" target="_blank">Custom Web and Mobile Programming by Orbisius.com</a>
 
 == Installation ==
 
@@ -74,7 +79,7 @@ n/a
 = 1.0.8 =
 = added checkbox to select if the form submission should be done in a new window
 = fixed a call that was breaking because was referencing a different plugin of mine
-= 
+= added a link to my free e-book
 
 = 1.0.7 =
 * put css classes on the buy now button in case people want to apply styles to it.
