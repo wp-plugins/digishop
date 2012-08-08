@@ -17,6 +17,6 @@
         <br class="clear_both" />
        
 		<div>
-            <iframe src="//www.facebook.com/plugins/likebox.php?href=www.facebook.com%2Fpages%2FWebWebca%2F172278676154985&amp;width=250&amp;height=558&amp;colorscheme=light&amp;show_faces=true&amp;border_color&amp;stream=true&amp;header=false&amp;appId=291949997486374" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:250px; height:558px;" allowTransparency="true"></iframe>
+            <iframe src="//www.facebook.com/plugins/likebox.php?href=http%3A%2F%2Ffacebook.com%2FOrbisius&amp;width=292&amp;height=590&amp;colorscheme=light&amp;show_faces=true&amp;border_color&amp;stream=true&amp;header=true&amp;appId=142797889159780" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:292px; height:590px;" allowTransparency="true"></iframe>
 		</div>
 </div>

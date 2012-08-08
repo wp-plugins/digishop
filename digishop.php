@@ -2,11 +2,11 @@
 
 /*
   Plugin Name: DigiShop
-  Plugin URI: http://webweb.ca/site/products/digishop/
+  Plugin URI: http://orbisius.com/site/products/digishop/
   Description: DigiShop plugin allows you to start selling your digital products such as e-books, reports in minutes.
-  Version: 1.0.8
+  Version: 1.0.9
   Author: Svetoslav Marinov (Slavi)
-  Author URI: http://WebWeb.ca
+  Author URI: http://orbisius.com
   License: GPL v2
  */
 

@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: store,ecommerce,estore,online shop, shopping cart, wordperss e-commerce, wordperss ecommerce, sell digital products, sell ebook, ebook, sell ebook,digishop,digi shop
 Requires at least: 2.0.2
 Tested up to: 3.4.1
-Stable tag: 1.0.8
+Stable tag: 1.0.9
 
 DigiShop plugin allows you to start selling your digital products such as e-books, reports in minutes.
 
@@ -56,7 +56,7 @@ DigiShop WordPress plugin has nothing to do with the DigiSHOP from sumeffect
 
 DigiShop WordPress plugin is free to use for personal or commercial one.
 
-Run into issues or have questions/suggestions? Send them to help@WebWeb.ca
+Run into issues or have questions/suggestions? Send them to help@orbisius.com
 
 == Screenshots ==
 1. Plugin icon when editing post/page
