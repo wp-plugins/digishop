@@ -1594,15 +1594,32 @@ class WebWeb_WP_DigiShopUtil {
 
         // the actual file that will be downloaded
         $download_file_name = basename($file);
-
+        
         // if a file with the same name existed we've appended some numbers to the filename but before
         // the extension. Now we'll offer the file without the appended numbers.
         $download_file_name = preg_replace('#-sss\d+(\.\w{2,5})$#si', '\\1', $download_file_name);
 
+        $default_content_type = 'application/octet-stream';
+
+        $ext = end(explode('.', $download_file_name));
+        $ext = strtolower($ext);
+
+        // http://en.wikipedia.org/wiki/Internet_media_type
+        $content_types_array = array(
+            'pdf' => 'application/pdf',
+            'zip' => 'application/zip',
+            'gz' => 'application/x-gzip',
+            'doc' => 'application/msword',
+            'xls' => 'application/vnd.xls',
+            'ppt' => 'application/vnd.ms-powerpoint',
+        );
+
+        $content_type = empty($content_types_array[$ext]) ? $default_content_type : $content_types_array[$ext];
+
 		header('Expires: 0');
  		header('Content-Description: File Transfer');
 		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-        header('Content-Type: application/octet-stream');
+        header('Content-Type: ' . $content_type);
         header('Content-Transfer-Encoding: binary');
         header('Content-Length: ' . (string) (filesize($file)));
         header('Content-Disposition: attachment; filename="' . $download_file_name . '"');
