@@ -4,7 +4,7 @@
   Plugin Name: DigiShop
   Plugin URI: http://orbisius.com/site/products/digishop/
   Description: DigiShop plugin allows you to start selling your digital products such as e-books, reports in minutes.
-  Version: 1.0.9
+  Version: 1.1.0
   Author: Svetoslav Marinov (Slavi)
   Author URI: http://orbisius.com
   License: GPL v2
@@ -107,7 +107,7 @@ class WebWeb_WP_DigiShop {
     /**
      * handles the singleton
      */
-    function get_instance() {
+    public static function get_instance() {
 		if (is_null(self::$instance)) {
             global $wpdb;
             
@@ -332,6 +332,7 @@ class WebWeb_WP_DigiShop {
         $opts = $this->get_options();
 
         $id = empty($attr['id']) ? 0 : WebWeb_WP_DigiShopUtil::stop_bad_input($attr['id'], WebWeb_WP_DigiShopUtil::SANITIZE_NUMERIC);
+        $id = empty($attr['id']) ? 0 : WebWeb_WP_DigiShopUtil::stop_bad_input($attr['id'], WebWeb_WP_DigiShopUtil::SANITIZE_NUMERIC);
 
         if (empty($id)) {
             return $this->m($this->plugin_id_str . ': empty product ID. Possibly incorrect use of the short code.', 0, 1);
@@ -379,6 +380,20 @@ class WebWeb_WP_DigiShop {
         $submit_button_img_src = empty($opts['submit_button_img_src']) ? $this->paypal_submit_image_src : $opts['submit_button_img_src'];
         $form_new_window = empty($opts['form_new_window']) ? '' : ' target="_blank" ';
 
+        /*
+         0 – prompt for an address, but do not require one
+         1 – do not prompt for an address
+         2 – prompt for an address, and require one
+         */
+        // paypal's logic is inverted but we'll be positive. i.e. when we don't want shipping we'll set no_shipping -> 1
+        // https://cms.paypal.com/us/cgi-bin/?cmd=_render-content&content_ID=developer/e_howto_html_Appx_websitestandard_htmlvariables
+        
+        if (isset($attr['require_shipping'])) { // shipping settings for a specific product
+            $no_shipping = empty($attr['require_shipping']) ? 1 : 2;
+        } else {
+            $no_shipping = empty($opts['require_shipping']) ? 1 : 2;
+        }
+
         $post_url_esc = esc_attr($post_url);
 
         if (!empty($opts['render_old_paypal_form'])) {
@@ -390,7 +405,7 @@ class WebWeb_WP_DigiShop {
             <input type='hidden' name="item_name" value="$item_name" />
             <input type='hidden' name="item_number" value="$item_number" />
             <input type='hidden' name="amount" value="$price" />
-            <input type="hidden" name="no_shipping" value="1" />
+            <input type="hidden" name="no_shipping" value="$no_shipping" />
             <input type="hidden" name="no_note" value="1" />
             <input type='hidden' name="currency_code" value="$currency" />
             <input type='hidden' name="notify_url" value="$notify_url" />
@@ -402,15 +417,19 @@ class WebWeb_WP_DigiShop {
 <!-- /$this->plugin_id_str | Plugin URL: {$this->plugin_home_page} | Post URL: $post_url_esc -->
 SHORT_CODE_EOF;
         } else {
+
             $buffer = <<<SHORT_CODE_EOF
 <!-- $this->plugin_id_str | Plugin URL: {$this->plugin_home_page} | Post URL: $post_url_esc -->
-<form id="{$this->plugin_id_str}_form_$id" class="{$this->plugin_id_str}_form" action="$post_url_esc" method="post" $form_new_window>
+<form id="{$this->plugin_id_str}_form_$id" class="{$this->plugin_id_str}_form" action="$post_url_esc" method="post" $form_new_window onsubmit="jQuery('.{$this->plugin_id_str}_loader').show();">
     <input type='hidden' name="$aaa_cmd_key" value="paypal_checkout" />
     <input type='hidden' name="{$this->plugin_id_str}_product_id" value="$id" />
     <input type='hidden' name="{$this->plugin_id_str}_post_id" value="{$post->ID}" />
+    <input type='hidden' name="{$this->plugin_id_str}_no_shipping" value="$no_shipping" />
 
 	<span id="{$this->plugin_id_str}_form_submit_button_container_$id" class="{$this->plugin_id_str}_form_submit_button_container">
-		<input id="{$this->plugin_id_str}_form_submit_button_$id" type="image" class="{$this->plugin_id_str}_form_submit_button" src="$submit_button_img_src" border="0" name="submit" alt="Buy Now!" />
+		<input id="{$this->plugin_id_str}_form_submit_button_$id" type="image" class="{$this->plugin_id_str}_form_submit_button" src="$submit_button_img_src"
+            border="0" name="submit" alt="Buy Now!" />
+        <span class="{$this->plugin_id_str}_loader app_hide" style="display:none;">Please wait...</span>
 	</span>
 </form>
 <!-- /$this->plugin_id_str | Plugin URL: {$this->plugin_home_page} | Post URL: $post_url_esc -->
@@ -835,6 +854,8 @@ SHORT_CODE_EOF;
         elseif (!empty($this->query_vars[$this->web_trigger_key]) && $this->query_vars[$this->web_trigger_key] == 'paypal_checkout') {
             $id = empty($data[$this->plugin_id_str . '_product_id']) ? 0 : $data[$this->plugin_id_str . '_product_id'];
             $post_id = empty($data[$this->plugin_id_str . '_post_id']) ? 0 : $data[$this->plugin_id_str . '_post_id'];
+            $no_shipping = isset($data[$this->plugin_id_str . '_no_shipping']) ? $data[$this->plugin_id_str . '_no_shipping'] : 1; // can be 0/1
+
             $post_url = get_permalink($post_id);
 
             $id = WebWeb_WP_DigiShopUtil::stop_bad_input($id, WebWeb_WP_DigiShopUtil::SANITIZE_NUMERIC);
@@ -868,7 +889,7 @@ SHORT_CODE_EOF;
             $paypal_params = array(
                 'cmd' => '_xclick',
                 'business' => $email,
-                'no_shipping' => 1,
+                'no_shipping' => $no_shipping,
                 'no_note' => 1,
                 'amount' => $price,
                 'item_name' => $item_name,
@@ -1403,7 +1424,7 @@ class WebWeb_WP_DigiShopUtil {
      * That way the notice will be shown only on the plugin's page.
      */
     public static function is_on_plugin_page() {
-        $webweb_wp_digishop_obj = WebWeb_WP_DigiShopUtil::get_instance();
+        $webweb_wp_digishop_obj = WebWeb_WP_DigiShop::get_instance();
 
         $req_uri = $_SERVER['REQUEST_URI'];
         $id_str = $webweb_wp_digishop_obj->get('plugin_id_str');

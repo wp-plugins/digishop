@@ -9,10 +9,6 @@ $opts = $webweb_wp_digishop_obj->get_options();
             <h2>Settings</h2>
 
             <form method="post" action="options.php">
-                <p class="submit">
-                    <input type="submit" class="button-primary" value="<?php _e('Save') ?>" />
-                </p>
-
                 <?php settings_fields($webweb_wp_digishop_obj->get('plugin_dir_name')); ?>
                 <table class="form-table">
                     <tr valign="top">
@@ -50,18 +46,19 @@ $opts = $webweb_wp_digishop_obj->get_options();
                         <th scope="row">Content (download email)</th>
                         <td><textarea name="<?php echo $settings_key; ?>[purchase_content]"><?php echo $opts['purchase_content']; ?></textarea>
 
-                        <br/>
-                        <h4>Supported Variables <a href="javascript:void(0);" onclick="jQuery('.suppored_vars').toggle('slow');return false;">(show/hide)</a></h4>
-                            <ul class="suppored_vars app_hide">
-                                <li>%%SITE%%</li>
-                                <li>%%FIRST_NAME%% - Payer's first name</li>
-                                <li>%%LAST_NAME%% - Payer's last name</li>
-                                <li>%%EMAIL%% - Payer's email</li>
-                                <li>%%TXN_ID%% - Transaction ID (PayPal)</li>
-                                <li>%%PRODUCT_NAME%% - Product name</li>
-                                <li>%%PRODUCT_PRICE%% - Product price</li>
-                                <li>%%DOWNLOAD_LINK%% - Download link</li>
-                            </ul>
+                            <div style="float:right">
+                                <strong>Supported Variables <a href="javascript:void(0);" onclick="jQuery('.suppored_vars').toggle('slow');return false;">(show/hide)</a></strong>
+                                <ul class="suppored_vars app_hide">
+                                    <li>%%SITE%%</li>
+                                    <li>%%FIRST_NAME%% - Payer's first name</li>
+                                    <li>%%LAST_NAME%% - Payer's last name</li>
+                                    <li>%%EMAIL%% - Payer's email</li>
+                                    <li>%%TXN_ID%% - Transaction ID (PayPal)</li>
+                                    <li>%%PRODUCT_NAME%% - Product name</li>
+                                    <li>%%PRODUCT_PRICE%% - Product price</li>
+                                    <li>%%DOWNLOAD_LINK%% - Download link</li>
+                                </ul>
+                            </div>
                         </td>
                     </tr>
                     <tr valign="top">
@@ -89,8 +86,20 @@ $opts = $webweb_wp_digishop_obj->get_options();
                         </td>
                     </tr>
                     <tr valign="top">
-                        <th scope="row" colspan="2"><h2>Advanced</h2></th>
+                        <th scope="row">Require buyer's shipping address (on PayPal's site)</th>
+                        <td>
+                            <label for="digishop_require_shipping">
+                                    <input type="checkbox" id="digishop_require_shipping" name="<?php echo $settings_key; ?>[require_shipping]" value="1"
+                                        <?php echo empty($opts['require_shipping']) ? '' : 'checked="checked"'; ?> /> Enable</label>
+                        </td>
                     </tr>
+                    <tr valign="top">
+                        <th scope="row" colspan="2"><h2>Advanced (<a href="javascript:void(0);" onclick="jQuery('.digishop_advanced_options').toggle('slow');return false;">show/hide</a>)
+                        </h2>
+                        </th>
+                    </tr>
+                    </table>
+                    <table class="digishop_advanced_options app_hide">
                     <tr valign="top">
                         <th scope="row">Sandbox (no real transactions)</th>
                         <td>

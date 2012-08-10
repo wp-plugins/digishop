@@ -42,12 +42,20 @@ foreach ($products as $rec) {
                 var template = '<p>[digishop id="%%PRODUCT_ID%%"]</p><br />';
 		
 				var product_id = document.getElementById('product_id') ? document.getElementById('product_id').value : 0;
+				var require_shipping = document.getElementById('require_shipping') && document.getElementById('require_shipping').checked ? 1 : 0;
 		
                 var wwwpdigishop = document.getElementById('wwwpdigishop_panel');
-				
+
+                content = template;
+
+                // if we want shipping then inject this into the template before we replace the product id
+                if (require_shipping > 0) {
+                    content = content.replace('%%PRODUCT_ID%%"', '%%PRODUCT_ID%%"' + ' require_shipping="1"');
+                }
+
                 // who is active ?
                 if (wwwpdigishop.className.indexOf('current') != -1) {
-                    content = template.replace('%%PRODUCT_ID%%', product_id);
+                    content = content.replace('%%PRODUCT_ID%%', product_id);
                 }
             
                 if (window.tinyMCE) {
@@ -103,6 +111,15 @@ foreach ($products as $rec) {
 									echo WebWeb_WP_DigiShopUtil::html_select('product_id', null, $dropdown_products);
 								?>
                             </td>                            
+                        </tr>
+                        <tr>
+                            <td nowrap="nowrap">
+                                <label for="require_shipping"><?php _e("Require Shipping Address", 'WWWPDIGISHOP'); ?></label>
+                            </td>
+                            <td>
+                                <label for="require_shipping">
+                                    <input type="checkbox" id="require_shipping" name="require_shipping" value="1" /> Enable</label>
+                            </td>
                         </tr>
                         <?php endif; ?>
                     </table>

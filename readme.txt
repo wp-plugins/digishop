@@ -31,7 +31,7 @@ http://www.youtube.com/watch?v=6EKNMYjzwlM
 * Download expires after 48 hours
 * Download limits: maximum 3 per order
 * Allows functionality the form submission to go in a new window
-
+* Optional shipping address requirement (both available as a global setting and per individual product)
 
 <a href="http://orbisius.com/go/intro2site?digishop"
     target="_blank">Free e-book: How to Build a Website Using WordPress: Beginners Guide</a>
@@ -75,6 +75,12 @@ Run into issues or have questions/suggestions? Send them to help@orbisius.com
 n/a
 
 == Changelog ==
+
+= 1.1.0 =
+= fixed the error about get instance ... the plugin was crashing when options were saved
+= added shipping address checkbox if it should be required or not (both a global setting and per individual products)
+= made the settings page more compact by hiding the advanced options by default and show them of from another show/hide button
+= added please wait
 
 = 1.0.8 =
 = added checkbox to select if the form submission should be done in a new window
