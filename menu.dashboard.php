@@ -43,7 +43,6 @@ $opts = $webweb_wp_digishop_obj->get_options();
 			<a class="addthis_button_digg" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
 			<a class="addthis_button_delicious" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
 			<a class="addthis_button_stumbleupon" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
-			<a class="addthis_button_googlebuzz" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
 			<a class="addthis_button_tumblr" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
 			<a class="addthis_button_favorites" addthis:url="<?php echo $app_link?>" addthis:title="<?php echo $app_title?>" addthis:description="<?php echo $app_descr?>"></a>
 			<a class="addthis_button_compact"></a>
@@ -54,7 +53,7 @@ $opts = $webweb_wp_digishop_obj->get_options();
 		<script type="text/javascript">
 		var addthis_config = {"data_track_clickback":true};
 		var addthis_share = {
-		  templates: { twitter: 'Check out {{title}} @ {{lurl}} (from @webwebsoft)' }
+		  templates: { twitter: 'Check out {{title}} @ {{lurl}} (from @orbisius)' }
 		}
 		</script>
 		<!-- AddThis Button START part2 -->
@@ -62,9 +61,9 @@ $opts = $webweb_wp_digishop_obj->get_options();
 		<!-- AddThis Button END part2 -->	
 		
 		<h3>Facebook Share</h3>
-		<div id="fb-root"></div><script src="http://connect.facebook.net/en_US/all.js#appId=163116837104802&amp;xfbml=1"></script><fb:like href="http://webweb.ca/site/products/digishop/" send="true" width="450" show_faces="true" font="arial"></fb:like>
+		<div id="fb-root"></div><script src="//connect.facebook.net/en_US/all.js#appId=163116837104802&amp;xfbml=1"></script><fb:like href="http://webweb.ca/site/products/digishop/" send="true" width="450" show_faces="true" font="arial"></fb:like>
 		
 		<h3>Comment</h3>
-		<div id="fb-root"></div><script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script><fb:comments href="http://webweb.ca/site/products/digishop/" num_posts="5" width="500"></fb:comments>
+		<div id="fb-root"></div><script src="//connect.facebook.net/en_US/all.js#xfbml=1"></script><fb:comments href="http://webweb.ca/site/products/digishop/" num_posts="5" width="500"></fb:comments>
     </div>
 </div>

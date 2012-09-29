@@ -5,6 +5,7 @@ Tags: store,ecommerce,estore,online shop, shopping cart, wordperss e-commerce, w
 Requires at least: 2.0.2
 Tested up to: 3.4.1
 Stable tag: 1.1.0
+License: GPLv2 or later
 
 DigiShop plugin allows you to start selling your digital products such as e-books, reports in minutes.
 

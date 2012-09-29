@@ -34,9 +34,9 @@ if (empty($_ENV['WEBWEB_WP_DIGISHOP_TEST'])) {
         echo "Hi there!  I'm just a plugin, not much I can do when called directly.";
         exit;
     }
-    
+
 	$webweb_wp_digishop_obj = WebWeb_WP_DigiShop::get_instance();
-	
+
     add_action('init', array($webweb_wp_digishop_obj, 'init'));
 
     register_activation_hook(__FILE__, array($webweb_wp_digishop_obj, 'on_activate'));
@@ -101,7 +101,7 @@ class WebWeb_WP_DigiShop {
 
     // can't be instantiated; just using get_instance
     private function __construct() {
-        
+
     }
 
     /**
@@ -110,10 +110,10 @@ class WebWeb_WP_DigiShop {
     public static function get_instance() {
 		if (is_null(self::$instance)) {
             global $wpdb;
-            
-			$cls = __CLASS__;	
+
+			$cls = __CLASS__;
 			$inst = new $cls;
-			
+
 			$site_url = get_settings('siteurl');
 			$site_url = rtrim($site_url, '/') . '/'; // e.g. http://domain.com/blog/
 
@@ -121,14 +121,14 @@ class WebWeb_WP_DigiShop {
 			$inst->plugin_dir_name = basename(dirname(__FILE__)); // e.g. wp-command-center; this can change e.g. a 123 can be appended if such folder exist
 			$inst->plugin_data_dir = dirname(__FILE__) . '/data';
 			$inst->plugin_url = $site_url . 'wp-content/plugins/' . $inst->plugin_dir_name . '/';
-			$inst->plugin_settings_key = $inst->plugin_id_str . '_settings';			
+			$inst->plugin_settings_key = $inst->plugin_id_str . '_settings';
             $inst->plugin_support_link .= '&css_file=' . urlencode(get_bloginfo('stylesheet_url'));
             $inst->plugin_admin_url_prefix = $site_url . 'wp-admin/admin.php?page=' . $inst->plugin_dir_name;
-		
+
             $inst->delete_product_url = $inst->plugin_admin_url_prefix . '/menu.products.php&do=delete';
 			$inst->add_product_url = $inst->plugin_admin_url_prefix . '/menu.product.add.php';
-			$inst->edit_product_url = $inst->plugin_admin_url_prefix . '/menu.product.add.php';		
-		
+			$inst->edit_product_url = $inst->plugin_admin_url_prefix . '/menu.product.add.php';
+
             // where digital products will be saved.
             $inst->plugin_uploads_path = '/wp-content/uploads/' . $inst->plugin_id_str . '/';
             $inst->plugin_uploads_url = $site_url . $inst->plugin_uploads_path;
@@ -140,13 +140,13 @@ class WebWeb_WP_DigiShop {
 
             // 2012:01:04: let's keep using the old links.
 //            $inst->permalinks = get_option('permalink_structure') != '';
-                
+
             if ($inst->permalinks) { // WP/digishop_cmd/paypal
                 $inst->payment_notify_url = $site_url . $inst->web_trigger_key . '=paypal_ipn';
             } else { // old way
                 $inst->payment_notify_url = WebWeb_WP_DigiShopUtil::add_url_params($site_url, array($inst->web_trigger_key => 'paypal_ipn'));
             }
-            
+
             $inst->download_key = $inst->plugin_id_str . '_dl';
 
             $opts = $inst->get_options();
@@ -163,13 +163,13 @@ class WebWeb_WP_DigiShop {
 			}
 
 			add_action('plugins_loaded', array($inst, 'init'), 100);
-            
+
 			define('WEBWEB_WP_DIGISHOP_BASE_DIR', dirname(__FILE__)); // e.g. // htdocs/wordpress/wp-content/plugins/wp-command-center
 			define('WEBWEB_WP_DIGISHOP_DIR_NAME', $inst->plugin_dir_name);
 
             self::$instance = $inst;
         }
-		
+
 		return self::$instance;
 	}
 
@@ -190,7 +190,7 @@ class WebWeb_WP_DigiShop {
             error_log($msg, 3, $this->log_file);
         }
     }
-    
+
     /**
      * handles the init
      */
@@ -208,11 +208,11 @@ class WebWeb_WP_DigiShop {
             // since 3.1 the register_activation_hook is not called when a plugin is updated, so to run the above
             // code on automatic upgrade you need to check the plugin db version on another hook. like this:
             add_action('plugins_loaded', array($this, 'install_db_tables'));
-            
+
             wp_register_style($this->plugin_dir_name, $this->plugin_url . 'css/main.css', false, 0.31);
             wp_enqueue_style($this->plugin_dir_name);
         } else {
-            if (!is_feed()) {                
+            if (!is_feed()) {
                 add_action('wp_head', array($this, 'add_plugin_credits'), 1); // be the first in the header
                 add_action('wp_footer', array($this, 'add_plugin_credits'), 1000); // be the last in the footer
                 wp_enqueue_script('jquery');
@@ -278,7 +278,7 @@ class WebWeb_WP_DigiShop {
 
         add_rewrite_tag('%' . $this->web_trigger_key . '%','([^&]+)');
         add_rewrite_tag('%' . $this->download_key . '%','([^&]+)');
-        
+
         return $vars;
     }
 
@@ -300,13 +300,13 @@ class WebWeb_WP_DigiShop {
             // Handles: http://localhost/wordpress313/digishop_dl/f524efe208d0397d0ac0593ef81a15df79efbf3f
             $this->download_key . '/([\w-]+)/?' => 'index.php?' . $this->download_key . '=$matches[1]',
         );
-        
+
         return $new_rules + $rules;
     }
 
     /**
      *
-     * @global WP_Rewrite $wp_rewrite 
+     * @global WP_Rewrite $wp_rewrite
      */
     function flush_rewrite_rules() {
         $rules = get_option('rewrite_rules');
@@ -317,7 +317,7 @@ class WebWeb_WP_DigiShop {
             $wp_rewrite->flush_rules();
         }
     }
-    
+
     /**
      * Searches and replaces the short code [digishop]
      * It will replace the code with errors in case of
@@ -356,19 +356,23 @@ class WebWeb_WP_DigiShop {
         $paypal_url = 'https://www.paypal.com/cgi-bin/webscr';
 
         if (!empty($opts['test_mode'])) {
-            $paypal_url = str_replace('paypal.com', 'sandbox.paypal.com', $paypal_url);
-            $email = empty($opts['sandbox_business_email']) ? $opts['business_email'] : $opts['sandbox_business_email'];
+			if (empty($opts['sandbox_only_ip'])
+						|| (!empty($opts['sandbox_only_ip']) && $_SERVER['REMOTE_ADDR'] == $opts['sandbox_only_ip'])) {
+				//$paypal_url = str_replace('paypal.com', 'sandbox.paypal.com', $paypal_url);
+				$paypal_url = str_replace('paypal.com', 'sandbox.paypal.com', $paypal_url);
+				$email = empty($opts['sandbox_business_email']) ? $opts['business_email'] : $opts['sandbox_business_email'];
+			}
         } else {
             $email = $opts['business_email'];
         }
 
         $notify_url = $this->payment_notify_url;
-        $currency = $opts['currency'];		
+        $currency = $opts['currency'];
         $price = $prev_rec['price'];
-        
+
         $return_page = WebWeb_WP_DigiShopUtil::add_url_params($post_url, array($this->web_trigger_key => 'txn_ok'));
         $cancel_return = WebWeb_WP_DigiShopUtil::add_url_params($post_url, array($this->web_trigger_key => 'txn_error'));
-        
+
         $item_name = esc_attr($prev_rec['label']);
         $item_number = $prev_rec['id'];
         $price = sprintf("%01.2f", $price);
@@ -376,7 +380,7 @@ class WebWeb_WP_DigiShop {
         $custom = http_build_query(array('id' => $item_number, 'site' => $this->site_url));
 
         $aaa_cmd_key = $this->web_trigger_key;
-        
+
         $submit_button_img_src = empty($opts['submit_button_img_src']) ? $this->paypal_submit_image_src : $opts['submit_button_img_src'];
         $form_new_window = empty($opts['form_new_window']) ? '' : ' target="_blank" ';
 
@@ -387,7 +391,7 @@ class WebWeb_WP_DigiShop {
          */
         // paypal's logic is inverted but we'll be positive. i.e. when we don't want shipping we'll set no_shipping -> 1
         // https://cms.paypal.com/us/cgi-bin/?cmd=_render-content&content_ID=developer/e_howto_html_Appx_websitestandard_htmlvariables
-        
+
         if (isset($attr['require_shipping'])) { // shipping settings for a specific product
             $no_shipping = empty($attr['require_shipping']) ? 1 : 2;
         } else {
@@ -438,7 +442,7 @@ SHORT_CODE_EOF;
         }
 
         $extra_msg = '';
-        
+
         if (!empty($_REQUEST[$this->web_trigger_key])) {
             if ($_REQUEST[$this->web_trigger_key] == 'txn_ok') {
                 $extra_msg = $this->m("<br/>" . $opts['purchase_thanks'], 1, 1);
@@ -493,10 +497,10 @@ SHORT_CODE_EOF;
 
         global $wpdb;
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-        
+
         $version = $this->db_version; // current in the code
         $tables = $this->db_tables[$version];
-        
+
         $db_ver_set = 0;
         $db_ver_key = $this->plugin_id_str . "_db_version";
         $db_version_site = get_option($db_ver_key); // what version is the db schema of the current site
@@ -506,7 +510,7 @@ SHORT_CODE_EOF;
             // Goal: WP_PREFX_MY_PLUGIN_PREFIX_TABLE_NAME
             $table_name = $this->plugin_db_prefix . $table_name;
             $sql = str_replace('%%TABLE_NAME%%', $table_name, $sql);
-            
+
             if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name
                     || (!empty($db_version_site) && $db_version_site != $version)) {
                 dbDelta($sql);
@@ -529,7 +533,7 @@ SHORT_CODE_EOF;
 
         $version = $this->db_version;
         $tables = $this->db_tables[$version];
-        
+
         foreach ($tables as $table_name => $sql) {
             $table_name = $this->plugin_db_prefix . $table_name;
             $wpdb->query("DROP TABLE IF EXISTS " . $table_name);
@@ -591,7 +595,7 @@ SHORT_CODE_EOF;
         if (empty($opts['purchase_thanks'])) {
             $opts['purchase_thanks'] = $this->plugin_default_opts['purchase_thanks'];
         }
-        
+
         if (empty($opts['purchase_error'])) {
             $opts['purchase_error'] = $this->plugin_default_opts['purchase_error'];
         }
@@ -603,7 +607,7 @@ SHORT_CODE_EOF;
         if (empty($opts['purchase_content'])) {
             $opts['purchase_content'] = $this->plugin_default_opts['purchase_content'];
         }
-        
+
         if (isset($opts['sandbox_only_ip'])) {
             $opts['sandbox_only_ip'] = trim($opts['sandbox_only_ip']);
         }
@@ -647,15 +651,15 @@ SHORT_CODE_EOF;
         add_submenu_page($this->plugin_dir_name . '/' . $this->plugin_landing_tab, __('Settings', $this->plugin_dir_name), __('Settings', $this->plugin_dir_name), 'manage_options', $this->plugin_dir_name . '/menu.settings.php');
         add_submenu_page($this->plugin_dir_name . '/' . $this->plugin_landing_tab, __('FAQ', $this->plugin_dir_name), __('FAQ', $this->plugin_dir_name), 'manage_options', $this->plugin_dir_name . '/menu.faq.php');
         add_submenu_page($this->plugin_dir_name . '/' . $this->plugin_landing_tab, __('Help', $this->plugin_dir_name), __('Help', $this->plugin_dir_name), 'manage_options', $this->plugin_dir_name . '/menu.support.php');
-		
+
         add_submenu_page($this->plugin_dir_name . '/' . $this->plugin_landing_tab, __('Contact', $this->plugin_dir_name), __('Contact', $this->plugin_dir_name), 'manage_options', $this->plugin_dir_name . '/menu.contact.php');
-		
+
         add_submenu_page($this->plugin_dir_name . '/' . $this->plugin_landing_tab, __('About', $this->plugin_dir_name), __('About', $this->plugin_dir_name), 'manage_options', $this->plugin_dir_name . '/menu.about.php');
 
         // when plugins are show add a settings link near my plugin for a quick access to the settings page.
         add_filter('plugin_action_links', array($this, 'add_plugin_settings_link'), 10, 2);
     }
-	
+
 	/**
      * Allows access to some private vars
      * @param str $var
@@ -704,7 +708,7 @@ SHORT_CODE_EOF;
         if (!empty($_REQUEST['error'])) {
             $msg = $this->message('There was a problem with the payment.');
         }
-        
+
         if (!empty($_REQUEST['ok'])) {
             $msg = $this->message('Thank you so much!', 1);
         }
@@ -715,7 +719,7 @@ SHORT_CODE_EOF;
         ));
 
         $cancel_url = WebWeb_WP_DigiShopUtil::add_url_params($this->get('plugin_business_status_url'), array(
-            'r' => $this->get('plugin_admin_url_prefix') . '/menu.dashboard.php&error=1', // 
+            'r' => $this->get('plugin_admin_url_prefix') . '/menu.dashboard.php&error=1', //
             'status' => 0,
         ));
 
@@ -742,7 +746,7 @@ SHORT_CODE_EOF;
         $buffer = str_replace(array_keys($replace_vars), array_values($replace_vars), $buffer);
 
         return $buffer;
-    }	
+    }
 
     /**
      * Outputs some options info. No save for now.
@@ -896,7 +900,7 @@ SHORT_CODE_EOF;
                 'item_number' => $item_number,
                 'currency_code' => $opts['currency'],
                 'custom' => http_build_query(array('id' => $item_number, 'site' => $this->site_url)),
-                
+
                 'notify_url' => $this->payment_notify_url,
                 'return' => $return_page,
                 'cancel_return' => $cancel_return,
@@ -906,7 +910,7 @@ SHORT_CODE_EOF;
 
             $this->log('paypal_checkout URL: ' . $location);
             $this->log('paypal_checkout Params: ' . var_export($paypal_params, 1));
-            
+
             wp_redirect($location);
             exit;
         }
@@ -914,6 +918,8 @@ SHORT_CODE_EOF;
         // we'll create a hash file based on the TXN and not notify if we're called more than once by paypal
         elseif (!empty($this->query_vars[$this->web_trigger_key]) && $this->query_vars[$this->web_trigger_key] == 'paypal_ipn') {
             // checking if this TXN has been processed. Paypal should always provide a unique TXN ID
+			$data = $_POST;
+
             if (!empty($data['txn_id'])) {
                 $txn_flag_file = $this->plugin_uploads_dir . '___sys_txn_' . WebWeb_WP_DigiShopUtil::generate_hash($data['txn_id']) . '.txt';
                 $do_stop = 0;
@@ -925,7 +931,7 @@ SHORT_CODE_EOF;
                 } else {
                     touch($txn_flag_file);
                 }
-                
+
                 if (mt_rand(0, 10) % 2 == 0) { // 50% chance to cleanup the txn files after a paypal call.
                     $txn_files = glob($this->plugin_uploads_dir . '___sys_txn_*');
 
@@ -945,17 +951,17 @@ SHORT_CODE_EOF;
             }
 
             $admin_email = get_option('admin_email');
-            
+
             if (!empty($opts['notification_email'])) {
                 $admin_email = $opts['notification_email'];
-            } 
+            }
             // ?? send to business email ???
             else {
-                
+
             }
 
             $headers = "From: {$_SERVER['HTTP_HOST']} Wordpress <wordpress@{$_SERVER['HTTP_HOST']}>\r\n";
-            
+
             if (!empty($data['custom'])) {
                 $custom = $data['custom'];
             } elseif (!empty($_REQUEST['custom'])) {
@@ -966,7 +972,7 @@ SHORT_CODE_EOF;
                 $admin_email_buffer .= "\nOther data: \n" . var_export($data, 1);
                 $admin_email_buffer .= "\nIP: " . $_SERVER['REMOTE_ADDR'] . "";
                 $admin_email_buffer .= "\nBrowser: " . $_SERVER['HTTP_USER_AGENT'] . "\n";
-                
+
                 wp_mail($admin_email, 'Invalid Transaction (missing custom field)', $admin_email_buffer, $headers);
 
                 $this->log('paypal_ipn Invalid Transaction (missing custom field). Adm email.' . $admin_email_buffer);
@@ -976,7 +982,7 @@ SHORT_CODE_EOF;
 
             $paypal_data = array();
             parse_str($custom, $paypal_data);
-            
+
             if (!empty($paypal_data['id'])) {
                 $id = $paypal_data['id'];
             } else {
@@ -992,39 +998,48 @@ SHORT_CODE_EOF;
             }
 
             // handle PayPal IPN calls
-            $data['cmd'] = '_notify-validate';
+            //$data['cmd'] = '_notify-validate';
             unset($data['digishop_cmd']); // paypal will not validate the TXN if there are extra params.
 
+            $sandbox = 0;
             $paypal_url = $this->paypal_url;
 
             if (!empty($opts['test_mode'])) {
                 // we are in test mode
                 // and if the sandbox IP is supplied we are going to enable sandbox only for that IP address.
                 if (empty($opts['sandbox_only_ip'])
+							|| !empty($data['test_ipn']) // PayPal submits this
                             || (!empty($opts['sandbox_only_ip']) && $_SERVER['REMOTE_ADDR'] == $opts['sandbox_only_ip'])) {
-                    $paypal_url = str_replace('paypal.com', 'sandbox.paypal.com', $paypal_url);
+                    //$paypal_url = str_replace('paypal.com', 'sandbox.paypal.com', $paypal_url);
+					$sandbox = 1;
                 }
             }
 
-            $paypal_url = WebWeb_WP_DigiShopUtil::add_url_params($paypal_url, $data);
+            //$paypal_url = WebWeb_WP_DigiShopUtil::add_url_params($paypal_url, $data);
+			$this->log("polgin $opts " . var_export($opts, 1));
+			$this->log("{$opts['test_mode']} ?");
+			$this->log("{$opts['sandbox_only_ip']} ?");
+			$this->log("{$_SERVER['REMOTE_ADDR']} == {$opts['sandbox_only_ip']} ?");
 
             $ua = new WebWeb_WP_DigiShopCrawler();
 
-            $check_status = $ua->fetch($paypal_url);
+            //$check_status = $ua->fetch($paypal_url);
+			$paypal_buffer = WebWeb_WP_DigiShopUtil::verify_paypal($data, $sandbox);
 
             // Let's try again
-            if (empty($check_status)) {
+            if (empty($paypal_buffer)) {
                 $this->log('paypal_ipn (2): will try to call paypal again. Got data: ' . var_export($data, 1));
-                $check_status = $ua->fetch($paypal_url);
+                //$check_status = $ua->fetch($paypal_url);
+				$paypal_buffer = WebWeb_WP_DigiShopUtil::verify_paypal($data, $sandbox);
             }
 
-            if ($check_status) {
-                $buffer = $ua->get_content();
+            if (!empty($paypal_buffer)) {
+                $buffer = $paypal_buffer;
                 $buffer = trim($buffer);
-                
+
                 $subject_prefix = empty($data['test_ipn']) ? '' : 'Test Txn: ';
 
-                // TODO: insert order ?                
+                // TODO: insert order ?
                 $email_subject = $subject_prefix . $opts['purchase_subject'];
                 $email_buffer = $opts['purchase_content'];
 
@@ -1055,10 +1070,10 @@ SHORT_CODE_EOF;
                 $email_subject = str_ireplace(array_keys($vars), array_values($vars), $email_subject);
                 $email_buffer = str_ireplace(array_keys($vars), array_values($vars), $email_buffer);
 
-                if (strcmp($buffer, "VERIFIED") == 0) {
+                if (strpos($buffer, "VERIFIED") !== false) {
                     $headers .= "BCC: $admin_email\r\n";
                     $mail_status = wp_mail($data['payer_email'], $email_subject, $email_buffer, $headers);
-                    
+
                     $data['digishop_paypal_status'] = 'VERIFIED';
                     $this->log("Email: (status: $mail_status) To: " . $data['payer_email'] . "\n" . $email_buffer);
                 } else {
@@ -1069,7 +1084,7 @@ SHORT_CODE_EOF;
                     $admin_email_buffer .= "\n\n=================================================================\n";
                     $admin_email_buffer .= "\nSubmitted Data: \n\n" . var_export($vars, 1);
                     $admin_email_buffer .= "\nReceived Data: \n\n" .  var_export($data, 1);
-                    
+
                     $mail_status = wp_mail($admin_email, 'Unsuccessful Transaction', $admin_email_buffer, $headers);
 
                     if (strcmp($buffer, "INVALID") == 0) {
@@ -1077,7 +1092,7 @@ SHORT_CODE_EOF;
                     } else {
                         $data['digishop_paypal_status'] = 'NOT_AVAILABLE';
                     }
-                    
+
                     $this->log("Email: (status: $mail_status) To: " . $admin_email . "\n" . $admin_email_buffer);
                 }
 
@@ -1148,7 +1163,7 @@ SHORT_CODE_EOF;
         $opts = $this->get_options();
 
         if (empty($opts['status'])) {
-            echo $this->message($this->plugin_name . " is currently disabled. Please, enable it from " 
+            echo $this->message($this->plugin_name . " is currently disabled. Please, enable it from "
                     . "<a href='{$this->plugin_admin_url_prefix}/menu.settings.php'> {$this->plugin_name} &gt; Settings</a>");
         } elseif (!empty($opts['test_mode']) && WebWeb_WP_DigiShopUtil::is_on_plugin_page()) { // show the notice only when checking the settings.
             if (!empty($opts['sandbox_only_ip'])) {
@@ -1220,11 +1235,11 @@ MSG_EOF;
 MSG_EOF;
         return $str;
     }
-	
+
     /**
      * a simple status message, no formatting except color, simpler than its brothers
      */
-    function m($msg, $status = 0, $use_inline_css = 0) {        
+    function m($msg, $status = 0, $use_inline_css = 0) {
         $cls = empty($status) ? 'app_error' : 'app_success';
         $inline_css = '';
 
@@ -1241,7 +1256,7 @@ MSG_EOF;
 
     /**
      * Loads a product by its ID or by hash
-     * 
+     *
      * @param int/string $id
      * @return array
      */
@@ -1277,7 +1292,7 @@ MSG_EOF;
     function get_errors() {
         return $this->errors;
     }
-    
+
     function get_errors_str() {
         $str  = join("<br/>", $this->get_errors());
         return $str;
@@ -1307,7 +1322,7 @@ MSG_EOF;
         if (empty($data['label'])) {
             $this->add_error("Product name cannot be empty.");
         }
-        
+
         if (empty($data['price'])) {
             $this->add_error("Product price cannot be empty.");
         }
@@ -1353,7 +1368,7 @@ MSG_EOF;
                 if (!@copy($_FILES['file']['tmp_name'], $target_file_full)) {
                    $this->add_error("Cannot save the file in [$target_file_full]");
                 }
-                
+
                 $product_data['hash'] = WebWeb_WP_DigiShopUtil::generate_hash($target_file);
 
                 // add file name and not the full because people can switch hostings
@@ -1386,7 +1401,7 @@ MSG_EOF;
 
         $id = WebWeb_WP_DigiShopUtil::stop_bad_input($id, WebWeb_WP_DigiShopUtil::SANITIZE_NUMERIC);
         $prev_rec = $this->get_product($id);
-        
+
         // if a new file is supplied the old gets deleted.
         if (!empty($prev_rec['file']) && file_exists($this->plugin_uploads_dir . $prev_rec['file'])) {
             unlink($this->plugin_uploads_dir . $prev_rec['file']);
@@ -1462,7 +1477,7 @@ class WebWeb_WP_DigiShopUtil {
 
         return $buffer;
     }
-    
+
     /**
      * Checks if the url is valid
      * @param string $url
@@ -1519,7 +1534,7 @@ class WebWeb_WP_DigiShopUtil {
         if (empty($str)) {
             $str = 'default-name-' . time();
         }
-        
+
         if (empty($ext)) {
             $ext = 'default-ext';
         }
@@ -1542,13 +1557,13 @@ class WebWeb_WP_DigiShopUtil {
 
         return $res;
     }
-    
+
     const SANITIZE_NUMERIC = 1;
     const SANITIZE_ALPHA_NUMERIC = 2;
 
     /**
      * Initially this was planned to be a function to clean the IDs. Not it stops when invalid input is found.
-     * 
+     *
      * @param string $value
      * @return string
      */
@@ -1556,7 +1571,7 @@ class WebWeb_WP_DigiShopUtil {
         if (!empty($value)) {
             $msg = '';
             $webweb_wp_digishop_obj = WebWeb_WP_DigiShop::get_instance();
-            
+
             if ($type_id == self::SANITIZE_NUMERIC && !is_numeric($value)) {
                 $webweb_wp_digishop_obj->log("Invalid value supplied. Received: \n----------------------------------------------------\n"
                             . $value
@@ -1574,7 +1589,7 @@ class WebWeb_WP_DigiShopUtil {
                 wp_die($msg);
             }
         }
-        
+
         return $value;
     }
 
@@ -1585,7 +1600,7 @@ class WebWeb_WP_DigiShopUtil {
      * Credits:
 	 * http://php.net/manual/en/function.readfile.php
      * http://stackoverflow.com/questions/2222955/idiot-proof-cross-browser-force-download-in-php
-     * 
+     *
      * @param string $file
      * @param bool $do_exit - exit after the file has been downloaded.
      */
@@ -1604,7 +1619,7 @@ class WebWeb_WP_DigiShopUtil {
                 && ($_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443)) {
             header("Cache-control: private");
             header('Pragma: private');
-            
+
             // IE 6.0 fix for SSL
             // SRC http://ca3.php.net/header
             // Brandon K [ brandonkirsch uses gmail ] 25-Apr-2007 03:34
@@ -1615,7 +1630,7 @@ class WebWeb_WP_DigiShopUtil {
 
         // the actual file that will be downloaded
         $download_file_name = basename($file);
-        
+
         // if a file with the same name existed we've appended some numbers to the filename but before
         // the extension. Now we'll offer the file without the appended numbers.
         $download_file_name = preg_replace('#-sss\d+(\.\w{2,5})$#si', '\\1', $download_file_name);
@@ -1644,12 +1659,12 @@ class WebWeb_WP_DigiShopUtil {
         header('Content-Transfer-Encoding: binary');
         header('Content-Length: ' . (string) (filesize($file)));
         header('Content-Disposition: attachment; filename="' . $download_file_name . '"');
- 
+
 		ob_clean();
 		flush();
-		
+
         readfile($file);
-		
+
 		if ($do_exit) {
 			exit;
 		}
@@ -1661,7 +1676,7 @@ class WebWeb_WP_DigiShopUtil {
      * @param string $buffer
      * @string string $buffer
      */
-    
+
     public static function html2text($buffer = '') {
         // we care only about the body so it must be beautiful.
         $buffer = preg_replace('#.*<body[^>]*>(.*?)</body>.*#si', '\\1', $buffer);
@@ -1823,7 +1838,7 @@ class WebWeb_WP_DigiShopUtil {
         $max_upload = (int)(ini_get('upload_max_filesize'));
         $max_post = (int)(ini_get('post_max_size'));
         $memory_limit = (int)(ini_get('memory_limit'));
-        
+
         $upload_mb = min($max_upload, $max_post, $memory_limit);
 
         return $upload_mb;
@@ -1862,6 +1877,68 @@ class WebWeb_WP_DigiShopUtil {
 
         return $size . " $size_suff";
     }
+
+	function verify_paypal($data = array(), $sandbox = 0) {
+		$res = '';
+		$obj = WebWeb_WP_DigiShop::get_instance();
+
+		$req = 'cmd=_notify-validate';
+
+		foreach ($data as $key => $value) {
+			$value = urlencode(stripslashes($value));
+			$req .= "&$key=$value";
+		}
+
+		if ($sandbox) {
+			$host = 'www.sandbox.paypal.com';
+		} else {
+			$host = 'www.paypal.com';
+		}
+
+		// post back to PayPal system to validate
+		$header = "POST /cgi-bin/webscr HTTP/1.0\r\n";
+
+		// If testing on Sandbox use:
+		$header .= "Host: $host:443\r\n";
+		$header .= "Content-Type: application/x-www-form-urlencoded\r\n";
+		$header .= "Content-Length: " . strlen($req) . "\r\n\r\n";
+
+		$fp = fsockopen ("ssl://$host", 443, $errno, $errstr, 30);
+
+		$obj->log(__METHOD__ . " : TXN (0): host: [$host]; header: [$header], req: [$req]");
+
+		if (!$fp) {
+			$obj->log(__METHOD__ . " : Didn't succeed on first attempt: $errno, $errstr");
+			$fp = fsockopen ("ssl://$host", 443, $errno, $errstr, 45);
+		}
+
+		if (!$fp) {
+			$obj->log(__METHOD__ . " : TXN (2): Cannot connect: $errno, $errstr");
+			return false;
+		} else {
+			fputs($fp, $header . $req);
+
+			while (!feof($fp)) {
+				$res .= fgets($fp, 2048);
+
+				// next layer will check
+				/*if (trim($res) ==  "VERIFIED") {
+					$obj->log(__METHOD__ . " : TXN (buff): Success. Content: $res");
+
+				}*/
+			}
+
+			fclose($fp);
+
+			$obj->log(__METHOD__ . " : TXN (buff): Content: [$res]");
+
+			return $res;
+		}
+
+		$obj->log(__METHOD__ . " : TXN (3): Error");
+
+		return $res;
+	}
 }
 
 class WebWeb_WP_DigiShopCrawler {
@@ -1876,7 +1953,7 @@ class WebWeb_WP_DigiShopCrawler {
 
     /**
      * Error(s) from the last request
-     * 
+     *
      * @return string
      */
     function getError() {
@@ -1959,7 +2036,7 @@ class WebWeb_WP_DigiShopCrawler {
                 }
             } // no curl
         } // empty ok*/
-        
+
         // try #2 file_get_contents
         if (empty($ok)) {
             $buffer = @file_get_contents($url);
