@@ -4,7 +4,7 @@
   Plugin Name: DigiShop
   Plugin URI: http://orbisius.com/site/products/digishop/
   Description: DigiShop plugin allows you to start selling your digital products such as e-books, reports in minutes.
-  Version: 1.1.1
+  Version: 1.1.2
   Author: Svetoslav Marinov (Slavi)
   Author URI: http://orbisius.com
   License: GPL v2
@@ -76,6 +76,7 @@ class WebWeb_WP_DigiShop {
         'status' => 0,
         'test_mode' => 0,
         'logging_enabled' => 0,
+        'secure_hop_url' => '',
         'sandbox_business_email' => '',
         'sandbox_only_ip' => '',
         'notification_email' => '',
@@ -887,8 +888,13 @@ SHORT_CODE_EOF;
             $price = $product_rec['price'];
             $price = sprintf("%01.2f", $price);
 
-            $return_page = WebWeb_WP_DigiShopUtil::add_url_params($post_url, array($this->web_trigger_key => 'txn_ok'));
             $cancel_return = WebWeb_WP_DigiShopUtil::add_url_params($post_url, array($this->web_trigger_key => 'txn_error'));
+            $return_page = WebWeb_WP_DigiShopUtil::add_url_params($post_url, array($this->web_trigger_key => 'txn_ok'));
+
+            // if we have secure hop url we'll use it.
+            if (!empty($opts['secure_hop_url']) && (stripos($opts['secure_hop_url'], 'https://') !== false)) {
+                $return_page = WebWeb_WP_DigiShopUtil::add_url_params($opts['secure_hop_url'], array('r' => $return_page));
+            }
 
             $paypal_params = array(
                 'cmd' => '_xclick',

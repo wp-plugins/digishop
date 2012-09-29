@@ -159,6 +159,32 @@ EOF;
                         </td>
                     </tr>
                     <tr valign="top">
+                        <th scope="row">Secure HOP URL</th>
+                        <td><input type="text" name="<?php echo $settings_key; ?>[secure_hop_url]" value="<?php echo $opts['secure_hop_url']; ?>" class="input_field" />
+                            <br/>Example: https://secure.yoursite.com/proxy.php
+                            <br/>
+                            The main idea of the Secure HOP URL is to redirect to another URL. It must redirect to an address passed by the "r" parameter.
+                            Having this kind of redirect is very useful because when your visitors are about to return to your site PayPal checks and if
+                            the returning URL is a non-ssl link then it puts a prompt. <br/>
+                            
+                            <a href="<?php echo $webweb_wp_digishop_obj->get('plugin_url');?>/images/example_paypal_non_ssl_site_warning.png" target="_blank"><img
+                                    style="border:2px dashed red;width: 50%;" src="<?php echo $webweb_wp_digishop_obj->get('plugin_url');?>/images/example_paypal_non_ssl_site_warning.png" alt="example_paypal_non_ssl_site_warning" /></a>
+
+                            <div><strong>Sample redirect script</strong>. Right click and copy it and install it on your secure area.</div>
+                            <textarea class="input_field" rows="6" readonly="readonly" onclick="this.select();">&lt;?php
+// WordPress DigiShop
+if (empty($_REQUEST['r'])) {
+    die('It Works!');
+}
+
+$loc = empty($_REQUEST['r']) ? '/' : $_REQUEST['r'];
+header('Location: ' . $loc);
+die;
+?&gt;</textarea>
+
+                        </td>
+                    </tr>
+                    <tr valign="top">
                         <th scope="row">Post Transaction Callback URL</th>
                         <td><input type="text" name="<?php echo $settings_key; ?>[callback_url]" value="<?php echo $opts['callback_url']; ?>" class="input_field" />
                             <br/>Example: http://yourdomain.com/another_ipn.php

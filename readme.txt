@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: store,ecommerce,estore,online shop, shopping cart, wordperss e-commerce, wordperss ecommerce, sell digital products, sell ebook, ebook, sell ebook,digishop,digi shop
 Requires at least: 2.0.2
 Tested up to: 3.4.1
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPLv2 or later
 
 DigiShop plugin allows you to start selling your digital products such as e-books, reports in minutes.
@@ -33,6 +33,9 @@ http://www.youtube.com/watch?v=6EKNMYjzwlM
 * Download limits: maximum 3 per order
 * Allows functionality the form submission to go in a new window
 * Optional shipping address requirement (both available as a global setting and per individual product)
+* Supports a secure HOP URL. The main idea of the Secure HOP URL is to redirect to another URL. The script must redirect to an address passed by the "r" parameter.
+Having this kind of redirect is very useful because when your visitors are about to return to your site PayPal checks and if the returning URL is a non-ssl link then it puts a warning with
+makes the user experience less optimal. DigiShop includes a sample redirect script that you can install on your secure site.
 
 <a href="http://orbisius.com/go/intro2site?digishop"
     target="_blank">Free e-book: How to Build a Website Using WordPress: Beginners Guide</a>
@@ -76,6 +79,9 @@ Run into issues or have questions/suggestions? Send them to help@orbisius.com
 n/a
 
 == Changelog ==
+
+= 1.1.2 =
+= added a secure hop URL field in the settings.
 
 = 1.1.1 =
 = fixed a hard to find bug when validating the txn
