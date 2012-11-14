@@ -1329,8 +1329,10 @@ MSG_EOF;
             $this->add_error("Product name cannot be empty.");
         }
 
+        $data['price'] = preg_replace('#[$\,\s]#', '', $data['price']);
+
         if (empty($data['price'])) {
-            $this->add_error("Product price cannot be empty.");
+            //$this->add_error("Product price cannot be empty.");
         }
 
         $ext_link = empty($data['ext_link']) ? '' : trim($data['ext_link']);

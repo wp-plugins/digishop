@@ -57,7 +57,7 @@
             <script type="text/javascript">
             var addthis_config = {"data_track_clickback":true};
             var addthis_share = {
-              templates: { twitter: 'Check out {{title}} @ {{lurl}} (from @webwebsoft)' }
+              templates: { twitter: 'Check out {{title}} @ {{lurl}} (from @orbisius)' }
             }
             </script>
             <!-- AddThis Button START part2 -->
