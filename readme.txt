@@ -3,8 +3,8 @@ Contributors: lordspace
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7APYDVPBCSY9A
 Tags: store,ecommerce,estore,online shop, shopping cart, wordperss e-commerce, wordperss ecommerce, sell digital products, sell ebook, ebook, sell ebook,digishop,digi shop
 Requires at least: 2.0.2
-Tested up to: 3.4.1
-Stable tag: 1.1.2
+Tested up to: 3.5.1
+Stable tag: 1.1.3
 License: GPLv2 or later
 
 DigiShop plugin allows you to start selling your digital products such as e-books, reports in minutes.
@@ -90,7 +90,9 @@ n/a
 == Changelog ==
 
 = 1.1.3 =
-= Added info about the changed support
+* Added info about the changed support
+* Corrected links to the donation email
+* Tested the plugin with WP 3.5.1
 
 = 1.1.2 =
 = added a secure hop URL field in the settings.
@@ -125,7 +127,6 @@ n/a
 = 1.0.5 =
 * fixed: passing an extra variable which caused PayPal transactions not to validate
 * Address Settings > sandbox IP which if supplied with enabled sandbox will enable sandbox mode only for that specific IP address.
-* 
 
 = 1.0.4 =
 * made the payment form to submit to the blog and then the WP site will redirect to PayPal
