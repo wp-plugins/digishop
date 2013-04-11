@@ -1,5 +1,14 @@
 <h2>Contact Us</h2>
 
+<div class="updated">
+    <strong>
+    ** NOTE: ** Support is handled on our site: <a href="http://club.orbisius.com/support/" target="_blank" title="[new window]">http://club.orbisius.com/support/</a>
+    <br/>Please do NOT use the WordPress forums or other places to seek support.
+    </strong>
+</div>
+
+<?php return ; ?>
+
 <?php if (0&&(preg_match('#win#si', PHP_OS) || $_SERVER['HTTP_HOST'] == 'localhost')) : ?>
     <p>
         <iframe src="<?php echo $webweb_wp_digishop_obj->get('plugin_support_link');?>"

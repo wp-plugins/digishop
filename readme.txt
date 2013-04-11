@@ -11,6 +11,10 @@ DigiShop plugin allows you to start selling your digital products such as e-book
 
 == Description ==
 
+= Support =
+> Support is handled on our site: <a href="http://club.orbisius.com/support/" target="_blank" title="[new window]">http://club.orbisius.com/support/</a>
+> Please do NOT use the WordPress forums or other places to seek support.
+
 DigiShop is a WordPress plugin which allows you to setup your e-store and start selling your digital products such as e-books, reports in minutes.
 It adds a simple buy now button which sends your customer to PayPal to complete the payment and after that he/she is returned to your site.
 
@@ -60,7 +64,12 @@ DigiShop WordPress plugin has nothing to do with the DigiSHOP from sumeffect
 
 DigiShop WordPress plugin is free to use for personal or commercial one.
 
-Run into issues or have questions/suggestions? Send them to help@orbisius.com
+= issues/questions/suggestions = 
+If you have run into issues or have questions/suggestions please register on our support forum and post your suggestion or question there.
+
+> Support is handled on our site: <a href="http://club.orbisius.com/support/" target="_blank" title="[new window]">http://club.orbisius.com/support/</a>
+> Please do NOT use the WordPress forums or other places to seek support.
+
 
 == Screenshots ==
 1. Plugin icon when editing post/page
@@ -79,6 +88,9 @@ Run into issues or have questions/suggestions? Send them to help@orbisius.com
 n/a
 
 == Changelog ==
+
+= 1.1.3 =
+= Added info about the changed support
 
 = 1.1.2 =
 = added a secure hop URL field in the settings.

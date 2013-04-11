@@ -12,8 +12,35 @@
             <line>0</line>
         </file>
     </editor-bookmarks>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0">
+        <file>
+            <url>menu.product.add.php</url>
+            <bookmark id="0">
+                <name/>
+                <line>56</line>
+                <key/>
+            </bookmark>
+        </file>
+        <file>
+            <url>digishop.php</url>
+            <bookmark id="0">
+                <name/>
+                <line>0</line>
+                <key/>
+            </bookmark>
+            <bookmark id="0">
+                <name/>
+                <line>0</line>
+                <key/>
+            </bookmark>
+            <bookmark id="0">
+                <name/>
+                <line>0</line>
+                <key/>
+            </bookmark>
+        </file>
+    </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
-        <file>file:/C:/projects/default/htdocs/wordpress313/wp-content/plugins/digishop/digishop.php</file>
         <file>file:/C:/projects/default/htdocs/wordpress313/wp-content/plugins/digishop/menu.product.add.php</file>
         <file>file:/C:/projects/default/htdocs/wordpress313/wp-content/plugins/digishop/zzz_newsletter_box.html</file>
         <file>file:/C:/projects/default/htdocs/wordpress313/wp-content/plugins/digishop/menu.support.php</file>
