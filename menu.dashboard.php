@@ -73,6 +73,7 @@ $opts = $webweb_wp_digishop_obj->get_options();
         </div>
 
 		<h3>Comment</h3>
+        <p>Please use this comment box to share how cool DigiShop is but for support requests please use our forums. Thanks.</p>
 		<div id="fb-root"></div><script src="//connect.facebook.net/en_US/all.js#xfbml=1"></script><fb:comments href="http://webweb.ca/site/products/digishop/" num_posts="5" width="500"></fb:comments>
     </div>
 </div>
