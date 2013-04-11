@@ -62,7 +62,16 @@ $opts = $webweb_wp_digishop_obj->get_options();
 		
 		<h3>Facebook Share</h3>
 		<div id="fb-root"></div><script src="//connect.facebook.net/en_US/all.js#appId=163116837104802&amp;xfbml=1"></script><fb:like href="http://webweb.ca/site/products/digishop/" send="true" width="450" show_faces="true" font="arial"></fb:like>
-		
+
+        <h3>Support</h3>
+
+        <div class="updated">
+            <strong>
+            ** NOTE: ** Support is handled on our site: <a href="http://club.orbisius.com/support/" target="_blank" title="[new window]">http://club.orbisius.com/support/</a>
+            <br/>Please do NOT use the WordPress forums or other places to seek support.
+            </strong>
+        </div>
+
 		<h3>Comment</h3>
 		<div id="fb-root"></div><script src="//connect.facebook.net/en_US/all.js#xfbml=1"></script><fb:comments href="http://webweb.ca/site/products/digishop/" num_posts="5" width="500"></fb:comments>
     </div>
