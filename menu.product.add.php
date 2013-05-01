@@ -68,8 +68,16 @@ if (!empty($id)) {
                 </tr>
                 <tr valign="top">
                     <th scope="row">External URL</th>
-                    <td><input type="text" name="<?php echo $settings_key; ?>[ext_link]" value="<?php 
-                        echo empty($opts['ext_link']) && WebWeb_WP_DigiShopUtil::validate_url($opts['file']) ? $opts['file'] : $opts['ext_link']; ?>" class="input_field" />
+                    <td><input type="text" name="<?php echo $settings_key; ?>[ext_link]" value="<?php
+                        $ext_link = '';
+
+                        if (!empty($opts['ext_link'])) {
+                            $ext_link = $opts['ext_link'];
+                        } elseif (WebWeb_WP_DigiShopUtil::validate_url($opts['file'])) {
+                            $ext_link = $opts['file'];
+                        }
+
+                        echo esc_attr($ext_link); ?>" class="input_field" />
                     <p>
                         Example: http://yourdomain.com/some-document.pdf<br/>
                         Example: ftp://yourdomain.com/sample.doc<br/>

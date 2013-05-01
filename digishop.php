@@ -1373,7 +1373,10 @@ MSG_EOF;
                     $target_file = basename($target_file_full); // let's update the name.
                 }
 
-                if (!@copy($_FILES['file']['tmp_name'], $target_file_full)) {
+                // on windows move_uploaded_file could fail for some weird reasons.
+                if (!move_uploaded_file($_FILES['file']['tmp_name'], $target_file_full)
+                        || !copy($_FILES['file']['tmp_name'], $target_file_full)) {
+                   chmod($target_file_full, 0644);
                    $this->add_error("Cannot save the file in [$target_file_full]");
                 }
 
@@ -1392,6 +1395,8 @@ MSG_EOF;
                 $st = $wpdb->insert($this->plugin_db_prefix . 'products', $product_data);
             } else {
                 $st = $wpdb->update($this->plugin_db_prefix . 'products', $product_data, array('id' => $id));
+                // if it's error the status will be false, otherwise it's affected rows which could be 0 if we are just updating the file name.
+                $st = $st === false ? false : true;
             }
         }
 
