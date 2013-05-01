@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: store,ecommerce,estore,online shop, shopping cart, wordperss e-commerce, wordperss ecommerce, sell digital products, sell ebook, ebook, sell ebook,digishop,digi shop
 Requires at least: 2.0.2
 Tested up to: 3.5.1
-Stable tag: 1.1.3
+Stable tag: 1.1.4
 License: GPLv2 or later
 
 DigiShop plugin allows you to start selling your digital products such as e-books, reports in minutes.
@@ -14,6 +14,8 @@ DigiShop plugin allows you to start selling your digital products such as e-book
 = Support =
 > Support is handled on our site: <a href="http://club.orbisius.com/support/" target="_blank" title="[new window]">http://club.orbisius.com/support/</a>
 > Please do NOT use the WordPress forums or other places to seek support.
+> New: We have launched our <a href="http://club.orbisius.com/products/" target="_blank" title="[new window]">membership site</a>
+> which gives you access to all of our premium plugins at an affordable price.
 
 DigiShop is a WordPress plugin which allows you to setup your e-store and start selling your digital products such as e-books, reports in minutes.
 It adds a simple buy now button which sends your customer to PayPal to complete the payment and after that he/she is returned to your site.
@@ -88,6 +90,10 @@ If you have run into issues or have questions/suggestions please register on our
 n/a
 
 == Changelog ==
+
+= 1.1.4 =
+= Fixed when updating a product the status message was showing as error that happened only when replacing the filename
+= Misc Fixes.
 
 = 1.1.3 =
 * Added info about the changed support
